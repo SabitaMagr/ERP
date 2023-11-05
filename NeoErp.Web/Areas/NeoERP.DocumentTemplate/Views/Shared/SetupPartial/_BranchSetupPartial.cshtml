@@ -1,0 +1,262 @@
+﻿<style>
+    .mb-0{
+        margin-bottom: 0px !important;
+    }
+    .ta-c{
+        text-align: center !important;
+    }
+    .mb--8{
+        margin-bottom: -8px !important;
+    }
+
+    .k-animation-container, .k-widget, .k-widget *, .k-animation-container *, .k-widget ::before, .k-animation-container ::after, .k-block .k-header, .k-list-container {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .k-grid-content {
+        height: 367px !important;
+    }
+
+    #kGrid {
+        height: 427px !important;
+    }
+          .addcolor {
+    color:#ffffff;
+    }
+</style> 
+    <div class="portlet box green-box main">
+       
+            <div class="portlet-title">
+                <div class="caption caption-title ng-binding">
+                    <i class="fa fa-list-alt"></i><span class="caption-subject bold uppercase">Branch Setup</span>
+                </div>
+                <div class="actions">
+                    <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-disabled="treenodeselected!= 'Y'" ng-click="showModalForNew(event)">
+                        <i class="fa fa-plus"></i> NEW
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-offset-8 col-md-4 search_box">
+                        <div class="topsearch" style="display:block;">
+                            <a class="btn-linkicon fa fa-search" style="margin-right: -13px;" ng-click="BindGrid('All')"></a>
+                            <input class="k-textbox txtSearchString" type="text" id="bchtxtSearchString" ng-model="txtSearchString" name="search" placeholder="enter search text..." style="margin-left: 13px;" />
+                        </div>
+                    </div>
+                </div>
+                <kendo-grid id="kGrid" options="branchCenterChildGridOptions" k-rebind="branchCenterChildGridOptions">
+                </kendo-grid>
+            </div>
+
+            <div class="modal fade-out" id="branchSetupModal" data-backdrop="static" tabindex="-1" data-width="760">
+                <div class="modal-dialog modal-medium-large">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</div>
+                            <h4 class="modal-title">
+                                <span class="fa fa-file"></span>
+                                Branch Setup Model
+                            </h4>
+                        </div>
+                        <div class="modal-body mb--8">
+
+                            <form name="branchArrform" class="form-horizontal" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">Under Group:</label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <select id="masterbranchcode" kendo-drop-down-list
+                                                                ng-disabled="true"
+                                                                k-options="branchGroupOptions"
+                                                                style="width: 100%"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*<div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">Branch Code:</label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="newbranchcode" name="newbranchcode" ng-model="branchgArr.BRANCH_CODE" class="form-control" readonly />
+                                                    </div>
+                                                </div>
+                                            </div>*@
+
+                                          
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+                                                    <input type="hidden" id="branchcode" name="branchcode" ng-model="branchgArr.BRANCH_CODE" class="form-control" />
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">
+                                                        In English:<span style="color:red" ng-show="branchArrform.branchengname.$invalid">
+                                                            <span ng-show="branchArrform.branchengname.$error.required">*</span>
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="branchengname" name="branchengname" ng-model="branchgArr.BRANCH_EDESC" class="form-control" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">In Nepali:</label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="branchnepname" name="branchnepname" ng-model="branchgArr.BRANCH_NDESC" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">
+                                                        Telephone No:<span class="error" style="color:red" ng-show="branchArrform.telephone.$error.pattern">*</span>
+                                                    </label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="telephone" ng-pattern="phoneNumbr"  name="telephone" placeholder="eg: 9841234567, 014457567"   maxlength="10" ng-model="branchgArr.TELEPHONE_NO" class="form-control" />
+                          
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+                                                    <fieldset>
+                                                        <legend class="mb-0 ta-c">Record type</legend>
+
+                                                        @*<label class="control-label col-md-3 col-lg-3"></label>*@
+                                                        <div class=" radio_select">
+
+                                                            <span>
+                                                                <input type="radio" name="locationType" ng-model="branchgArr.GROUP_SKU_FLAG" value="G" ng-disabled="true"/> Group
+                                                            </span>
+                                                            <span>
+                                                            <input type="radio" name="locationType" ng-model="branchgArr.GROUP_SKU_FLAG" value="I" ng-disabled="true"/> Individual
+                                                            </span>
+                                                           
+
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">
+                                                        Address:
+                                                    </label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="address" name="address" ng-model="branchgArr.ADDRESS"   class="form-control"  />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                     
+
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">
+                                                        Email:
+                                                    </label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="email" name="email" ng-model="branchgArr.EMAIL" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4" for="element">Remarks:</label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <textarea rows="2" class="form-control" id="remarks" name="REMARKS" ng-model="branchgArr.REMARKS"></textarea>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+
+
+
+
+
+
+
+
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                             
+                                <button type="button" class="btn btn-sm btn-green" id="savedocumentformdata" ng-click="saveNewBranchCenter()" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                                    <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                                </button>
+                      
+                            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="SubLedger_Cancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+     
+    </div>
+ 
+<script>
+    $(document).ready(function () {
+        $('.k-list').slimScroll({
+            height: '250px'
+        });
+         $(".topsearch").hide();
+            $("#bchtxtSearchString").keyup(function () {
+                var val = $('#bchtxtSearchString').val();
+                $("#kGrid").data("kendoGrid").dataSource.filter({
+                    logic: "or",
+                    filters: [
+                        {
+                            field: "BRANCH_EDESC",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "ADDRESS",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "EMAIL",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "REMARKS",
+                            operator: "contains",
+                            value: val
+                        }
+                    ]                
+                });
+            });
+    });
+</script>

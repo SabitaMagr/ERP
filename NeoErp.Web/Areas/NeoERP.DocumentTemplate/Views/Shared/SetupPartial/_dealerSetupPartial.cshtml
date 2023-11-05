@@ -1,0 +1,832 @@
+﻿<style>
+    #example .demo-section {
+        max-width: none;
+        width: 515px;
+    }
+
+    #example .k-listbox {
+        width: 236px;
+        height: 310px;
+    }
+
+        #example .k-listbox:first-of-type {
+            width: 270px;
+            margin-right: 1px;
+        }
+</style>
+
+<style>
+    .demo-section label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    #employees {
+        width: 270px;
+    }
+
+    #example .demo-section {
+        max-width: none;
+        width: 515px;
+    }
+
+    #example .k-listbox {
+        width: 236px;
+        height: 310px;
+    }
+
+        #example .k-listbox:first-of-type {
+            width: 270px;
+            margin-right: 1px;
+        }
+
+    div#example {
+        position: relative;
+    }
+
+    .k-widget.k-listbox.k-listbox-toolbar-right {
+        -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse;
+    }
+
+    .k-listbox {
+        width: 12.4em;
+        height: 200px;
+        vertical-align: top;
+        background-color: transparent;
+        border-width: 0;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+    }
+
+    .k-widget {
+        border-width: 1px;
+        border-style: solid;
+        box-sizing: border-box;
+        outline: 0;
+        font-size: 14px;
+        line-height: 1.42857143;
+        display: block;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .k-block, .k-panel, .k-widget {
+        border-color: rgba(0,0,0,.08);
+        color: #656565;
+        background-color: #fff;
+    }
+
+    .k-widget {
+        border-width: 1px;
+        border-style: solid;
+        box-sizing: border-box;
+        outline: 0;
+        font-size: 14px;
+        line-height: 1.42857143;
+        display: block;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .k-listbox.k-listbox-toolbar-left .k-listbox-toolbar ul, .k-listbox.k-listbox-toolbar-right .k-listbox-toolbar ul {
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .k-listbox .k-listbox-toolbar ul {
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    .k-reset {
+        margin: 0;
+        padding: 0;
+        border-width: 0;
+        outline: 0;
+        font: inherit;
+        text-decoration: none;
+        list-style: none;
+    }
+
+    .k-list .k-item, .k-list-optionlabel {
+        transition-property: color,background-color,outline-color,box-shadow;
+        transition-duration: .2s;
+        transition-timing-function: ease;
+    }
+
+    .k-list .k-item, .k-list-optionlabel {
+        padding: 4px 8px;
+        min-height: 1.42857143em;
+        line-height: 1.42857143em;
+        white-space: normal;
+    }
+
+    .k-list > .k-item {
+        display: -ms-flexbox !important;
+        display: flex !important;
+        -ms-flex-align: center !important;
+        align-items: center !important;
+        -ms-flex-line-pack: center !important;
+        align-content: center !important;
+    }
+
+
+    .k-widget.k-listbox.k-listbox-toolbar-right {
+        position: relative;
+        margin-right: 45px !important;
+    }
+
+
+    .k-listbox-toolbar {
+        position: absolute;
+        right: -38px;
+    }
+
+    ul.k-reset.k-list {
+        height: 305px !important;
+    }
+</style>
+
+
+<style>
+    .k-animation-container, .k-widget, .k-widget *, .k-animation-container *, .k-widget *:before, .k-animation-container *:after, .k-block .k-header, .k-list-container {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #customerType_listbox {
+        height: 80px !important;
+    }
+
+    .fieldset-box {
+        margin-bottom: 8px;
+    }
+
+    /*.englishdate {
+        width: 117px !important;
+    }
+
+    .k-i-warning {
+        display: none;
+    }*/
+    .document_child_table tbody.table_body {
+        min-height: 86px !important;
+    }
+
+    div#ndp-nepali-box {
+        z-index: 10076 !important;
+    }
+
+    div#ndp-nepali-box {
+        font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
+        border: 1px solid #CCC;
+        background-color: #FFF;
+        position: absolute;
+        z-index: 9999;
+        padding: 1px;
+        margin-top: 1px;
+    }
+
+    .k-select {
+        display: none;
+    }
+
+    .requiredAsterik {
+        position: absolute;
+        top: 0px;
+        right: 5px;
+    }
+
+    .k-list-container {
+        width: 250px !important;
+    }
+
+    table {
+        table-layout: fixed;
+    }
+
+        table th, table td {
+            overflow: hidden;
+        }
+
+    .k-grid-content {
+        height: 367px !important;
+    }
+
+    #kGrid {
+        height: 427px !important;
+    }
+
+    .borderRed {
+        border: solid red 1px !important;
+    }
+
+    .addcolor {
+        color: #ffffff;
+    }
+</style>
+<style>
+    .pickList_sourceListContainer, .pickList_controlsContainer, .pickList_targetListContainer {
+        float: left;
+        margin: 0.25em;
+    }
+
+    .pickList_controlsContainer {
+        text-align: center;
+    }
+
+        .pickList_controlsContainer button {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+    .pickList_list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        float: left;
+        width: 150px;
+        height: 75px;
+        border: 1px inset #eee;
+        overflow-y: auto;
+        cursor: default;
+    }
+
+    .pickList_selectedListItem {
+        background-color: #a3c8f5;
+    }
+
+    .pickList_listLabel {
+        font-size: 0.9em;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .pickList_clear {
+        clear: both;
+    }
+</style>
+
+
+<div class="portlet box green-box main">
+
+    <div class="portlet-title">
+        <div class="caption ng-binding">
+            <i class="fa fa-list-alt"></i>
+            <span class="caption-subject bold uppercase">
+                Dealer
+            </span>
+        </div>
+
+        <div class="actions">
+
+
+            <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-click="AddChildDealer(event)" ng-disabled="treenodeselected!= 'Y'">
+                <i class="fa fa-plus"></i> New
+            </a>
+        </div>
+    </div>
+
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-offset-8 col-md-4 search_box">
+                <div class="topsearch">
+                    <a class="btn-linkicon fa fa-search" @*ng-click="BindSearchGrid()" *@></a>
+                    <input class="k-textbox txtSearchString" type="text" id="custtxtSearchString" ng-model="txtSearchString" name="search" placeholder="enter search text..." />
+
+                </div>
+            </div>
+        </div>
+        <kendo-grid id="kGrid" options="dealerChildGridOptions" k-rebind="dealerChildGridOptions">
+        </kendo-grid>
+    </div>
+
+
+    <div class="modal fade-out" id="dealerModal" data-backdrop="static" tabindex="-1" data-width="760">
+        <div class="modal-dialog  modal-dialog-box popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</button>
+                    <h4 class="modal-title">
+                        <span class="fa fa-file"></span>
+                        Dealer Information
+                    </h4>
+                </div>
+
+                <div class="modal-body ">
+
+                    <form name="dealerform" class="form-horizontal" novalidate>
+
+                        <div class="tab-content responsive_tab_content">
+                            <div class="tab-pane active" id="tab-1">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-5 col-md-3 col-lg-3">Auto Gen.Code</label>
+
+                                            <div class="col-sm-7 col-md-9 col-lg-9">
+                                                <input type="text" id="customerChildAutoGenerated" name="CHILD_AUTOGENERATED" ng-model="dealerArr.PARTY_TYPE_CODE" class="form-control" readonly />
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4 col-md-3 col-lg-3">Parent:</label>
+                                            <div class="col-sm-8 col-md-9 col-lg-9">
+                                                <select id="dealerparentundergroup" kendo-drop-down-list
+                                                        ng-disabled="true"
+                                                        k-options="dealerGroupOptions"
+                                                        style="width: 100%"></select>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-5 col-md-3 col-lg-3">
+                                                Dealer Company
+                                                <span style="color:red" ng-show="dealerform.dealerCompany.$invalid">
+                                                    <span class="requiredAsterik" ng-show="dealerform.dealerCompany.$error.required">*</span>
+                                                </span>
+                                            </label>
+
+                                            <div class="col-sm-7 col-md-9 col-lg-9">
+                                                <input type="text" id="dealerCompany" name="dealerCompany" ng-model="dealerArr.PARTY_TYPE_EDESC" class="form-control" required />
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-5 col-md-3 col-lg-3"> Address.</label>
+
+                                            <div class="col-sm-7 col-md-9 col-lg-9">
+                                                <input type="text" id="address" name="address" ng-model="dealerArr.ADDRESS" class="form-control" />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-5 col-md-3 col-lg-3"> Owner Name</label>
+
+                                            <div class="col-sm-7 col-md-9 col-lg-9">
+                                                <input type="text" id="ownername" name="ownername" ng-model="dealerArr.OWNER_NAME" class="form-control" />
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">
+                                                        Pan No<span style="color:red" ng-show="dealerform.panNo.$error.pattern">*</span>
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="panNo" name="panNo" ng-model="dealerArr.PAN_NO" class="form-control" maxlength="9"  ng-pattern="/^[0-9]{1,9}$/" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-5 col-lg-5">Credit Limit</label>
+
+                                                    <div class="col-sm-7 col-md-7 col-lg-7">
+                                                        <input type="text" id="creditLimit" name="creditLimit" ng-model="dealerArr.CREDIT_LIMIT" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Bank Guarantee</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="bankguarantee" name="bankguarantee" ng-model="dealerArr.TERMS_CONDITIONS" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3"> </label>
+                                                    <div class="col-sm-7 col-md-9 col-lg-9">
+                                                        <div class="mt-checkbox-list">
+                                                            <label class="mt-checkbox mt-checkbox-outline">
+                                                                <input ng-model="dealerArr.PARTY_TYPE_FLAG" type="checkbox">Party Defination
+                                                                <input ng-model="dealerArr.IS_CASH" type="checkbox">Dealer Type
+                                                                <input ng-model="dealerArr.IS_ACTIVE" checked type="checkbox">CR Limit
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Credit Days</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="creditdays" name="creditdays" ng-model="dealerArr.CREDIT_DAYS" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Credit Exceed</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="credexceed" name="credexceed" ng-model="dealerArr.EXCEED_LIMIT_PERCENTAGE" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">
+                                                        Mobile No.<span class="error" style="color:red" ng-show="dealerform.mobileNo.$error.pattern">*</span>
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="mobileNo" maxlength="10" name="mobileNo" ng-model="dealerArr.TEL_NO" ng-pattern="phoneNumbr" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Tel/Mobile<span class="error" style="color:red" ng-show="dealerform.telephone.$error.pattern">*</span></label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" maxlength="10" ng-pattern="phoneNumbr" id="telephone" name="telephone" ng-model="dealerArr.TEL_NO2" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">
+                                                        Trade Discount
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="tradeDiscount" name="tradeDiscount" ng-model="dealerArr.TRADE_DISCOUNT" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">BG/Unit Rate</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="bgunitRate" name="bgunitRate" ng-model="dealerArr.BG_PER_UNIT" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">
+                                                        Annual Bonus
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="anualBonus" name="anualBonus" ng-model="dealerArr.ANNUAL_BONUS" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">CD/Unit Rate</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="cdunitrate" name="cdunitrate" ng-model="dealerArr.CD_PER_UNIT" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Terms & Condition</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="term&cond" name="term&cond" ng-model="dealerArr.TERMS_CONDITIONS" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <fieldset class="fieldset-box fieldset-space">
+                                            <legend class="planOption">Location Map</legend>
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-3 col-md-5 col-lg-5">Link Account</label>
+
+                                                <div class="col-sm-9 col-md-7 col-lg-7">
+                                                    <select id="linkacc" k-value-primitive="true" ng-model="dealerArr.ACC_CODE" kendo-drop-down-list
+                                                            k-options="accountsOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-5 col-lg-5">Branch Name</label>
+                                                <div class="col-sm-9 col-md-7 col-lg-7">
+                                                    <select id="childBranchName" ng-model="dealerArr.LINK_BRANCH_CODE" kendo-drop-down-list
+                                                            k-options="branchOptions"
+                                                            style="width: 100%"></select>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-5 col-lg-5">Area Name</label>
+                                                <div class="col-sm-9 col-md-7 col-lg-7">
+                                                    <select id="childRegion" k-value-primitive="true" ng-model="dealerArr.AREA_CODE" kendo-drop-down-list
+                                                            k-options="regionOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-5 col-lg-5">Zone</label>
+                                                <div class="col-sm-9 col-md-7 col-lg-7">
+                                                    <select id="childZone" k-value-primitive="true" ng-model="dealerArr.ZONE_CODE" kendo-drop-down-list
+                                                            k-options="zoneOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+                                            </div>
+
+                                        </fieldset>
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-5 col-lg-5">PDC Check Amount</label>
+
+                                                <div class="col-sm-7 col-md-5 col-lg-5">
+                                                    <input type="text" id="pdcCheckamt" name="pdcCheckamt" ng-model="dealerArr.PDC_CHEQUE_AMT" class="form-control" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-5 col-lg-5">Sales Target Amount</label>
+
+                                                <div class="col-sm-7 col-md-5 col-lg-5">
+                                                    <input type="text" id="salesTargetamt" name="salesTargetamt" ng-model="dealerArr.SALES_TARGET" class="form-control" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-5 col-lg-5"></label>
+
+                                                <div class="actions">
+                                                    <a class="btn dark-green btn-sm addcolor" id="createbtncustomer" ng-click="showModalForCustomer(event)">
+                                                        <i class="fa fa-plus"></i> Customer Map
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <kendo-grid id="kGrid2" options="dealerChildGridOptions2" k-rebind="dealerChildGridOptions2">
+                        </kendo-grid>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-sm btn-green" id="savedocumentformdatachild" ng-click="saveNewDealer(dealerform.$valid)" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                        <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="SubLedger_Cancel($index)">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    @*GridModel*@
+
+
+    <div class="modal fade-out" id="CustomermapModal" data-backdrop="static" tabindex="-1" data-width="760">
+        <div class="modal-dialog modal-medium-large">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</div>
+                    <h4 class="modal-title">
+                        <span class="fa fa-file"></span>
+                        Dealer Mapping
+                    </h4>
+                </div>
+
+                <div class="form-group" style="display:flex;flex-wrap:wrap;">
+
+                    <div style="width:270px;margin-left:15px;">
+                        <label class="">
+                            Dealer Name
+                        </label>
+                    </div>
+                    <div style="width:calc(100% - 285px );">
+                        <input style="border:none; margin-left:45px;width:250px;" type="text" id="dealerCompany" name="dealerCompany" ng-model="dealerArr.PARTY_TYPE_EDESC" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="main-contain-box">
+                    <div class="col-lg-12 ">
+                        <div id="example" role="application">
+                            <input type='text' class='k-textbox' ng-model="searchtest" placeholder='search' ng-keyup="searchcustomerlist()" />
+                            <button class="btn btn-sm btn-success" ng-click="searchcustomerlist()">Search</button>
+                            <div class="k-content">
+                                <div style="display:flex;">
+
+                                    <select kendo-list-box id="selectedselectOptions1" k-options="selectOptions1"></select>
+                                    <select name="selected" id="selected" kendo-list-box k-options="selectOptions2"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-sm btn-green" id="savedocumentformdata" ng-click="saveNewCustomers(companyform.$valid)" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                        <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="SubLedger_Cancel($index)">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        //$("#nepaliDate5").val(AD2BS(kendo.toString(new Date(), 'yyyy-MM-dd')));
+        //$("#nepaliDate6").val(AD2BS(kendo.toString(new Date(), 'yyyy-MM-dd')));
+        //$("#nepaliDate7").val(AD2BS(kendo.toString(new Date(), 'yyyy-MM-dd')));
+        function ConvertNepToEng(e) {
+            var date = BS2AD($("#nepaliDate5").val());
+            var FormattedEngDate = moment(date).format('DD-MMM-YYYY');
+            $("#englishdatedocument").val(FormattedEngDate);
+        }
+
+        $('.k-list').slimScroll({
+            height: '250px'
+        });
+        $('#dealerModal').on('shown.bs.modal', function () {
+            $(document).off('focusin.modal');
+        });
+        $('#groupCustomerModal').on('shown.bs.modal', function () {
+            $(document).off('focusin.modal');
+        });
+
+        //setTimeout(function () {
+
+        //    $('.k-list').slimScroll({
+        //        height: '250px'
+        //    });
+        //}, 100)
+
+        $('.nav-tabs a').on('click', function (e) {
+
+
+            var text = angular.element("#customerSetupTreeCtrl").scope().immediateStopPropogation;
+            if (text == "disableTab") {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+            else {
+                e.preventDefault();
+            }
+
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#custtxtSearchString").keyup(function () {
+            var val = $('#custtxtSearchString').val();
+            $("#kGrid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "CUSTOMER_EDESC",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "REGD_OFFICE_EADDRESS",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "TELEPHONE",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "EMAIL",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "PARTY_TYPE_EDESC",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "ACC_EDESC",
+                        operator: "contains",
+                        value: val
+                    },
+                ]
+            });
+
+
+        });
+    });
+
+</script>
+
+

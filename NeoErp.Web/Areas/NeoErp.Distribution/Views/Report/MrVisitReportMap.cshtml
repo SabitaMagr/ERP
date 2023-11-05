@@ -1,0 +1,169 @@
+﻿
+@using NeoErp.Core.Models;
+@using NeoErp.Core;
+@using NeoErp.Core.Infrastructure;
+@{
+    Layout = null;
+   
+    var myAreaName = string.Empty;
+    object areaObj;
+    if (ViewContext.RouteData.Values.TryGetValue("area", out areaObj))
+    {
+        myAreaName = areaObj.ToString();
+    }
+}
+<style>
+    div.k-grid-header th.k-header, tr.k-filter-row > th {
+        text-align: center;
+        // width: 183px !important;
+    }
+
+    .page-bar {
+        margin-bottom: 0px !important;
+    }
+
+    .k-grid table {
+        table-layout: fixed;
+    }
+
+    .no-data {
+        background-color: red;
+    }
+    /*#grid thead{
+         font-size:11px;
+    }*/
+    .k-grid td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .k-grid-content {
+        font-size: 10px;
+    }
+
+    .k-grid-footer {
+        font-size: 10px;
+    }
+
+    .floatright {
+        float: right;
+        margin-top: 2px !important;
+    }
+
+    a.k-button.k-button-icontext.k-grid-excel {
+        float: right;
+    }
+</style>
+
+
+<div  class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            @*<li>
+                    <i class="fa fa-home"></i>
+                    <a href="/sales/SalesHome/Dashboard">Home</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#/ScheduleReport/VisitSummaryReportReport">Collection Report</a>
+                    <i class="fa fa-angle-right"></i>
+                </li>*@
+
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row collapse in" id="demo">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-body form">
+                    <div class="row">
+
+                            <div class="col-md-12">
+                                <div id="reportvisit-map-mr-panel" style="width: 100%;height: 600px; margin: 0 auto">
+                                    <div id="reportvisit-plan-mr-search" style="position:absolute;z-index:1;top:55px;left:27%;width:50%;">
+                                        <input id="reportmr-search-target" type="text" placeholder="Search Sales Person" autocomplete="off"
+                                               style="width:100%;padding:0 11px 0 13px;height:30px;border:1px solid transparent;outline: none;background-color:#fff;font-size:15px;border-radius:2px 0 0 2px;box-shadow:0 2px 6px rgba(0, 0, 0, 0.3);">
+                                        <div id="reportvisit-mr-search-result" style="background:#fff;z-index:1;display:none;max-height:390px;overflow:auto;"></div>
+                                    </div>
+                                    <div id="reportvisit-map-mr-legend-wrapper"
+                                         style="display:none;position:absolute;top:0;right:0;width:150px;overflow-y:auto;border:1px solid #ccc;z-index:1;background: #fff">
+                                        <div id="reportvisit-map-mr-legend" style="font-size:12px;">
+                                            <div class="visit-map-mr-legend-row" style="padding:3px 5px;border-bottom:1px solid #eee;">
+                                                <div class="visit-map-mr-legend-row-label" style="float:left;">
+                                                    <span>Total MR </span> : <span id="mr-count">0</span>
+                                                </div>
+                                                <div class="visit-map-legend-row-marker" style="float:right;">
+                                                    <img src="~/Areas/NeoErp.Distribution/Content/img/marker_visited.png" style="height:20px;" />
+                                               
+
+                                                </div>
+                                                <div class="clear" style="clear:both;"></div>
+                                            </div>
+                                            <div class="visit-map-mr-legend-row" style="padding:3px 5px;border-bottom:1px solid #eee;">
+                                                <div class="visit-map-mr-legend-row-label" style="float:left;">
+                                                    <span>MR Label</span>
+                                                </div>
+                                                <div class="visit-map-legend-row-marker" style="float:right;">
+                                                    <input type="checkbox" class="visit-map-mr-cbox" style="margin:2px;" />
+                                                </div>
+                                                <div class="clear" style="clear:both;"></div>
+                                            </div>
+                                           
+                                            <div id="reportvisit-map-mr-fullscreen" style="display:none;margin-top:10px;height:24px;width:24px;cursor:pointer;background-color:#fff;background:url(/Areas/NeoErp.Distribution/Content/map/asset/img/sv5.png) -52px -86px no-repeat;">&nbsp;
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div id="reportvisit-map-mr-report-filter" style="display:none;">
+                                    <div id="reportvisit-map-mr-detail-report" style="padding:5px; background:#fff;">View Detailed Path</div>
+                                    <div id="reportvisit-map-mr-detail-filter-date" style="margin-top:5px;padding:5px; background:#fff;">
+                                        <span>Filter By Date </span>
+                                        <input id="reportvisit-map-mr-report-filter-date-inp" type="text" placeholder="" style="font-size:11px !important;width:70px;text-align:center;" readonly />
+                                    </div>
+                                </div>
+                                <div id="reportmap-mr-canvas-visit" style="height:100%;width:100%;">
+                                    <div id="map-loading">
+                                        <span class="loading"
+                                              style="background:#a0a0a0;padding:0 5px;display:block;position:absolute;top:50%;left:45%;">
+                                            <img src="data:image/gif;base64,R0lGODlhWgAUAIABAP///////yH/C05FVFNDQVBFMi4wAwEAAAAh+QQFZAABACwAAAAAWgAUAAACiIyPqcvtD6OctNqLs968+w+GFdAAprmQyHmuhnrAASuHdZzUpKzjM+8L2lJEHDD3SsJUt5nIqWgCjy7oztd8QpHR4LJrTYa1YK75K64yxetYSyQt0lBbbPpaF76ykzi4lzf21WbmtpEFGAc4tqfHdzjn9hboFGlXtTdJtsnZ6fkJGio6SlpKUQAAIfkEBWQAAQAsSAALAAIAAgAAAgKEUQAh+QQFZAABACxNAAsAAgACAAACAoRRACH5BAVkAAEALFIACwACAAIAAAIChFEAOw==" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+
+    <script src="@Scripts.Url(" ~/Areas/NeoERP.Distribution/js/mr-map.js?v3")"></script>
+
+    <script>
+    var a = location.hash;
+    var b = location.pathname;
+    var url = (b + a);
+    $(".active").removeClass();
+    $("a[href='" + url + "']").parent().addClass("active");
+    $("a[href='" + url + "']").parent().parent().slideDown("slow");
+    </script>
+
+
+
+<script defer>
+    $(document).ready(function () {
+        initializeMrMap();
+        //MRMap.init(300000);
+    });
+  
+</script>

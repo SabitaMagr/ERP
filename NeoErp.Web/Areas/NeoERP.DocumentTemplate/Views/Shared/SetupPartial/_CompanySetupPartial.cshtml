@@ -1,0 +1,2469 @@
+﻿
+<style>
+    .k-animation-container, .k-widget, .k-widget *, .k-animation-container *, .k-widget *:before, .k-animation-container *:after, .k-block .k-header, .k-list-container {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #customerType_listbox {
+        height: 80px !important;
+    }
+
+    .fieldset-box {
+        margin-bottom: 8px;
+    }
+
+    /*.englishdate {
+        width: 117px !important;
+    }
+
+    .k-i-warning {
+        display: none;
+    }*/
+    .document_child_table tbody.table_body {
+        min-height: 86px !important;
+    }
+
+    div#ndp-nepali-box {
+        z-index: 10076 !important;
+    }
+
+    div#ndp-nepali-box {
+        font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
+        border: 1px solid #CCC;
+        background-color: #FFF;
+        position: absolute;
+        z-index: 9999;
+        padding: 1px;
+        margin-top: 1px;
+    }
+
+    .k-select {
+        display: none;
+    }
+
+    .requiredAsterik {
+        position: absolute;
+        top: 0px;
+        right: 5px;
+    }
+
+    .k-list-container {
+        width: 250px !important;
+    }
+
+    table {
+        table-layout: fixed;
+    }
+
+        table th, table td {
+            overflow: hidden;
+        }
+
+    .k-grid-content {
+        height: 367px !important;
+    }
+
+    #kGrid {
+        height: 427px !important;
+    }
+
+    .borderRed {
+        border: solid red 1px !important;
+    }
+
+    .addcolor {
+        color: #ffffff;
+    }
+</style>
+
+<div id="customerSetupTreeCtrl" class="portlet box green-box main">
+
+    <div class="portlet-title">
+        <div class="caption ng-binding">
+            <i class="fa fa-list-alt"></i>
+            <span class="caption-subject bold uppercase">
+                Customer
+            </span>
+        </div>
+
+        <div class="actions">
+
+
+            <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-click="showModalForNewChildCustomer(event)" ng-disabled="treenodeselected!= 'Y'">
+                <i class="fa fa-plus"></i> New
+            </a>
+        </div>
+    </div>
+
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-offset-8 col-md-4 search_box">
+                <div class="topsearch" style="display:block;">
+                    <a class="btn-linkicon fa fa-search" @*ng-click="BindSearchGrid()"*@></a>
+                    <input class="k-textbox txtSearchString" type="text" id="custtxtSearchString" ng-model="txtSearchString" name="search" placeholder="enter search text..." />
+
+                </div>
+            </div>
+        </div>
+        <kendo-grid id="kGrid" options="customerChildGridOptions" k-rebind="customerChildGridOptions">
+        </kendo-grid>
+    </div>
+
+    <div class="modal fade-out" id="groupCustomerModal" data-backdrop="static" tabindex="-1" data-width="760">
+        <div class="modal-dialog modal-medium-large popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</button>
+                    <h4 class="modal-title">
+                        <span class="fa fa-file"></span>
+                        Customer Model
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <form name="customersArrform" class="form-horizontal" novalidate>
+                        <div class="row" style="scrollbar-base-color:yellow">
+
+
+                        </div>
+                        <!-- rendering master elements -->
+
+                        <div class="row">
+
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">Under Group:</label>
+                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                        <select id="mastercustomercode" ng-model="customersArr.CUSTOMER_CODE" kendo-drop-down-list ng-
+                                                k-options="customerGroupOptions"
+                                                style="width: 100%" disabled></select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+
+                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">Shortcut:</label>
+                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                        <input type="text" id="shortcut" name="shortcut" ng-model="customersArr.MASTER_CUSTOMER_CODE" class="form-control" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+
+                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">
+                                        In English:<span style="color:red" ng-show="customersArrform.customerEnglishName.$invalid">
+                                            <span ng-show="customersArrform.customerEnglishName.$error.required">*</span>
+                                        </span>
+                                    </label>
+                                    <div class=" col-sm-8 col-md-8 col-lg-8">
+                                        <input type="text" id="customerEnglishName" name="customerEnglishName" ng-model="customersArr.CUSTOMER_EDESC" class="form-control" required />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+
+                                    <label class="control-label  col-sm-4 col-md-4 col-lg-4">In Nepali:</label>
+                                    <div class=" col-sm-8 col-md-8 col-lg-8">
+                                        <input type="text" id="customerNepaliName" name="CUSTOMER_NDESC" ng-model="customersArr.CUSTOMER_NDESC" class="form-control" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*<div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4 col-md-4 col-lg-4">
+                                        Account:<span style="color:red" ng-show="customersArrform.customerAccount.$invalid">
+                                                 <span ng-show="customersArrform.customerAccount.$error.required">*</span>
+                                               </span>
+                                        </label>
+
+                                        <div class="col-sm-8 col-md-8 col-lg-8">
+                                            <select id="customerAccount" name="customerAccount" kendo-drop-down-list ng-model="customersArr.CUSTOMER_ACCOUNT"
+                                                    k-options="accountGroupOptions"
+                                                    style="width: 100%" required></select>
+                                        </div>
+
+                                    </div>
+                                </div>*@
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="control-label  col-sm-4 col-md-4 col-lg-4">
+                                        Type:<span style="color:red" ng-show="customersArrform.customerType.$invalid">
+                                            <span ng-show="customersArrform.customerType.$error.required">*</span>
+                                        </span>
+                                    </label>
+                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                        <select id="customerType" name="customerType" ng-model="customersArr.CUSTOMER_TYPE" kendo-drop-down-list
+                                                k-options="customerTypeOptions"
+                                                style="width: 100%" required></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+
+                                    <label class="control-label  col-sm-4 col-md-4 col-lg-4">Prefix/Start ID:</label>
+                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <input type="text" id="customerPrefix" name="CUSTOMER_PREFIX" ng-model="customersArr.CUSTOMER_PREFIX" class="form-control" />
+                                            </div>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <input type="number" id="customerStartID" name="CUSTOMER_STARTID" ng-model="customersArr.CUSTOMER_STARTID" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+
+                                    <label class="control-label  col-sm-4 col-md-4 col-lg-4">Remarks:</label>
+                                    <div class=" col-sm-8 col-md-8 col-lg-8">
+                                        <input type="text" id="customerRemarks" name="REMARKS" ng-model="customersArr.REMARKS" class="form-control" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-green" id="savedocumentformdata" ng-click="saveNewCustomer(customersArrform.$valid)" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                        <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="SubLedger_Cancel($index)">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade-out" id="customerModal" data-backdrop="static" tabindex="-1" data-width="760">
+        <div class="modal-dialog  modal-dialog-box popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</button>
+                    <h4 class="modal-title">
+                        <span class="fa fa-file"></span>
+                        Customer Model
+                    </h4>
+                </div>
+
+                <div class="modal-body ">
+
+                    <form name="customersChildArrform" class="form-horizontal" novalidate>
+                        <!-- rendering master elements -->
+                        <div class="row">
+
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">Customer Information</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Auto Gen.Code</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="customerChildAutoGenerated" name="CHILD_AUTOGENERATED" ng-model="customersChildArr.CHILD_AUTOGENERATED" class="form-control" readonly />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4 col-md-3 col-lg-3">Parent:</label>
+                                        <div class="col-sm-8 col-md-9 col-lg-9">
+                                            <select id="childCustomerCode" ng-model="customersChildArr.CHILD_CUSTOMER_CODE" kendo-drop-down-list ng-disabled="mastercustomerdisabled"
+                                                    k-options="customerGroupOptions"
+                                                    style="width: 100%"></select>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">
+                                            Name In English<span style="color:red" ng-show="customersChildArrform.childCustomerEdesc.$invalid">
+                                                <span class="requiredAsterik" ng-show="customersChildArrform.childCustomerEdesc.$error.required">*</span>
+                                            </span>
+                                        </label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="childCustomerEdesc" name="childCustomerEdesc" ng-model="customersChildArr.CHILD_CUSTOMER_EDESC" class="form-control" required />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-4 col-md-3 col-lg-3">Customer Id</label>
+
+                                        <div class="col-sm-8 col-md-9 col-lg-9">
+                                            <input type="text" id="childCustomerId" name="CHILD_CUSTOMER_ID" ng-model="customersChildArr.CHILD_CUSTOMER_ID" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">In Nepali</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="childCustomerNdesc" name="CHILD_CUSTOMER_NDESC" ng-model="customersChildArr.CHILD_CUSTOMER_NDESC" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-4 col-md-3 col-lg-3">Group Id</label>
+
+                                        <div class="col-sm-8 col-md-9 col-lg-9">
+                                            <input type="text" id="childGroupId" name="CHILD_GROUP_ID" ng-model="customersChildArr.CHILD_GROUP_ID" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </fieldset>
+
+                        </div>
+
+
+
+
+
+
+
+                        <ul id="myTab" class="nav nav-tabs responsive_tab">
+                            <li class="active">
+                                <a href="#tab-1" id="tabs1" data-toggle="tab" aria-expanded="true">
+                                    General /Office Info
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#tab-2" id="tabs2" data-toggle="tab" aria-expanded="false">
+                                    Owner/Contact
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#tab-3" data-toggle="tab" aria-expanded="false">
+                                    Location/others
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#tab-4" data-toggle="tab" aria-expanded="false">
+                                    Account/Opening Bills
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#tab-5" data-toggle="tab" aria-expanded="false">
+                                    Terms & Conditions
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#tab-6" data-toggle="tab" aria-expanded="false">
+                                    Distribution Status
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#tab-7" data-toggle="tab" aria-expanded="false">
+                                    Price History
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#tab-8" data-toggle="tab" aria-expanded="false">
+                                    History
+                                </a>
+                            </li>
+
+                        </ul>
+
+
+
+
+                        <div class="tab-content responsive_tab_content">
+                            <div class="tab-pane active" id="tab-1">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <h5 class="bold titile_head">Registered Address/Official Details</h5>
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-5 col-md-3 col-lg-3">
+                                                Permanent Addr.
+                                                <span style="color:red" ng-show="customersChildArrform.childPermanentAddress.$invalid">
+                                                    <span class="requiredAsterik" ng-show="customersChildArrform.childPermanentAddress.$error.required">*</span>
+                                                </span>
+                                            </label>
+
+                                            <div class="col-sm-7 col-md-9 col-lg-9">
+                                                <input type="text" id="childPermanentAddress" name="childPermanentAddress" ng-model="customersChildArr.PERMANENT_ADDRESS" class="form-control" required />
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-5 col-md-3 col-lg-3">Temporary Addr.</label>
+
+                                            <div class="col-sm-7 col-md-9 col-lg-9">
+                                                <input type="text" id="childTemporaryAddress" name="TEMPORARY_ADDRESS" ng-model="customersChildArr.TEMPORARY_ADDRESS" class="form-control" />
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">
+                                                        Telephone/Mobile<span style="color:red" ng-show="customersChildArrform.childTelephone.$invalid">
+                                                            <span class="requiredAsterik" ng-show="customersChildArrform.childTelephone.$error.required">*</span>
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="childTelephone" name="childTelephone" ng-model="customersChildArr.TELEPHONE" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3">Fax</label>
+
+                                                    <div class="col-sm-7 col-md-9 col-lg-9">
+                                                        <input type="text" id="childFax" name="FAX" ng-model="customersChildArr.FAX" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Telephone/Mobile2</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="childTelephone2" name="TELEPHONE2" ng-model="customersChildArr.TELEPHONE2" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3"> </label>
+                                                    <div class="col-sm-7 col-md-9 col-lg-9">
+                                                        <div class="mt-checkbox-list">
+                                                            <label class="mt-checkbox mt-checkbox-outline">
+                                                                <input id="isactive" type="checkbox" ng-model="customersChildArr.IS_CASH" ng-true-value="'Y'" ng-false-value="'N'">Cash Customer Y/N?
+                                                                @*<input ng-model="customersChildArr.IS_CASH" type="checkbox"> Cash Customer Y/N?*@
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">Telephone/Mobile3</label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" id="childTelephone3" name="TELEPHONE3" ng-model="customersChildArr.TELEPHONE3" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3"> </label>
+                                                    <div class="col-sm-7 col-md-9 col-lg-9">
+                                                        <div class="mt-checkbox-list">
+                                                            <label class="mt-checkbox mt-checkbox-outline">
+
+                                                                <input id="isactive" type="checkbox" ng-model="customersChildArr.IS_ACTIVE" ng-true-value="'Y'" ng-false-value="'N'" ng-checked="true" disabled> Active Customer
+                                                                @*<input ng-model="customersChildArr.IS_ACTIVE" checked type="checkbox" disabled>Active Customer*@
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-6 col-lg-6">
+                                                        PAN/VAT No.<span style="color:red" ng-show="customersChildArrform.childPanVat.$invalid">
+                                                            <span class="requiredAsterik" ng-show="customersChildArrform.childPanVat.$error.required">*</span>
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-6 col-lg-6">
+                                                        <input type="text" ng-maxlength="panVatMaxLength" id="childPanVat" name="childPanVat" ng-model="customersChildArr.PAN_VAT" pattern=".{9}" ng-mouseleave="disabledTpanvat()" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-4 col-lg-4">Excise No</label>
+
+                                                    <div class="col-sm-7 col-md-8 col-lg-8">
+                                                        <input type="text" id="childExcise" name="EXCISE" ng-model="customersChildArr.EXCISE" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3">Email Address</label>
+
+                                                    <div class="col-sm-7 col-md-5 col-lg-5">
+                                                        <input type="text" id="childEmail" name="EMAIL" ng-model="customersChildArr.EMAIL" class="form-control" />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3">
+                                                        Party Type<span style="color:red" ng-show="customersChildArrform.childPartyType.$invalid">
+                                                            <span class="requiredAsterik" ng-show="customersChildArrform.childPartyType.$error.required">*</span>
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-5 col-lg-5">
+                                                        <select id="childPartyType" ng-model="customersChildArr.PARTY_TYPE" k-value-primitive="true" k-ng-model="customersChildArr.PARTY_TYPE_CODE" name="childPartyType" kendo-drop-down-list
+                                                                k-options="partyTypeOptions" k-on-change="onChangePartyType(kendoEvent)"
+                                                                style="width: 100%" required></select>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                                <div class="form-group">
+
+                                                    <label class="control-label col-sm-5 col-md-3 col-lg-3">
+                                                        Account Map<span style="color:red" ng-show="customersChildArrform.ACCOUNT_MAP.$invalid">
+                                                            <span class="requiredAsterik" ng-show="customersChildArrform.ACCOUNT_MAP.$error.required">*</span>
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="col-sm-7 col-md-5 col-lg-5">
+                                                        <select id="childAccountMap" ng-model="customersChildArr.ACCOUNTMAP" k-value-primitive="true" k-ng-model="ACCOUNT_MAP" name="ACCOUNT_MAP" kendo-drop-down-list
+                                                                k-options="accMapOptions"
+                                                                style="width: 100%" disabled required></select>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+
+                                    </div>
+
+
+
+
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <fieldset class="fieldset-box fieldset-space">
+                                            <legend class="planOption">Location Map</legend>
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-3 col-md-3 col-lg-2">City</label>
+
+                                                <div class="col-sm-9 col-md-10 col-lg-10">
+                                                    <select id="childCity" k-value-primitive="true" ng-model="customersChildArr.CITY" kendo-drop-down-list
+                                                            k-options="cityOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-2 col-lg-2">District</label>
+                                                <div class="col-sm-9 col-md-10 col-lg-10">
+                                                    <select id="childDistrict" k-value-primitive="true" ng-model="customersChildArr.DISTRICT" kendo-drop-down-list
+                                                            k-options="districtOptions"
+                                                            style="width: 100%"></select>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-2 col-lg-2">Region</label>
+                                                <div class="col-sm-9 col-md-10 col-lg-10">
+                                                    <select id="childRegion" k-value-primitive="true" ng-model="customersChildArr.REGION" kendo-drop-down-list
+                                                            k-options="regionOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-2 col-lg-2">Zone</label>
+                                                <div class="col-sm-9 col-md-10 col-lg-10">
+                                                    <select id="childZone" k-value-primitive="true" ng-model="customersChildArr.ZONE" kendo-drop-down-list
+                                                            k-options="zoneOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-md-2 col-lg-2">Country</label>
+                                                <div class="col-sm-9 col-md-10 col-lg-10">
+                                                    <select id="childCountryOption" k-value-primitive="true" ng-model="customersChildArr.COUNTRY" name="COUNTRY" kendo-drop-down-list
+                                                            k-options="countryOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-3 col-lg-3">Agent Name</label>
+
+                                                <div class="col-sm-7 col-md-5 col-lg-5">
+                                                    <select id="childAgentName" ng-model="customersChildArr.AGENTNAME" kendo-drop-down-list
+                                                            k-options="agentOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-3 col-lg-3">Branch Name</label>
+
+                                                <div class="col-sm-7 col-md-5 col-lg-5">
+                                                    <select id="childBranchName" ng-model="customersChildArr.BRANCHNAME" kendo-drop-down-list
+                                                            k-options="branchOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        @*PRICE LIST*@
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-3 col-lg-3">PriceList Name</label>
+
+                                                <div class="col-sm-7 col-md-5 col-lg-5">
+                                                    <select id="pricelistName" ng-model="customersChildArr.PRICE_LIST_ID" kendo-drop-down-list
+                                                            k-options="pricelistOptions"
+                                                            style="width: 100%"></select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-5 col-md-3 col-lg-3">Dealing Person</label>
+
+                                                <div class="col-sm-7 col-md-5 col-lg-5">
+                                                    <input type="text" id="childDealingPerson" name="DEALINGPERSON" ng-model="customersChildArr.DEALINGPERSON" class="form-control" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @*<div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+                                                    <div class="col-sm-5 col-md-5 col-lg-5">
+                                                        <button ng-disabled="saveAndContinue" class="btn btn-sm btn-green" id="savedocumentformdata" ng-click="saveNewCustomerChild('saveAndContinue')" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                                                            <i class="fa fa-floppy-o"></i> {{saveupdatecontinuebtn}}
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </div>*@
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab-2">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12">
+                                        <fieldset class="fieldset-box">
+                                            <legend class="">Contact Person Details</legend>
+                                            <div class="table-responsive">
+                                                <table id="tablegrid" class="document_child_table dynamic-table table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th style="width:200px;">Owner Name*</th>
+                                                            <th style="width:150px;">Designation</th>
+                                                            <th style="width:100px;">Contact Person</th>
+                                                            <th style="width:180px;">Address</th>
+                                                            <th style="width:120px;">Telephone</th>
+                                                            <th style="width:120px;">Fax</th>
+                                                            <th style="width:180px;">Email</th>
+                                                            <th style="width:200px;">Remarks</th>
+                                                            <th style="width:120px;">Photo Path</th>
+                                                            <th style="width:120px;">Citizenship</th>
+                                                            <th style="width:120px;">Company Reg.</th>
+                                                            <th style="width:120px;">Pan Reg.</th>
+                                                            <th style="width:100px;">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body" style="overflow:initial">
+                                                        <tr ng:repeat="issue in ownerList">
+                                                            <td style="width:200px;"><input type="text" ng-model="ownerList[$index].OWNER_NAME" class="form-control OWNER_{{$index}}" ng-keyup="checkdupowner($key,$index)" /></td>
+                                                            <td style="width:150px;"><input type="text" ng-model="ownerList[$index].DESIGNATION" class="form-control" /></td>
+                                                            <td style="width:100px;"><input type="text" ng-model="ownerList[$index].CONTACT_PERSON" class="form-control" /></td>
+                                                            <td style="width:180px;"><input type="text" ng-model="ownerList[$index].ADDRESS" class="form-control" /></td>
+                                                            <td style="width:120px;"><input type="text" ng-model="ownerList[$index].TEL_MOBILE_NO" class="form-control" /></td>
+                                                            <td style="width:120px;"><input type="text" ng-model="ownerList[$index].FAX_NO" class="form-control" /></td>
+                                                            <td style="width:180px;"><input type="text" ng-model="ownerList[$index].EMAIL" class="form-control" /></td>
+                                                            <td style="width:200px;"><input type="text" ng-model="ownerList[$index].REMARKS" class="form-control" /></td>
+                                                            <td style="width:120px;"><input type="text" ng-model="ownerList[$index].IMAGE_FILE_NAME" class="form-control" /></td>
+                                                            <td style="width:120px;"><input type="text" ng-model="ownerList[$index].IMAGE_FILE_CITIZENSHIP" class="form-control" /></td>
+                                                            <td style="width:120px;"><input type="text" ng-model="ownerList[$index].IMAGE_FILE_COMPANY_REG" class="form-control" /></td>
+                                                            <td style="width:120px;"><input type="text" ng-model="ownerList[$index].IMAGE_FILE_COMPANY_PAN" class="form-control" /></td>
+
+                                                            <td style="width:100px;" class="btn-action">
+                                                                <a href="" id="add_element" name="add_element" class="buttonadd" ng-click="addOwnerInfo()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" ng-click="removeOwnerInfo($index)" data-tooltip="Remove item"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" id="tab-3">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <fieldset class="fieldset-box">
+                                            <legend>Other Infomation</legend>
+
+                                            <div class="table-responsive">
+
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Field Name *</th>
+                                                            <th>Value *</th>
+                                                            <th>Remarks</th>
+                                                            <th style="width:20%">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr ng:repeat="issue in otherInfoList">
+                                                            <td><input type="text" ng-model="otherInfoList[$index].FIELD_NAME" ng-keyup="checkdupfieldname($key,$index)" class="form-control fieldname_{{$index}}" /></td>
+                                                            <td><input type="text" ng-model="otherInfoList[$index].FIELD_VALUE" class="form-control" /></td>
+                                                            <td><input type="text" ng-model="otherInfoList[$index].REMARKS" class="form-control" /></td>
+
+                                                            <td class="btn-action" style="width:20%">
+                                                                <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addOtherInfoList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="removeOtherInfoList($index)"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <fieldset class="fieldset-box">
+                                            <legend>Alternative Location Infomation (Branch/Office)</legend>
+
+                                            <div class="table-responsive">
+
+                                                <table id="tablegrid1" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th style="width:200px;">Location</th>
+                                                            <th style="width:182px;">English Name *</th>
+                                                            <th style="width:116px;">Contact Person</th>
+                                                            <th style="width:157px;">Address</th>
+                                                            <th style="width:116px;">Telephone</th>
+                                                            <th style="width:116px;">Fax</th>
+                                                            <th style="width:180px;">Email</th>
+                                                            <th style="width:250px;">Remarks</th>
+                                                            <th style="width:70px;">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body" style="overflow-y:initial !important;">
+                                                        <tr ng:repeat="issue in alternativeLocationInfoList">
+                                                            <td style="width:200px;">
+                                                                <input kendo-combo-box
+                                                                       id="alternativeCombo" class="locationcode_{{$index}}"
+                                                                       k-value-primitive="true"
+                                                                       k-placeholder="'Select Location'"
+                                                                       k-data-text-field="'LOCATION_EDESC'"
+                                                                       k-data-value-field="'LOCATION_CODE'"
+                                                                       k-filter="'contains'"
+                                                                       k-data-source="locationComboDataSource"
+                                                                       k-on-change="locationCodeOnChange(kendoEvent)"
+                                                                       ng-model="alternativeLocationInfoList[$index].LOCATION_CODE"
+                                                                       style="width: 100%" />
+                                                            </td>
+                                                            <td style="width:182px;"><input type="text" ng-model="alternativeLocationInfoList[$index].OFFICE_EDESC" ng-keyup="checkdupofficename($key,$index)" class="form-control officename_{{$index}}" /></td>
+                                                            <td style="width:116px;"><input type="text" ng-model="alternativeLocationInfoList[$index].CONTACT_PERSON" class="form-control" /></td>
+
+                                                            <td style="width:157px;"><input type="text" ng-model="alternativeLocationInfoList[$index].ADDRESS" class="form-control" /></td>
+                                                            <td style="width:116px;"><input type="text" ng-model="alternativeLocationInfoList[$index].TEL_MOBILE_NO" class="form-control" /></td>
+                                                            <td style="width:116px;"><input type="text" ng-model="alternativeLocationInfoList[$index].FAX_NO" class="form-control" /></td>
+                                                            <td style="width:180px;"><input type="text" ng-model="alternativeLocationInfoList[$index].EMAIL" class="form-control" /></td>
+
+                                                            <td style="width:250px;"><input type="text" ng-model="alternativeLocationInfoList[$index].REMARKS" class="form-control" /></td>
+
+                                                            <td class="btn-action" style="width:70px;">
+                                                                <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addAlternativeLocationInfoList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="removeAlternativeLocationInfoList($index)"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <fieldset class="fieldset-box">
+                                            <legend>Budget Center</legend>
+                                            @*<div class="form-group">
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">Budget Center</label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <select id="customerBudgetCenter" kendo-drop-down-list ng-model="customersChildArr.BUDGET_CENTER"
+                                                                k-options="budgetCenterGroupOptions" k-value-primitive="true"
+                                                                style="width: 100%"></select>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">Remarks</label>
+                                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                                        <input type="text" id="childBudgetRemarks" name="BUDGET_REMARKS" ng-model="customersChildArr.BUDGET_REMARKS" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                    </div>
+
+                                                </div>*@
+
+
+
+                                            <div class="table-responsive">
+
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Budget Center*</th>
+                                                            <th>Remarks</th>
+                                                            <th style="width:20%">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr ng:repeat="issue in budgetCenterList">
+                                                            <td>
+                                                                <input kendo-combo-box
+                                                                       id="alternativeCombo" class="budgetcentercode_{{$index}}"
+                                                                       k-value-primitive="true"
+                                                                       k-placeholder="'Select Budget'"
+                                                                       k-data-text-field="'BUDGET_EDESC'"
+                                                                       k-data-value-field="'BUDGET_CODE'"
+                                                                       k-filter="'contains'"
+                                                                       k-data-source="budgetCenterDataSource"
+                                                                       k-on-change="budgetCodeOnChange(kendoEvent)"
+                                                                       budgetcenter-index="{{$index}}"
+                                                                       budgetcenter-key="{{key}}"
+                                                                       ng-model="budgetCenterList[$index].BUDGET_CODE"
+                                                                       style="width: 100%" />
+                                                            </td>
+                                                            <td><input type="text" ng-model="budgetCenterList[$index].REMARKS" class="form-control" /></td>
+                                                            <td class="btn-action" style="width:20%">
+                                                                <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addBudgetCenterList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger1" data-tooltip="Remove item" ng-click="removeBudgetCenterList($index)"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <fieldset class="fieldset-box">
+                                            <legend>Sister Concerns</legend>
+
+                                            <div class="table-responsive">
+
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Sister Concerns (IN ENGLISH) *</th>
+                                                            <th>Sister Concerns (IN NEPALI)</th>
+                                                            <th>Remarks</th>
+                                                            <th style="width:20%">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr ng:repeat="issue in sisterConcernsList">
+                                                            <td>
+                                                                <input type="text" ng-model="sisterConcernsList[$index].SISTER_CONCERN_EDESC" class="form-control sconcernname_{{$index}}"
+                                                                       ng-keyup="checkdupsconcern($key,$index)" />
+                                                            </td>
+                                                            <td><input type="text" ng-model="sisterConcernsList[$index].SISTER_CONCERN_NDESC" class="form-control" /></td>
+                                                            <td><input type="text" ng-model="sisterConcernsList[$index].REMARKS" class="form-control" /></td>
+                                                            <td class="btn-action" style="width:20%">
+                                                                <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addSisterConcernsList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="removeSisterConcernsList($index)"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tab-pane" id="tab-4">
+                                <div class="row">
+                                    <fieldset class="fieldset-box fieldset-space">
+                                        <legend class="">Interest Payment/Receive</legend>
+
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <div class="row">
+
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Credit Rating</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input style="text-align:right" type="number" id="childCreditRating" name="CREDIT_RATING" ng-model="customersChildArr.CREDIT_RATING" class="form-control ng-pristine ng-untouched ng-valid">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Credit limit in Rs.</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="number" style="text-align:right" id="childCreditLimit" name="CREDIT_LIMIT" ng-model="customersChildArr.CREDIT_LIMIT" class="form-control ng-pristine ng-untouched ng-valid">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Cushion %</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="number" style="text-align:right" id="childCushion" name="CUSHION" ng-model="customersChildArr.CUSHION" class="form-control ng-pristine ng-untouched ng-valid">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Pre Credit Limit</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="number" style="text-align:right" id="childPreCreditLimit" name="PRE_CREDIT_LIMIT" ng-model="customersChildArr.PRE_CREDIT_LIMIT" class="form-control ng-pristine ng-untouched ng-valid">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Due Bill Count</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="number" style="text-align:right" id="childDueBillCount" name="DUE_BILL_COUNT" ng-model="customersChildArr.DUE_BILL_COUNT" class="form-control ng-pristine ng-untouched ng-valid">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Credit Exceed</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="text" style="text-align:right" id="childCreditExceed" name="CREDIT_EXCEED" ng-model="customersChildArr.CREDIT_EXCEED" class="form-control ng-pristine ng-untouched ng-valid">
+                                                            <div class="percent">%</div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Interest Rate</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="text" style="text-align:right" id="childInterestRate" name="INTEREST_RATE" ng-model="customersChildArr.INTEREST_RATE" class="form-control ng-pristine ng-untouched ng-valid">
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="form-group">
+
+                                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Bank Guarantee Rs.</label>
+
+                                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                                            <input type="text" style="text-align:right" id="childBankGuarantee" name="BANK_GUARANTEE" ng-model="customersChildArr.BANK_GUARANTEE" class="form-control ng-pristine ng-untouched ng-valid">
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+
+
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group">
+
+
+                                                        <label class="control-label col-sm-3 col-md-3 col-lg-3">Balance Rs.</label>
+
+                                                        <div class="col-sm-3 col-md-3 col-lg-3">
+                                                            <input type="text" style="text-align:right" id="childBalance" name="BALANCE" ng-model="customersChildArr.BALANCE" class="form-control ng-pristine ng-untouched ng-valid disabled" disabled>
+
+
+
+                                                            <div class="debitcredit">Dr</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group">
+
+                                                        <label class="control-label col-sm-3 col-md-3 col-lg-3 ">Bg Expiry Date</label>
+                                                        <div class="col-sm-3 col-md-3 col-lg-3 english_date">
+                                                            <input id="englishdatedocument5" class="englishdate" kendo-date-picker
+                                                                   ng-model="customersChildArr.BG_EXPIRY_DATE" name="BG_EXPIRY_DATE"
+                                                                   k-options="monthSelectorOptions" />
+
+
+
+                                                        </div>
+                                                        <div class="col-sm-3 col-md-3 col-lg-3">
+                                                            <input type="text" id="nepaliDate5" data-checkfor="englishdatedocument5" onchange="ConvertNepToEng(this)" class="nepali-calendar5 form-control" next-on-tab />
+                                                            <i class="fa fa-calendar form-control-feedback calendar-icon-2"></i>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                            $(".nepali-calendar5").nepaliDatePicker({
+                                                                ndpEnglishInput: 'englishdatedocument5',
+                                                                npdMonth: true,
+                                                                onFocus: true,
+                                                                npdYear: true,
+                                                                npdYearCount: 10,
+                                                                altFormat: "dd-MMM-YYYY",
+                                                                dateFormat: "dd-MMM-YYYY",
+                                                                onChange: function (evt) {
+                                                                    var nepalidate = $("#nepaliDate5").val();
+                                                                    var Engdate = BS2AD(nepalidate);
+                                                                    var FormattedEngDate = moment(Engdate).format('DD-MMM-YYYY');
+                                                                    $("#englishdatedocument5").val(FormattedEngDate);
+                                                                }
+                                                            });
+                                                </script>
+
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-sm-3 col-md-3 col-lg-3">Opening Date</label>
+
+                                                        <div class="col-sm-3 col-md-3 col-lg-3 english_date">
+                                                            <input id="englishdatedocument6" class="englishdate" kendo-date-picker
+                                                                   ng-model="customersChildArr.OPENING_DATE" name="OPENING_DATE"
+                                                                   k-options="monthSelectorOptions" />
+
+                                                        </div>
+                                                        <div class="col-sm-3 col-md-3 col-lg-3">
+                                                            <input type="text" id="nepaliDate6" data-checkfor="englishdatedocument6" onchange="ConvertNepToEng(this)" class="nepali-calendar6 form-control" next-on-tab />
+                                                            <i class="fa fa-calendar form-control-feedback calendar-icon-2"></i>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                            $(".nepali-calendar6").nepaliDatePicker({
+                                                                ndpEnglishInput: 'englishdatedocument6',
+                                                                npdMonth: true,
+                                                                onFocus: true,
+                                                                npdYear: true,
+                                                                npdYearCount: 10,
+                                                                altFormat: "dd-MMM-YYYY",
+                                                                dateFormat: "dd-MMM-YYYY",
+                                                                onChange: function (evt) {
+                                                                    var nepalidate = $("#nepaliDate6").val();
+                                                                    var Engdate = BS2AD(nepalidate);
+                                                                    var FormattedEngDate = moment(Engdate).format('DD-MMM-YYYY');
+                                                                    $("#englishdatedocument6").val(FormattedEngDate);
+                                                                }
+                                                            });
+                                                </script>
+
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-sm-3 col-md-3 col-lg-3">Last Payment Date</label>
+
+
+                                                        <div class="col-sm-3 col-md-3 col-lg-3 english_date">
+                                                            <input id="englishdatedocument7" class="englishdate" kendo-date-picker
+                                                                   ng-model="customersChildArr.LAST_PAYMENT_DATE" name="LAST_PAYMENT_DATE"
+                                                                   k-options="monthSelectorOptions" />
+
+                                                        </div>
+
+
+                                                        <div class="col-sm-4 col-md-4 col-lg-3">
+                                                            <input type="text" id="nepaliDate7" data-checkfor="englishdatedocument7" onchange="ConvertNepToEng(this)" class="nepali-calendar7 form-control" next-on-tab />
+                                                            <i class="fa fa-calendar form-control-feedback calendar-icon-2"></i>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <script>
+                                                            $(".nepali-calendar7").nepaliDatePicker({
+                                                                ndpEnglishInput: 'englishdatedocument7',
+                                                                npdMonth: true,
+                                                                onFocus: true,
+                                                                npdYear: true,
+                                                                npdYearCount: 10,
+                                                                altFormat: "dd-MMM-YYYY",
+                                                                dateFormat: "dd-MMM-YYYY",
+                                                                onChange: function (evt) {
+                                                                    var nepalidate = $("#nepaliDate7").val();
+                                                                    var Engdate = BS2AD(nepalidate);
+                                                                    var FormattedEngDate = moment(Engdate).format('DD-MMM-YYYY');
+                                                                    $("#englishdatedocument7").val(FormattedEngDate);
+                                                                }
+                                                            });
+                                                </script>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <fieldset class="fieldset-box">
+                                                <legend>Division Info</legend>
+                                                <table class="document_child_table dynamic-table table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Division *</th>
+                                                            <th style="width:18%;">Credit Limit *</th>
+                                                            <th>Remark</th>
+                                                            <th style="width:15%">Block Party</th>
+                                                            <th style="width:12%">&nbsp</th>
+                                                        </tr>
+
+
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr ng:repeat="issue in divisionList">
+                                                            <td>
+                                                                <input kendo-drop-down-list
+                                                                       k-value-primitive="true"
+                                                                       k-options="divisionOptions"
+                                                                       ng-model="divisionList[$index].DIVISION_CODE"
+                                                                       style="width: 100%" />
+                                                            </td>
+                                                            <td style="width:18%;"><input type="text" style="text-align:right" ng-model="divisionList[$index].CREDIT_LIMIT" class="form-control"></td>
+                                                            <td><input type="text" ng-model="divisionList[$index].REMARKS" class="form-control"></td>
+                                                            <td style="text-align:center; vertical-align: middle; width:15%;"><input ng-model="divisionList[$index].BLOCK_FLAG" type="checkbox"></td>
+                                                            <td class="btn-action" style="width:12%;">
+                                                                <a href="" class="buttonadd" data-toggle="tooltip" ng:click="addDivisionInfo()" title="Add items"><i class="fa fa-plus-circle"></i></a>
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" ng-click="removeDivisionList($index)" data-tooltip="Remove item"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </fieldset>
+                                        </div>
+
+
+
+                                        <div class="row">
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <fieldset class="fieldset-box">
+                                                    <legend>Invoice Wise Opening Balance</legend>
+                                                    <div class="table-responsive">
+                                                        <table id="tablegrid" class="document_child_table dynamic-table table-fixed">
+                                                            <thead class="child-table-head">
+                                                                <tr>
+                                                                    <th style="width:120px;">Ref No. *</th>
+                                                                    <th style="width:110px;">Invoice Date *</th>
+                                                                    <th style="width:170px;">Account *</th>
+                                                                    <th style="width:95px;">Balance *</th>
+                                                                    <th style="width:120px;">Due Date</th>
+                                                                    <th style="width:70px;">DR/CR</th>
+                                                                    <th style="width:130px;">Currency</th>
+                                                                    <th style="width:80px;">Ex. Rate</th>
+                                                                    <th style="width:170px;">Division</th>
+                                                                    <th style="width:170px;">Dealer Name</th>
+                                                                    <th style="width:170px;">Employee</th>
+                                                                    <th style="width:190px;">Remarks</th>
+
+                                                                    <th style="width:120px">&nbsp;</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="table_body" style="overflow:initial;">
+                                                                <tr ng:repeat="issue in invoiceWiseList">
+                                                                    <td style="width:120px;"><input type="text" ng-model="invoiceWiseList[$index].REFERENCE_NO" class="form-control" /></td>
+                                                                    <td style="width:110px;">
+                                                                        <input id="englishdatedocument6" class="englishdate" kendo-date-picker
+                                                                               ng-model="invoiceWiseList[$index].INVOICE_DATE" name="INVOICE_DATE"
+                                                                               k-options="monthSelectorOptions" />
+                                                                    </td>
+                                                                    <td style="width:170px;">
+                                                                        <input kendo-combo-box
+                                                                               id="accountCombo" class="items"
+                                                                               k-value-primitive="true"
+                                                                               k-placeholder="'Select Acc'"
+                                                                               k-data-text-field="'ACC_EDESC'"
+                                                                               k-data-value-field="'ACC_CODE'"
+                                                                               k-filter="'contains'"
+                                                                               k-data-source="accountComboGroupDataSource"
+                                                                               ng-model="invoiceWiseList[$index].ACC_CODE"
+                                                                               style="width: 100%" />
+                                                                    </td>
+                                                                    <td style="width:95px;"><input type="text" style="text-align:right" ng-model="invoiceWiseList[$index].BALANCE_AMOUNT" class="form-control" /></td>
+                                                                    <td style="width:120px;">
+                                                                        <input id="englishdatedocument6" class="englishdate" kendo-date-picker
+                                                                               ng-model="invoiceWiseList[$index].DUE_DATE" name="DUE_DATE"
+                                                                               k-options="monthSelectorOptions" />
+                                                                    </td>
+                                                                    <td style="width:70px;">
+                                                                        <select id="customerType" ng-model="invoiceWiseList[$index].TRANSACTION_TYPE" kendo-drop-down-list
+                                                                                k-options="transactionTypeOptions"
+                                                                                style="width: 100%"></select>
+                                                                    </td>
+
+                                                                    <td style="width:130px;">
+                                                                        <select id="" ng-model="invoiceWiseList[$index].CURRENCY_CODE" kendo-drop-down-list
+                                                                                k-options="currencyOptions" k-value-primitive="true"
+                                                                                style="width: 100%" disabled></select>
+
+                                                                    </td>
+                                                                    <td style="width:80px;"><input type="text" ng-model="invoiceWiseList[$index].EXCHANGE_RATE" class="form-control" /></td>
+                                                                    <td style="width:170px;">
+                                                                        <input kendo-combo-box
+                                                                               id="divisionCombo" class="items"
+                                                                               k-value-primitive="true"
+                                                                               k-placeholder="'Select Division'"
+                                                                               k-data-text-field="'DIVISION_EDESC'"
+                                                                               k-data-value-field="'DIVISION_CODE'"
+                                                                               k-filter="'contains'"
+                                                                               k-data-source="divisionComboDataSource"
+                                                                               ng-model="invoiceWiseList[$index].DIVISION_CODE"
+                                                                               style="width: 100%" />
+                                                                    </td>
+
+                                                                    <td style="width:170px;">
+                                                                        <input kendo-combo-box
+                                                                               id="dealerCombo" class="items"
+                                                                               k-value-primitive="true"
+                                                                               k-placeholder="'Select Dealer'"
+                                                                               k-data-text-field="'PARTY_TYPE_EDESC'"
+                                                                               k-data-value-field="'PARTY_TYPE_CODE'"
+                                                                               k-filter="'contains'"
+                                                                               k-data-source="dealerComboGroupDataSource"
+                                                                               ng-model="invoiceWiseList[$index].PARTY_TYPE_CODE"
+                                                                               style="width: 100%" />
+                                                                    </td>
+                                                                    <td style="width:170px;">
+                                                                        <input kendo-combo-box
+                                                                               id="employeeCombo" class="items"
+                                                                               k-value-primitive="true"
+                                                                               k-placeholder="'Select Employee'"
+                                                                               k-data-text-field="'EMPLOYEE_EDESC'"
+                                                                               k-data-value-field="'EMPLOYEE_CODE'"
+                                                                               k-filter="'contains'"
+                                                                               k-data-source="employeeComboGroupDataSource"
+                                                                               ng-model="invoiceWiseList[$index].EMPLOYEE_CODE"
+                                                                               style="width: 100%" />
+                                                                    </td>
+
+                                                                    <td style="width:190px;"><input type="text" ng-model="invoiceWiseList[$index].REMARKS" class="form-control" /></td>
+
+                                                                    <td style="width:120px;" class="btn-action">
+                                                                        <a href="" id="add_element" name="add_element" class="buttonadd" ng-click="addInvoiceWiseInfo()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                        <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                            <i class="fa fa-trash text-danger" ng-click="removeInvoiceWiseInfo($index)" data-tooltip="Remove item"></i>
+                                                                        </a>
+                                                                    </td>
+
+                                                                </tr>
+
+                                                            </tbody>
+
+                                                        </table>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+
+                                        </div>
+
+
+
+
+
+                                    </fieldset>
+
+
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab-5">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-6 col-md-6 col-lg-6">Customer Specific flatrate discount</label>
+
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <input type="text" id="customerSpecificDiscount" name="CUSTOMER_SPECIFIC_DISCOUNT" ng-model="customersChildArr.CUSTOMER_SPECIFIC_DISCOUNT" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="row">
+                                            <div class="col-sm-4 col-md-4 col-lg-4">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-2 col-md-2 col-lg-2">on</label>
+                                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                                        <input type="text" name="CUSTOMER_DAYS" ng-model="customersChildArr.CUSTOMER_DAYS" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                        <span class="input-days">Days</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-5">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-2 col-md-2 col-lg-2">on</label>
+                                                    <div class="col-sm-5 col-md-5 col-lg-5">
+                                                        <input type="text" name="CUSTOMER_DISCOUNT" ng-model="customersChildArr.CUSTOMER_DISCOUNT" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty">
+                                                        <span class="input-discount">% Discount</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-3">
+                                                <div class="form-group">
+                                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                                        <label class="mt-checkbox mt-checkbox-outline pull-right">
+                                                            <input type="checkbox" ng-model="customersChildArr.EXCLUSIVE" name="EXCLUSIVE" class="ng-pristine ng-untouched ng-valid ng-empty"> Exclusive
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-6 col-md-6 col-lg-6">Credit Days</label>
+
+                                            <div class="col-sm-4 col-md-4 col-lg-4">
+                                                <input type="text" id="customerChildAutoGenerated" name="CREDIT_DAYS" ng-model="customersChildArr.CREDIT_DAYS" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4 col-md-4 col-lg-4">Credit Actions</label>
+                                            <div class="col-sm-8 col-md-8 col-lg-8">
+                                                <select id="customerType" ng-model="customersChildArr.CREDIT_ACTION" kendo-drop-down-list
+                                                        k-options="creditActionOptions"
+                                                        style="width: 100%"></select>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+
+                                            <label class="control-label col-sm-3 col-md-3 col-lg-3">Terms & Conditions</label>
+
+                                            <div class="col-sm-7 col-md-7 col-lg-7">
+                                                <input type="text" id="termsAndConditions" name="TERMS_CONDITIONS" ng-model="customersChildArr.TERMS_CONDITIONS" class="form-control ng-pristine ng-untouched ng-valid ng-not-empty">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <fieldset class="fieldset-box">
+                                    <legend>Applicable Discount from setup module</legend>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+
+
+                                            <div class="table-responsive">
+                                                <h6 class="setup-title">Applicable Payment Discount</h6>
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Description</th>
+                                                            <th>Remarks</th>
+                                                            @*
+                                                                <th>Designation</th>*@
+                                                            @*
+                                                                <th style="width:22%">&nbsp;</th>*@
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr>
+                                                            <td><input type="text" class="form-control" /></td>
+                                                            <td><input type="text" class="form-control" /></td>
+                                                            @*
+                                                                <td><input type="text" class="form-control" /></td>*@
+
+                                                            @*
+                                                                <td class="btn-action" style="width:22%">
+                                                                    <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="add_child_element($index,this)" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                    <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                        <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="remove_child_element($index)"></i>
+                                                                    </a>
+                                                                </td>*@
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+
+
+                                            <div class="table-responsive">
+                                                <h6 class="setup-title">Applicable  Discount Terms</h6>
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Description</th>
+                                                            <th>Remarks</th>
+                                                            @*
+                                                                <th>Designation</th>*@
+                                                            @*
+                                                                <th style="width:22%">&nbsp;</th>*@
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr>
+                                                            <td><input type="text" class="form-control" /></td>
+                                                            <td><input type="text" class="form-control" /></td>
+                                                            @*
+                                                                <td><input type="text" class="form-control" /></td>*@
+
+                                                            @*
+                                                                <td class="btn-action" style="width:22%">
+                                                                    <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="add_child_element($index,this)" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                    <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                        <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="remove_child_element($index)"></i>
+                                                                    </a>
+                                                                </td>*@
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                                            <div class="table-responsive">
+                                                <h6 class="setup-title">Applicable Scheme Discount</h6>
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Description</th>
+                                                            <th>Remarks</th>
+                                                            @*
+                                                                <th>Designation</th>*@
+                                                            @*
+                                                                <th style="width:22%">&nbsp;</th>*@
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr>
+                                                            <td><input type="text" class="form-control" /></td>
+                                                            <td><input type="text" class="form-control" /></td>
+                                                            @*
+                                                                <td><input type="text" class="form-control" /></td>*@
+
+                                                            @*
+                                                                <td class="btn-action" style="width:22%">
+                                                                    <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="add_child_element($index,this)" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                    <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                        <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="remove_child_element($index)"></i>
+                                                                    </a>
+                                                                </td>*@
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+                                            <p class="bottom_note">
+                                                <b>Note</b> :Shown are the discounts which quantity subjec to setup conditions. Changes to payment discounts or schemes
+                                                setup can onlybe effected from the discount setup.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+
+                                <fieldset class="fieldset-box">
+                                    <legend>Other terms and conditions</legend>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+                                            <div class="table-responsive">
+
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Field Name *</th>
+                                                            <th> Value *</th>
+                                                            <th>Remarks</th>
+                                                            <th style="width:10%">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr ng:repeat="issue in otherTermsConditionsList">
+                                                            <td><input type="text" ng-model="otherTermsConditionsList[$index].FIELD_NAME" class="form-control" /></td>
+                                                            <td><input type="text" ng-model="otherTermsConditionsList[$index].FIELD_VALUE" class="form-control" /></td>
+                                                            <td><input type="text" ng-model="otherTermsConditionsList[$index].REMARKS" class="form-control" /></td>
+
+                                                            <td class="btn-action" style="width:10%">
+                                                                <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addTermsConditionsList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+                                                                @*<a href="" id="add_child_element" name="add_child_element" class="buttonedit green" ng-click="add_child_element($index,this)" data-original-title="" title=""><i class="fa fa-pencil-square-o"></i></a>*@
+
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="removeTermsConditionsList($index)"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                            </div>
+                            <div class="tab-pane" id="tab-6">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <fieldset class="fieldset-box">
+                                            <legend>Customer Stock Status</legend>
+
+                                            <div class="table-responsive">
+
+                                                <table id="tablegrid" class="document_child_table dynamic-table  table-fixed">
+                                                    <thead class="child-table-head">
+                                                        <tr>
+                                                            <th>Item Name *</th>
+                                                            <th style="width:12%">As on *</th>
+                                                            <th>Quantity *</th>
+                                                            <th>Remarks</th>
+                                                            <th style="width:10%">&nbsp;</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="table_body">
+                                                        <tr ng:repeat="issue in customerStockStatusList">
+                                                            <td>
+                                                                <input kendo-combo-box
+                                                                       id="alternativeCombo" class="items"
+                                                                       k-value-primitive="true"
+                                                                       k-placeholder="'Select Item'"
+                                                                       k-data-text-field="'ITEM_EDESC'"
+                                                                       k-data-value-field="'ITEM_CODE'"
+                                                                       k-filter="'contains'"
+                                                                       k-data-source="customerStockDataSource"
+                                                                       ng-model="customerStockStatusList[$index].ITEM_CODE"
+                                                                       style="width: 100%" />
+                                                            </td>
+
+                                                            <td style="width:12%">
+                                                                <input id="englishdatedocument6" class="englishdate" kendo-date-picker
+                                                                       ng-model="customerStockStatusList[$index].STOCK_DATE" name="STOCK_DATE"
+                                                                       k-options="monthSelectorOptions" />
+                                                            </td>
+                                                            <td><input type="text" style="text-align:right" ng-model="customerStockStatusList[$index].QUANTITY" class="form-control" /></td>
+                                                            <td><input type="text" ng-model="customerStockStatusList[$index].REMARKS" class="form-control" /></td>
+                                                            <td class="btn-action" style="width:10%">
+                                                                <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addCustomerStockStatusList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+
+                                                                <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                    <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="removeCustomerStockStatusList($index)"></i>
+                                                                </a>
+                                                            </td>
+
+                                                        </tr>
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+
+                                        </fieldset>
+
+
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <label class="control-label">Remarks</label>
+                                                <textarea class="form-control" rows="4" cols="20" ng-model="customersChildArr.STOCK_REMARKS"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-12 text-center">
+                                        <button type="button" class="btn btn-sm btn-green" data-dismiss="modal" ng-click="agewisebalance(event)">Click here to detail reports</button>
+                                        <button type="button" class="btn btn-sm green-meadow" data-dismiss="modal" ng-click="lastactive(event)">Transit quantities(Delivery Status)</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" id="tab-7">
+                                <div class="row">
+                                    <div class="col-sm-3 col-md-3 col-lg-3">
+                                        <div class="mt-checkbox-list">
+                                            <label class="mt-checkbox mt-checkbox-outline">
+                                                <input type="checkbox" ng-model="itemArr.BATCH_FLAG" ng-true-value="'Y'" ng-false-value="'N'" class="ng-pristine ng-untouched ng-valid ng-empty"> Show Price History
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-5 col-lg-5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4 col-md-4 col-lg-4 ">Bg Expiry Date</label>
+                                            <div class="input-group date-picker input-daterange col-xs-8 col-sm-8 col-md-8 col-lg-8" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
+                                                <input type="text" id="fromInputDateVoucher" class="frmDataInput form-control ndp-nepali-calendar" placeholder="From Date" onfocus="showNdpCalendarBox('fromInputDateVoucher')">
+                                                <span class="input-group-addon">
+                                                    to
+                                                </span>
+                                                <input type="text" class="frmDataInput form-control ndp-nepali-calendar" id="toInputDateVoucher" placeholder="To Date" onfocus="showNdpCalendarBox('toInputDateVoucher')">
+                                            </div>
+
+
+                                        </div>
+
+
+                                        @*<div class="form-group">
+
+                                                <label class="control-label col-sm-2 col-md-2 col-lg-2 ">Bg Expiry Date</label>
+                                                <div class="col-sm-3 col-md-3 col-lg-3 english_date">
+                                                    <input id="englishdatedocument5" class="englishdate" kendo-date-picker
+                                                           ng-model="customersChildArr.BG_EXPIRY_DATE" name="BG_EXPIRY_DATE"
+                                                           k-options="monthSelectorOptions" />
+
+
+
+                                                </div>
+                                                <div class="col-sm-3 col-md-3 col-lg-3">
+                                                    <input type="text" id="nepaliDate5" data-checkfor="englishdatedocument5" onchange="ConvertNepToEng(this)" class="nepali-calendar5 form-control" next-on-tab />
+                                                    <i class="fa fa-calendar form-control-feedback calendar-icon-2"></i>
+
+                                                </div>
+
+                                            </div>*@
+
+                                    </div>
+                                </div>
+                                @*<div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <table class="document_child_table dynamic-table  table-fixed">
+                                                <thead class="child-table-head">
+                                                    <tr>
+                                                        <th>Item Name</th>
+                                                        <th>As on</th>
+                                                        <th>Quantity</th>
+                                                        <th>Remarks</th>
+                                                        <th style="width:10%">&nbsp;</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table_body">
+                                                    <tr ng:repeat="issue in otherTermsConditionsList">
+                                                        <td><input type="text" ng-model="otherTermsConditionsList[$index].FIELD_NAME" class="form-control" /></td>
+                                                        <td><input type="text" ng-model="otherTermsConditionsList[$index].FIELD_VALUE" class="form-control" /></td>
+                                                        <td><input type="text" ng-model="otherTermsConditionsList[$index].TERMS_REMARKS" class="form-control" /></td>
+                                                        <td><input type="text" ng-model="otherTermsConditionsList[$index].TERMS_REMARKS" class="form-control" /></td>
+                                                        <td class="btn-action" style="width:10%">
+                                                            <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addTermsConditionsList()" data-original-title="" title=""><i class="fa fa-plus"></i></a>
+                                                            <a href="" id="add_child_element" name="add_child_element" class="buttonedit" ng-click="add_child_element($index,this)" data-original-title="" title=""><i class="fa fa-pencil-square-o"></i></a>
+
+                                                            <a href="javascript:void(0)" class="buttondelete" data-original-title="" title="">
+                                                                <i class="fa fa-trash text-danger" data-tooltip="Remove item" ng-click="removeTermsConditionsList($index)"></i>
+                                                            </a>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>*@
+
+
+                            </div>
+                            <div class="tab-pane" id="tab-8">
+
+                                <fieldset class="fieldset-box">
+                                    <legend>Customer's History Info</legend>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            Created By:<br />
+                                            Modify By:
+
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            Created Date:<br />
+                                            Modify Date:
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-sm btn-green" id="savedocumentformdatachild" ng-click="saveNewCustomerChild(customersChildArrform.$valid)" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                        <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="SubLedger_Cancel($index)">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade-out" id="KYCFORM" data-backdrop="static" tabindex="-1" data-width="760">
+        <div class="modal-dialog  modal-dialog-box popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</button>
+                    <h4 class="modal-title">
+                        <span class="fa fa-file"></span>
+                        kYC Form
+                        <button class="btn btn-primary" ng-click="PrintKYCForm()">Print</button>
+                    </h4>
+                </div>
+
+                <div class="modal-body ">
+
+                    <form name="Kycform" class="form-horizontal" novalidate id="kycformprintdev">
+                        <!-- rendering master elements -->
+                        <div class="row">
+
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">General Information</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="KYCCustomerName" name="KYCCustomerName" ng-model="KYCForm.KYCCustomerName" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+                                            <div class="form-group">
+
+                                                <label class="control-label col-sm-3 col-md-3 col-lg-3 ">Birth Date</label>
+                                                <div class="col-sm-3 col-md-3 col-lg-3 english_date">
+                                                    <input id="englishdatedocumentKycForm" class="englishdate" kendo-date-picker
+                                                           ng-model="KYCForm.BirthDate" name="BG_EXPIRY_DATE"
+                                                           k-options="monthSelectorOptions" />
+
+
+
+                                                </div>
+                                                <div class="col-sm-3 col-md-3 col-lg-3">
+                                                    <input type="text" id="nepaliDateBirthdate" data-checkfor="englishdatedocumentKycForm" onchange="ConvertNepToEng(this)" class="nepali-calendar5 form-control" next-on-tab />
+                                                    <i class="fa fa-calendar form-control-feedback calendar-icon-2"></i>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <script>
+                                                $(".nepaliDateBirthdate").nepaliDatePicker({
+                                                    ndpEnglishInput: 'englishdatedocumentKycForm',
+                                                    npdMonth: true,
+                                                    onFocus: true,
+                                                    npdYear: true,
+                                                    npdYearCount: 10,
+                                                    altFormat: "dd-MMM-YYYY",
+                                                    dateFormat: "dd-MMM-YYYY",
+                                                    onChange: function (evt) {
+                                                        var nepalidate = $("#nepaliDateBirthdate").val();
+                                                        var Engdate = BS2AD(nepalidate);
+                                                        var FormattedEngDate = moment(Engdate).format('DD-MMM-YYYY');
+                                                        $("#englishdatedocumentKycForm").val(FormattedEngDate);
+                                                    }
+                                                });
+                                        </script>
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">BirthDate</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="BirthDate" name="BirthDate" ng-model="KYCForm.BirthDate" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Marital Status</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="MaritalStatus" name="MaritalStatus" ng-model="KYCForm.MaritalStatus" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Religion</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Religion" name="Religion" ng-model="KYCForm.Religion" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Blood Group</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Bloadgroup" name="Bloadgroup" ng-model="KYCForm.Bloadgroup" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">TelephoneNo</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="telephoneNo" name="telephoneNo" ng-model="KYCForm.telephoneNo" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Mobile No</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="MobileNo" name="MobileNo" ng-model="KYCForm.MobileNo" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Company Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Companyname" name="Companyname" ng-model="KYCForm.Companyname" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Email Office</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="EmailOffice" name="EmailOffice" ng-model="KYCForm.EmailOffice" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Address</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Address" name="Address" ng-model="KYCForm.Address" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+
+                        <div class="row">
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">Permanent Address</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">HouseNo</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="PermanentHouseNo" name="PermanentHouseNo" ng-model="KYCForm.PermanentHouseNo" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">WardNo</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="PWARDNO" name="PWARDNO" ng-model="KYCForm.PWARDNO" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Street Address</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="PWARDNO" name="PWARDNO" ng-model="KYCForm.PSTEETADDRESS" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Zone</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="PZONE" name="PZONE" ng-model="KYCForm.PZONE" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">District</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="PDIStrict" name="PDIStrict" ng-model="KYCForm.PDIStrict" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">VDC and Municipality</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="PVDCMunicipality" name="PVDCMunicipality" ng-model="KYCForm.PVDCMunicipality" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+
+                        <div class="row">
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">Temporary Address</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">House No</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="THouseNo" name="THouseNo" ng-model="KYCForm.THouseNo" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Ward No</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="TWARDNO" name="TWARDNO" ng-model="KYCForm.TWARDNO" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Street Address</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="TSTEETADDRESS" name="TSTEETADDRESS" ng-model="KYCForm.TSTEETADDRESS" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Zone</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="TZONE" name="TZONE" ng-model="KYCForm.TZONE" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">District</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="TDIStrict" name="TDIStrict" ng-model="KYCForm.TDIStrict" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Vdc and Municipality</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="TVDCMunicipality" name="TVDCMunicipality" ng-model="KYCForm.TVDCMunicipality" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+
+                        <div class="row">
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">Emergency Contract</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="EmergencyName" name="EmergencyName" ng-model="KYCForm.EmergencyName" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Relationship</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Emergencyrelationship" name="Emergencyrelationship" ng-model="KYCForm.Emergencyrelationship" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Address</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Emergencyaddress" name="Emergencyaddress" ng-model="KYCForm.Emergencyaddress" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Phone No</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Emergencyphoneno" name="Emergencyphoneno" ng-model="KYCForm.Emergencyphoneno" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                        </div>
+
+                        <div class="row">
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">Family Info</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Family  Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="FamilyName" name="FamilyName" ng-model="KYCForm.FamilyName" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Mother Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="FamilyMotherName" name="FamilyMotherName" ng-model="KYCForm.FamilyMotherName" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Spouse Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="FamilyspouseName" name="FamilyspouseName" ng-model="KYCForm.FamilyspouseName" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Wedding Date</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="weddingDate" name="weddingDate" ng-model="KYCForm.weddingDate" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                        </div>
+
+                        <div class="row">
+                            <fieldset class="fieldset-box fieldset-space">
+                                <legend class="planOption">Child Name</legend>
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-5 col-md-3 col-lg-3">Child Name</label>
+
+                                        <div class="col-sm-7 col-md-9 col-lg-9">
+                                            <input type="text" id="Childname" name="Childname" ng-model="KYCForm.Childname" class="form-control" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+
+                            </fieldset>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-sm btn-green" id="saveKycFormdatachild" ng-click="saveKycForm(Kycform.$valid)" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                        <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                    </button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        //$("#nepaliDate5").val(AD2BS(kendo.toString(new Date(), 'yyyy-MM-dd')));
+        //$("#nepaliDate6").val(AD2BS(kendo.toString(new Date(), 'yyyy-MM-dd')));
+        //$("#nepaliDate7").val(AD2BS(kendo.toString(new Date(), 'yyyy-MM-dd')));
+        function ConvertNepToEng(e) {
+            var date = BS2AD($("#nepaliDate5").val());
+            var FormattedEngDate = moment(date).format('DD-MMM-YYYY');
+            $("#englishdatedocument").val(FormattedEngDate);
+        }
+
+        $('.k-list').slimScroll({
+            height: '250px'
+        });
+        $('#customerModal').on('shown.bs.modal', function () {
+            $(document).off('focusin.modal');
+        });
+        $('#groupCustomerModal').on('shown.bs.modal', function () {
+            $(document).off('focusin.modal');
+        });
+
+        //setTimeout(function () {
+
+        //    $('.k-list').slimScroll({
+        //        height: '250px'
+        //    });
+        //}, 100)
+
+        $('.nav-tabs a').on('click', function (e) {
+
+
+            var text = angular.element("#customerSetupTreeCtrl").scope().immediateStopPropogation;
+            if (text == "disableTab") {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+            else {
+                e.preventDefault();
+            }
+
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+
+</script>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#custtxtSearchString").keyup(function () {
+                var val = $('#custtxtSearchString').val();
+                $("#kGrid").data("kendoGrid").dataSource.filter({
+                    logic: "or",
+                    filters: [
+                        {
+                            field: "CUSTOMER_EDESC",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "REGD_OFFICE_EADDRESS",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "TELEPHONE",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "EMAIL",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "PARTY_TYPE_EDESC",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "ACC_EDESC",
+                            operator: "contains",
+                            value: val
+                        },
+                    ]
+                });
+
+
+            });
+        });
+
+</script>
+
