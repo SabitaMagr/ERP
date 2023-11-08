@@ -53,6 +53,26 @@
       <FiscalYear />
       <ProductList />
     </ChartName>
+    <ChartName ID="MonthlyBranchSales" Name="MonthlyBranchSales">
+      <ChartType>line</ChartType>
+      <FieldValue>Quantity</FieldValue>
+      <DateFormat>AD</DateFormat>
+      <ShowLabel>false</ShowLabel>
+      <IsStack>false</IsStack>
+      <IsStack>false</IsStack>
+      <FiscalYear />
+      <ProductList />
+    </ChartName>
+    <ChartName ID="MonthlyCompanySales" Name="MonthlyCompanySales">
+      <ChartType>line</ChartType>
+      <FieldValue>Quantity</FieldValue>
+      <DateFormat>AD</DateFormat>
+      <ShowLabel>false</ShowLabel>
+      <IsStack>false</IsStack>
+      <IsStack>false</IsStack>
+      <FiscalYear />
+      <ProductList />
+    </ChartName>
   </User>
   <User ID="SURAJ" NAME="SURAJ">
     <ChartName ID="AveragePurchaseRateRawMaterialMTD" Name="AveragePurchaseRateRawMaterialMTD">
