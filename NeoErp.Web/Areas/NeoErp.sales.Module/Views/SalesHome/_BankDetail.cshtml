@@ -260,7 +260,7 @@
                 $("#BankDetailChart").removeAttr("class");
                 $("#BankDetailChart").kendoChart({                                   
                     chartArea: {
-                        height: ($("#BankDetailChart").hasClass("portlet-fullscreen")) ? 450 : 260,
+                        height: ($("#BankDetailChart").hasClass("portlet-fullscreen")) ? 450 : 460,
                     },
                     onDrag: function (e) {
                         var chart = e.sender;
@@ -429,7 +429,7 @@
                     if (portlet.hasClass('portlet-fullscreen')) {                        
                         chart.options.chartArea.height = 450;
                     } else {                       
-                        chart.options.chartArea.height = 250;
+                        chart.options.chartArea.height = 450;
                     }
                     //change chart height
 
