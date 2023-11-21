@@ -99,6 +99,13 @@
 </div>
 
 <div class="portlet portlet-sortable light bordered" id="@actionPageId">
+    <div style="margin: 0px 0px -34px 135px;" class="input-group input-large">
+           <select id="cashamount" name="cashamount"  class="form-control input-small" style="height:30px;">
+                <option value="1">Default</option>
+                <option value="2">Thousand</option>
+                <option value="3">Millenium</option>
+           </select>
+        </div>
     <div class="portlet-title">
         <div class="caption">
             <i class="icon-bar-chart font-green-haze"></i>
@@ -154,6 +161,8 @@
     <script>
         var pageId_CashDetail = '@actionPageId';
         var clicked = false, base = 0;
+        var dropdownCashBalanceValue = 1;
+        var dropdownCashBalanceText = "";
         var CashDetail = (function () {
             //initialize variables
 
@@ -249,6 +258,18 @@
                 fullScreenHandle();
                 CreateChart(dataSource);
             }
+            $("#cashamount").on({
+              change : function (e)
+                {
+                if($(this).val() == 1)
+                  {dropdownCashBalanceValue = 1; dropdownCashBalanceText = "";}
+                else if($(this).val() == 2)
+                  {dropdownCashBalanceValue = 1000; dropdownCashBalanceText = " k";} 
+                else
+                  {dropdownCashBalanceValue = 1000000; dropdownCashBalanceText =" M";}
+                loadDataSource();
+                }
+            });
             function CreateChart(dataSource) {               
                 $('.btnGrid_CashDetail').data("type", "Chart");
                 $("#CashDetailChart").html('');
@@ -318,7 +339,7 @@
                     tooltip: {
                         visible: true,
                         format: "{0}",
-                        template: "#= category #: \n #= FormatLabels(value)#"
+                        template: "#= category #: \n #= FormatLabels(value/dropdownCashBalanceValue)#" + dropdownCashBalanceText
                     },
                     dataBound: function (e) {
                         var maxValue = getMaxValueFromDataSource(e);
@@ -344,7 +365,7 @@
                 $.each(data, function (i, obj) {
                     header += "<th>" + obj.BankName + "</th>";
                     bodyRow1 += "<td class='amountRight'>" + (obj.Amount / total * 100).toFixed(2) + "%</td>";
-                    bodyRow2 += "<td class='amountRight'>" + kendo.format('{0:n}', obj.Amount)+"</td>";
+                    bodyRow2 += "<td class='amountRight'>" + kendo.format('{0:n}', obj.Amount/dropdownCashBalanceValue)+dropdownCashBalanceText +"</td>";
                 });
                 header += "<th>Total</th>";               
                 bodyRow1 += "<td class='amountRight'>100 %</td>";
