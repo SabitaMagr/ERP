@@ -102,6 +102,13 @@
 </div>
 
 <div class="portlet portlet-sortable light bordered" id="@actionPageId">
+    <div style="margin: 0px 0px -34px 135px;" class="input-group input-large">
+           <select id="bankamount" name="bankamount"  class="form-control input-small" style="height:30px;">
+                <option value="1">Default</option>
+                <option value="2">Thousand</option>
+                <option value="3">Millenium</option>
+           </select>
+        </div>
     <div class="portlet-title">
         <div class="caption">
             <i class="icon-bar-chart font-green-haze"></i>
@@ -158,6 +165,8 @@
     <script>
         var pageId_BankDetail = '@actionPageId';
         var clicked = false, base = 0;
+        var dropdownBankBalanceValue = 1;
+        var dropdownBankBalanceText = "";
         var BankDetail = (function () {
             //initialize variables
 
@@ -253,6 +262,18 @@
                 fullScreenHandle();
                 CreateChart(dataSource);
             }
+            $("#bankamount").on({
+              change : function (e)
+                {
+                if($(this).val() == 1)
+                  {dropdownBankBalanceValue = 1; dropdownBankBalanceText = "";}
+                else if($(this).val() == 2)
+                  {dropdownBankBalanceValue = 1000; dropdownBankBalanceText = " k";} 
+                else
+                  {dropdownBankBalanceValue = 1000000; dropdownBankBalanceText =" M";}
+                loadDataSource();
+                }
+            });
             function CreateChart(dataSource) {               
                 $('.btnGrid_BankDetail').data("type", "Chart");
                 $("#BankDetailChart").html('');
@@ -320,7 +341,7 @@
                     tooltip: {
                         visible: true,
                         format: "{0}",
-                        template: "#= category #: \n #= FormatLabels(value)#"
+                        template: "#= category #: \n #= FormatLabels(value/dropdownBankBalanceValue)#" + dropdownBankBalanceText
                     },
                     dataBound: function (e) {
                         var maxValue = getMaxValueFromDataSource(e);
@@ -346,7 +367,7 @@
                 $.each(data, function (i, obj) {
                     header += "<th>" + obj.BankName + "</th>";
                     bodyRow1 += "<td class='amountRight'>" + (obj.Amount / total * 100).toFixed(2) + "%</td>";
-                    bodyRow2 += "<td class='amountRight'>" + kendo.format('{0:n}', obj.Amount)+"</td>";
+                    bodyRow2 += "<td class='amountRight'>" + kendo.format('{0:n}', obj.Amount/dropdownBankBalanceValue)+dropdownBankBalanceText +"</td>";
                 });
                 header += "<th>Total</th>";               
                 bodyRow1 += "<td class='amountRight'>100 %</td>";
