@@ -78,6 +78,38 @@ namespace NeoERP.DocumentTemplate.Service.Services
            
 
         }
+
+        public List<ChargeListDetails> MapLineItemChargesColumnWithValue(string lineitemcharges)
+        {
+            try
+            {
+                //string serializedDic = @"{"BONUS_DISCOUNT":4,"SPECIAL_DISCOUNT":2,"YEARLY_DISCOUNT":2,"FLAT_DISCOUNT":3,"VAT":2,"CALC_TOTAL_PRICE":600,"CALC_UNIT_PRICE":200,"CALC_QUANTITY":3,"TOTAL_PRICE":600,"UNIT_PRICE":200,"QUANTITY":3,"MU_CODE":"NOS","ITEM_CODE":"126"}}";
+
+                //Dictionary<string, string> dict =
+                //  JsonSerializer
+                //  .Deserialize<Dictionary<string, string>>(serializedDic);
+
+                //var dict = JsonConvert.DeserializeObject<List<string, string>>(lineitemcharges);
+                //foreach (var kv in dict)
+                //{
+                //    Console.WriteLine(kv.Key + ":" + kv.Value);
+                //}
+
+                //var kt = JsonConvert.DeserializeObject<ChargeListDetails>(lineitemcharges);
+
+                //string[] authorsList = lineitemcharges.Split(',');
+
+                var chargesCol = JsonConvert.DeserializeObject<List<ChargeListDetails>>(lineitemcharges);
+                return chargesCol;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+
+        }
         public List<REF_MODEL_DEFAULT> MapRefrenceModel(string ReFModel)
         {
             try
@@ -102,6 +134,18 @@ namespace NeoERP.DocumentTemplate.Service.Services
                 throw new Exception(ex.Message);
             }
         }
+        public List<SalesOrderDetail> MapOrderChildLineItemColumnWithValue(string childColumn)
+        {
+            try
+            {
+                var childCol = JsonConvert.DeserializeObject<List<SalesOrderDetail>>(childColumn);
+                return childCol;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public List<SalesChalanDetail> MapChalanChildColumnWithValue(string childColumn)
         {
             try
@@ -117,6 +161,20 @@ namespace NeoERP.DocumentTemplate.Service.Services
         }
 
         public List<SalesInvoiceDetail> MapInvoiceChildColumnWithValue(string childColumn)
+        {
+            try
+            {
+                // var dynamicObject = JsonConvert.DeserializeObject(childColumn);
+                var childCol = JsonConvert.DeserializeObject<List<SalesInvoiceDetail>>(childColumn);
+                return childCol;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<SalesInvoiceDetail> MapInvoiceChildLineItemColumnWithValue(string childColumn)
         {
             try
             {

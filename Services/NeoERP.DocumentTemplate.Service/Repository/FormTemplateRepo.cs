@@ -30,7 +30,7 @@ namespace NeoERP.DocumentTemplate.Service.Repository
             this._defaultValueForLog = new DefaultValueForLog(this._workContext);
             this._logErp = new LogErp(this, _defaultValueForLog.LogUser, _defaultValueForLog.LogCompany, _defaultValueForLog.LogBranch, _defaultValueForLog.LogTypeCode, _defaultValueForLog.LogModule, _defaultValueForLog.FormCode);
         }
-        public List<FormDetailSetup> GetFormDetailSetup(string formCode)
+        public List<FormDetailSetup> GetFormDetailSetup(string formCode,string voucherno)
         {
             string Query = $@"SELECT FDS.SERIAL_NO,
                             FS.FORM_EDESC,
@@ -943,6 +943,7 @@ select
         //AA
         public List<COMMON_COLUMN> GetSalesOrderFormDetail(string formCode, string orderno)
         {
+      
             string columname = $@"SELECT COLUMN_NAME, TABLE_NAME FROM FORM_DETAIL_SETUP WHERE FORM_CODE='{formCode}' and company_code='{_workContext.CurrentUserinformation.company_code}' and display_flag='Y' ORDER BY SERIAL_NO ASC";
             List<FORM_DETAIL_SETUP_COLUMN> columnameentity = this._dbContext.SqlQuery<FORM_DETAIL_SETUP_COLUMN>(columname).ToList();
             var tableName = "";
@@ -967,7 +968,7 @@ select
 
                 Query.Replace("SO.AREA_CODE", "COALESCE(TO_CHAR(SO.AREA_CODE),' ') as SO.AREA_CODE");
             }
-
+            columns = columns + ",SO.EXCISE_ITEM_AMOUNT AS ED,SO.DISCOUNT_ITEM_AMOUNT AS SD,SO.VAT_ITEM_AMOUNT AS VT,SO.TAXABLE_AMOUNT AS TA,SO.NET_AMOUNT AS NA";
             if (Query.Contains("SO.CUSTOMER_CODE"))
             {
                 columns = columns + ",CS.CUSTOMER_EDESC,CS.REGD_OFFICE_EADDRESS,CS.TPIN_VAT_NO,CS.TEL_MOBILE_NO1,CS.CUSTOMER_NDESC";
@@ -8121,6 +8122,27 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                     trans.Rollback();
                     throw ex;
                 }
+            }
+        }
+
+        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode)
+        {
+            try
+            {
+                var data = new ChargeOnSales();
+                var data1 = new ChargeOnSales();
+                //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
+                string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}'";
+                var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
+                result.Add(data);
+                data.CHARGE_CODE = "NA";
+                result.Add(data1);
+                data1.CHARGE_CODE = "TA";
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

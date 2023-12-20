@@ -73,28 +73,137 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             return this._TestTemplateRepo.GetAllFORMDETAILSETUP();
         }
         [HttpGet]
-        public List<FormDetailSetup> GetFormDetailSetup(string formCode)
+        public List<FormDetailSetup> GetFormDetailSetup(string formCode, string orderno)
         {
+            orderno = orderno.Remove(orderno.Length - formCode.Length, formCode.Length);
             _logErp.InfoInFile("Get Form Details Setup for : " + formCode + " formcode");
             var userid = _workContext.CurrentUserinformation.User_id;
             var company_code = _workContext.CurrentUserinformation.company_code;
             var branch_code = _workContext.CurrentUserinformation.branch_code;
 
             var response = new List<FormDetailSetup>();
+            var addedFormDetailSetup = new List<FormDetailSetup>();
+            var data = new List<FormDetailSetup>();
+
             if (this._cacheManager.IsSet($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}"))
             {
-
-                var data = _cacheManager.Get<List<FormDetailSetup>>($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}");
+                //_cacheManager.Clear();
+                 data = _cacheManager.Get<List<FormDetailSetup>>($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}");
+                var checkchargelist = $@"select * from charge_setup where form_code = '{formCode}' and company_code ='{company_code}'";
+                List<ChargeSetup> checkchargelistentity = this._dbContext.SqlQuery<ChargeSetup>(checkchargelist).ToList();
+                data.RemoveAll(x => checkchargelistentity.Any(t => t.CHARGE_CODE == x.COLUMN_NAME));
+                string columname = "";
+                if (orderno.Contains("undefined"))
+                {
+                    columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y'";
+                }
+                else
+                {
+                    columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
+                                LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}'";
+                }                            
+                List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();               
+                for (int i = 0; i < columnameentity.Count; i++)
+                {
+                    var columncharge = new FormDetailSetup();
+                    columncharge.SERIAL_NO = columnameentity[i].CHARGE_CODE == "VT" ? 27 : 23 ;
+                    columncharge.DISPLAY_FLAG = "Y";
+                    columncharge.FORM_CODE= formCode;
+                    columncharge.DELETED_FLAG = "N";
+                    columncharge.COLUMN_HEADER = columnameentity[i].CHARGE_EDESC;
+                    columncharge.COLUMN_NAME = columnameentity[i].CHARGE_CODE;
+                    columncharge.MASTER_CHILD_FLAG = "C";
+                    columncharge.LEFT_POSITION = 1600;
+                    columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
+                    columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
+                    columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
+                    columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
+                   
+                    if (!data.Select(x=>x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
+                       data.Add(columncharge);
+                    
+                }
                 _logErp.InfoInFile(data.Count() + " Form Details setup has been fetched from cached for " + formCode + " formcode");
-                response = data;
+                //response = data;
+                response = data.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE")).ToList(); ;
             }
             else
             {
-                var formDetailList = this._FormTemplateRepo.GetFormDetailSetup(formCode);
+                var formDetailList = this._FormTemplateRepo.GetFormDetailSetup(formCode, orderno);
+
+                string columname = "";
+                if (orderno.Contains("undefined"))
+                {
+                    columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y'";
+                }
+                else
+                {
+                    columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
+                                LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}'";
+                }
+
+                List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();
+
+                for (int i = 0; i < columnameentity.Count; i++)
+                {
+                    var columncharge = new FormDetailSetup();
+                    columncharge.SERIAL_NO = columnameentity[i].CHARGE_CODE == "VT" ? 27 : 23;
+                    columncharge.DISPLAY_FLAG = "Y";
+                    columncharge.FORM_CODE = formCode;
+                    columncharge.DELETED_FLAG = "N";
+                    columncharge.COLUMN_HEADER = columnameentity[i].CHARGE_EDESC;
+                    columncharge.COLUMN_NAME = columnameentity[i].CHARGE_CODE;
+                    columncharge.MASTER_CHILD_FLAG = "C";
+                    columncharge.LEFT_POSITION = 1600;
+                    columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
+                    columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
+                    columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
+                    columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
+                    if (!formDetailList.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
+                        formDetailList.Add(columncharge);                    
+                }
+              
                 this._cacheManager.Set($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}", formDetailList, 20);
                 _logErp.InfoInFile(formDetailList.Count() + " form details setup has beed fetched for " + formCode + " formcode");
-                response = formDetailList;
+                //response = formDetailList;
+                response = formDetailList.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE")).ToList();
             }
+            var ta = new FormDetailSetup();
+            ta.SERIAL_NO = 26;
+            ta.DISPLAY_FLAG = "Y";
+            ta.FORM_CODE = formCode;
+            ta.DELETED_FLAG = "N";
+            ta.COLUMN_HEADER = "TAXABLE AMOUNT";
+            ta.COLUMN_NAME = "TA";
+            ta.MASTER_CHILD_FLAG = "C";
+            ta.LEFT_POSITION = 1600;
+            if (!response.Select(x => x.COLUMN_HEADER).Contains(ta.COLUMN_HEADER))
+                response.Add(ta);
+
+            var na = new FormDetailSetup();
+            na.SERIAL_NO = 28;
+            na.DISPLAY_FLAG = "Y";
+            na.FORM_CODE = formCode;
+            na.DELETED_FLAG = "N";
+            na.COLUMN_HEADER = "NET AMOUNT";
+            na.COLUMN_NAME = "NA";
+            na.MASTER_CHILD_FLAG = "C";
+            na.LEFT_POSITION = 4600;
+            if (!response.Select(x => x.COLUMN_HEADER).Contains(na.COLUMN_HEADER))
+                response.Add(na);
+
             return response;
         }
         [HttpGet]
@@ -5307,6 +5416,8 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     var batchTransaction = _saveDocTemplate.MapBatchTransactionValue(model.SERIAL_TRACKING_VALUE);
                     _logErp.WarnInDB("Batch Transaction details for sales order : " + batchTransaction);
 
+                    
+
                     var masterColumn = _saveDocTemplate.MapSalesOrderMasterColumnWithValue(model.Master_COLUMN_VALUE, primaryDateColumn, primaryColumn);
                     //var validation = checkValidation(model, masterColumn.VOUCHER_DATE.ToString());
                     //if (validation != "Valid")
@@ -5339,6 +5450,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                             _logErp.WarnInDB("Master column value for sales order:" + masterColumn);
                             var childColVal = _saveDocTemplate.MapOrderChildColumnWithValue(model.Child_COLUMN_VALUE);
                             _logErp.WarnInDB("Child Column Values sales order: " + childColVal);
+
+
+
+
+                            var childLineItemColVal = _saveDocTemplate.MapOrderChildLineItemColumnWithValue(model.Child_COLUMN_VALUE);
+                            _logErp.WarnInDB("Child Column Values sales order: " + childLineItemColVal);
+
+
 
                             var validation = checkValidation(model, masterColumn1.ORDER_DATE.ToString());
                             if (validation != "Valid")
@@ -5386,9 +5505,25 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                         }
                         else if (model.Table_Name.ToLower() == "sa_sales_invoice")
                         {
+                            if (model.Child_COLUMN_VALUE != null)
+                            {
+                                //var lineitemcharges = _saveDocTemplate.MapLineItemChargesColumnWithValue(model.Child_COLUMN_VALUE);
+                                //string[] lineitemcharges = model.Child_COLUMN_VALUE.Split(',');
+                                string[] lineitemcharges = model.Child_COLUMN_VALUE.Split('}');
+                                _logErp.WarnInDB("Charges for sales Order ================ : " + lineitemcharges);
+                            }
+
                             var masterInvoiceColumn = _saveDocTemplate.MapSalesInvoiceMasterColumnWithValue(model.Master_COLUMN_VALUE, primaryDateColumn, primaryColumn);
+
+                            masterInvoiceColumn.ChargeList = _saveDocTemplate.MapLineItemChargesColumnWithValue(model.Child_COLUMN_VALUE).ToList();
+
                             _logErp.WarnInDB("Master column value sales invoice:" + masterColumn);
                             var childColVal = _saveDocTemplate.MapInvoiceChildColumnWithValue(model.Child_COLUMN_VALUE);
+
+
+                            var childLineItemColVal = _saveDocTemplate.MapInvoiceChildLineItemColumnWithValue(model.Child_COLUMN_VALUE);
+
+
                             var validation = checkValidation(model, masterInvoiceColumn.SALES_DATE.ToString());
                             if (validation != "Valid")
                             {
@@ -5403,10 +5538,11 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                                 ShippingTransaction = shippingDetailValues,
                                CustomOrderTransaction = customColList,
                                 RefenceModel = model.REF_MODEL,
-                                BatchTransaction = batchTransaction
+                                BatchTransaction = batchTransaction,
+                                
                             };
                             commonSaveFieldForSales.ManualNumber = salesInvoiceData.MasterInvoiceTransaction.MANUAL_NO;
-                            orderSaveResponse = _saveDocTemplateSalesModule.SaveSalesInvoiceFormData(salesInvoiceData,commonSaveFieldForSales,_objectEntity);
+                            orderSaveResponse = _saveDocTemplateSalesModule.SaveSalesInvoiceFormData(salesInvoiceData,commonSaveFieldForSales, _objectEntity);
                           
                             _logErp.WarnInDB("Sales Invoice Saved successfullly :" + orderSaveResponse);
 
@@ -6297,6 +6433,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         public string checkValidation(FormDetails model, string voucherDate)
         {
             var resultVal = "Valid";
+            voucherDate = DateTime.Now.ToString();
             if (Convert.ToDateTime(voucherDate) > DateTime.Now)
             {
                 return resultVal = "Voucher Date exceed today date.";
@@ -6462,7 +6599,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             var company_code = _workContext.CurrentUserinformation.company_code;
             var branch_code = _workContext.CurrentUserinformation.branch_code;
             var response = new List<COMMON_COLUMN>();
-            //if (this._cacheManager.IsSet($"GetSalesOrderDetailFormDetailByFormCodeAndOrderNo_{userid}_{company_code}_{branch_code}_{formCode}_{orderno}"))
+            //if (this._cacheManager.IsSet($"CALC_TOTAL_PRICE CALC_TOTAL_PRICE-child{userid}_{company_code}_{branch_code}_{formCode}_{orderno}"))
             //{
             //    var data = _cacheManager.Get<List<COMMON_COLUMN>>($"GetSalesOrderDetailFormDetailByFormCodeAndOrderNo_{userid}_{company_code}_{branch_code}_{formCode}_{orderno}");
             //    response = data;
@@ -8879,6 +9016,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         {
             _logErp.InfoInFile("Get CompanyInfo:  For Print");
             var response = _FormTemplateRepo.GetCompanyList();
+            return response;
+        }
+
+        [HttpGet]
+        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode)
+        {
+            _logErp.InfoInFile("Get CompanyInfo:  For Print");
+            var response = _FormTemplateRepo.GetLineItemChargeInfo(companycode,FormCode);
             return response;
         }
 

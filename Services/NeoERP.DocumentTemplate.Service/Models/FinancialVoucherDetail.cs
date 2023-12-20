@@ -111,14 +111,17 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string CHARGE_CODE { get; set; }
         public string ACC_CODE { get; set; }
         public string ACC_EDESC { get; set; }
-
+       
     }
     public class IPChargeEdesc
     {
         public string CHARGE_CODE { get; set; }
         public string CHARGE_EDESC { get; set; }
         public string CHARGE_TYPE_FLAG { get; set; }
-       
+        public string VALUE_PERCENT_FLAG { get; set; }
+        public decimal VALUE_PERCENT_AMOUNT { get; set; }
+        public Char? ON_ITEM { get; set; }
+
     }
     public class IPChargeCode
     {

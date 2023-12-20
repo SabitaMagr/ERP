@@ -1247,7 +1247,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 }
                 else {
                     var primarycolumn=string.Empty;
-                    var fomdetails = _FormTemplateRepo.GetFormDetailSetup(formcode);
+                    var fomdetails = _FormTemplateRepo.GetFormDetailSetup(formcode,voucherno);
                     if (fomdetails.Count > 0)
                     {
                         primarycolumn = _FormTemplateRepo.GetPrimaryColumnByTableName(fomdetails[0].TABLE_NAME);

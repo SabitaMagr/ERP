@@ -398,6 +398,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string GL { get; set; }
         public string APPORTION_FLAG { get; set; }
         public string APPORTION { get; set; }
+        public string ON_ITEM { get; set; }
 
         //AA Added to check whether the charges are active or not 
         public string CHARGE_ACTIVE_FLAG { get; set; }

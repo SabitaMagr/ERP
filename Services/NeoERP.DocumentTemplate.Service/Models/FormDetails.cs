@@ -53,6 +53,12 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public decimal cal_unit_price { get; set; }
         public decimal cal_total_price { get; set; }
         public decimal Total_price { get; set; }
+        public decimal EXCISE_AMOUNT { get; set; }
+        public decimal DISCOUNT_AMOUNT { get; set; }
+        public decimal VAT_AMOUNT { get; set; }
+
+        public decimal TAXABLE_AMOUNT { get; set; }
+        public decimal NET_AMOUNT { get; set; }
 
     }
     public class FORM_TEMPLATE_DRAFT

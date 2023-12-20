@@ -22,6 +22,16 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public decimal QUANTITY { get; set; }
         public decimal UNIT_PRICE { get; set; }
         public decimal TOTAL_PRICE { get; set; }
+        //public decimal EXCISE_AMOUNT { get; set; }
+        //public decimal DISCOUNT_AMOUNT { get; set; }
+        //public decimal VAT_AMOUNT { get; set; }
+
+        public decimal ED { get; set; } //
+        public decimal SD { get; set; }
+        public decimal VT { get; set; }
+
+        public decimal TA { get; set; }
+        public decimal NA { get; set; }
         public decimal CALC_QUANTITY { get; set; }
         public decimal CALC_UNIT_PRICE { get; set; }
         public decimal CALC_TOTAL_PRICE { get; set; }
@@ -78,6 +88,14 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string SECTOR_CODE { get; set; }
 
         public decimal? SECOND_QUANTITY { get; set; }
+
+        public List<ChargeListDetails> ChargeList { get; set; }
     }
-   
+   public class ChargeListDetails
+    {
+        public string BONUS_DISCOUNT { get; set; }
+        public string SPECIAL_DISCOUNT { get; set; }
+        public string ItemChargeType { get; set; }
+        public string ItemChargeValue { get; set; }
+    }
 }

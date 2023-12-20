@@ -61,7 +61,7 @@ namespace NeoERP.DocumentTemplate.Controllers
             return PartialView();
         }
         [HttpGet]
-        public ActionResult Formtemplates(string formCode, string orderNo)
+        public ActionResult Formtemplates(string formCode, string voucherno)
         {
             return PartialView("Formtemplate");
         }

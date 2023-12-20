@@ -21,13 +21,17 @@ namespace NeoERP.DocumentTemplate.Service.Interface
 
 
         List<SalesOrderDetail> MapOrderChildColumnWithValue(string childColumn);
+        List<SalesOrderDetail> MapOrderChildLineItemColumnWithValue(string childColumn);
         List<SalesChalanDetail> MapChalanChildColumnWithValue(string childColumn);
         List<SalesInvoiceDetail> MapInvoiceChildColumnWithValue(string childColumn);
+        List<SalesInvoiceDetail> MapInvoiceChildLineItemColumnWithValue(string childColumn);
         List<SalesReturnDetail> MapReturnChildColumnWithValue(string childColumn);
 
         List<CustomOrderColumn> MapCustomOrderColumnWithValue(string custom_column_val);
 
         List<ChargeOnSales> MapChargesColumnWithValue(string charges);
+
+        List<ChargeListDetails> MapLineItemChargesColumnWithValue(string lineitemcharges);
 
         ShippingDetails MapShippingDetailsColumnValue(string shippingDetails);
 

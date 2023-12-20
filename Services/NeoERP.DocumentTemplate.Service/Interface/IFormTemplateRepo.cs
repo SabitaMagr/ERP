@@ -6,7 +6,7 @@ namespace NeoERP.DocumentTemplate.Service.Interface
 {
     public interface IFormTemplateRepo
     {
-        List<FormDetailSetup> GetFormDetailSetup(string formCode);
+        List<FormDetailSetup> GetFormDetailSetup(string formCode, string orderno);
         List<DraftFormModel> GetDraftFormDetailSetup(string formCode);
         List<Customers> GetAllCustomerSetup(string filter);
         List<Suppliers> getALLSupplierListByFlter(string filter);
@@ -305,7 +305,7 @@ namespace NeoERP.DocumentTemplate.Service.Interface
 
         bool CheckVoucherNoPosted(string voucherno);
         List<CompanyInfo> GetCompanyList();
-
+        List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode);
         List<Document> getDocumentByFilter(string filter);
         List<AccountSetup> getALLAccountGroupForIntrestCalc();
 

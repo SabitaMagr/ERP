@@ -67,6 +67,11 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string REF_FIX_QUANTITY { get; set; }
         public string REF_FIX_PRICE { get; set; }
         public string HELP_DESCRIPTION { get; set; }
+        public string CHARGE_TYPE_FLAG { get; set; }
+        public string VALUE_PERCENT_FLAG { get; set; }
+        public decimal VALUE_PERCENT_AMOUNT { get; set; }
+        public char? ON_ITEM { get; set; }
+
     }
     public class DraftFormModel
     {
@@ -111,6 +116,11 @@ namespace NeoERP.DocumentTemplate.Service.Models
     public class COMMON_COLUMN {
         public decimal? SECOND_QUANTITY { get; set; }
         public decimal? TOTAL_PRICE { get; set; }
+        public decimal ED { get; set; }
+        public decimal SD { get; set; }
+        public decimal VT { get; set; }
+        public decimal TA { get; set; }
+        public decimal NA { get; set; }
         public decimal? MASTER_AMOUNT { get; set; }
         public DateTime? MRR_DATE { get; set; }
         public decimal? MR_NO { get; set; }
@@ -249,6 +259,12 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string PARTY_CODE { get; set; }
         public DateTime? EST_DELIVERY_DATE { get; set; }
         public DateTime? EFFECTIVE_DATE { get; set; }
+        //public decimal BONUS_DISCOUNT { get; set; }
+        //public decimal SPECIAL_DISCOUNT { get; set; }
+        //public decimal VAT { get; set; }
+        //public decimal YEARLY_DISCOUNT { get; set; }
+        //public decimal FLAT_DISCOUNT { get; set; }
+        
     }
     public class GuestInfoFromMaterTransaction
     {

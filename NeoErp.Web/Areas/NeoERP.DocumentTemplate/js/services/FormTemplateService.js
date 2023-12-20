@@ -1,12 +1,10 @@
 ﻿
-
-
 DTModule.service('formtemplateservice', function (formtemplatefactory) {
-
-    this.getFormDetail_ByFormCode = function (formCode, d1) {
-        var formDetail = formtemplatefactory.getFormDetail(formCode)
+    
+    this.getFormDetail_ByFormCode = function (formCode, orderno, d1) {
+        var formDetail = formtemplatefactory.getFormDetail(formCode, orderno)
             .then(function (result) {
-                d1.resolve(result);
+                d1.resolve(result);             
             }, function (err) { });
     };
     this.getDraftFormDetail_ByFormCode = function (formCode, d7) {
@@ -15,8 +13,7 @@ DTModule.service('formtemplateservice', function (formtemplatefactory) {
                 d7.resolve(result);
             }, function (err) { });
     };
-    this.getFormCustomSetup_ByFormCode = function (formCode,voucherNo, d3) {
-        
+    this.getFormCustomSetup_ByFormCode = function (formCode, voucherNo, d3) {
         var formDetail = formtemplatefactory.GetFormCustomSetup(formCode, voucherNo)
             .then(function (result) {
                 d3.resolve(result);
@@ -69,8 +66,9 @@ DTModule.service('formtemplateservice', function (formtemplatefactory) {
 
 DTModule.factory('formtemplatefactory', function ($http) {
     var fac = {};
-    fac.getFormDetail = function (formcode) {
-        var req = "/api/TemplateApi/GetFormDetailSetup?formCode=";
+    fac.getFormDetail = function (formcode, orderno) {
+        var req = "/api/TemplateApi/GetFormDetailSetup?formCode=" + formcode + "&&orderno=" + orderno; //sashi this is
+        /*var req = "/api/TemplateApi/GetFormDetailSetup?formCode=";*/
         return $http.get(req + formcode);
     }
     fac.getDraftFormDetail = function (formcode) {
