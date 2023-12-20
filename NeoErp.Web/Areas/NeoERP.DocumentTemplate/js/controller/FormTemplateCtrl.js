@@ -3075,6 +3075,15 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                 return $scope.loadingBtnReset();
             }
         };
+        if ($scope.masterModels.hasOwnProperty("REMARKS")) {
+            if ($scope.DocumentName == "SA_SALES_RETURN") {
+                var remarks = $scope.masterModels.REMARKS
+                if (remarks == "") {
+                    displayPopupNotification("Remarks shouldnot be empty", "warning");
+                    return $scope.loadingBtnReset();
+                }
+            }
+        };
         if ($scope.masterModels.hasOwnProperty("FROM_LOCATION_CODE")) {
             var master_From_location_code = $scope.masterModels.FROM_LOCATION_CODE;
             if (master_From_location_code == null || master_From_location_code == "" || master_From_location_code == undefined) {

@@ -131,7 +131,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 }
                 _logErp.InfoInFile(data.Count() + " Form Details setup has been fetched from cached for " + formCode + " formcode");
                 //response = data;
-                response = data.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE")).ToList(); ;
+                response = data.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE") && !x.COLUMN_NAME.Contains("COMPLETED_QUANTITY")).ToList();
             }
             else
             {
@@ -178,7 +178,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 this._cacheManager.Set($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}", formDetailList, 20);
                 _logErp.InfoInFile(formDetailList.Count() + " form details setup has beed fetched for " + formCode + " formcode");
                 //response = formDetailList;
-                response = formDetailList.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE")).ToList();
+                response = formDetailList.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE") && !x.COLUMN_NAME.Contains("COMPLETED_QUANTITY")).ToList();
             }
             var ta = new FormDetailSetup();
             ta.SERIAL_NO = 26;

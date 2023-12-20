@@ -22,6 +22,11 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public decimal QUANTITY { get; set; }
         public decimal UNIT_PRICE { get; set; }
         public decimal TOTAL_PRICE { get; set; }
+        public decimal ED { get; set; } 
+        public decimal SD { get; set; }
+        public decimal VT { get; set; }
+        public decimal TA { get; set; }
+        public decimal NA { get; set; }
         public decimal CALC_QUANTITY { get; set; }
         public decimal CALC_UNIT_PRICE { get; set; }
         public decimal CALC_TOTAL_PRICE { get; set; }

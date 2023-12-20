@@ -1965,6 +1965,11 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     salesChildReturn.CALC_QUANTITY = cCol.CALC_QUANTITY > 0 ? cCol.CALC_QUANTITY : cCol.QUANTITY > 0 ? cCol.QUANTITY : 0;
                     salesChildReturn.CALC_UNIT_PRICE = cCol.CALC_UNIT_PRICE > 0 ? cCol.CALC_UNIT_PRICE : cCol.UNIT_PRICE > 0 ? cCol.UNIT_PRICE : 0;
                     salesChildReturn.CALC_TOTAL_PRICE = cCol.CALC_TOTAL_PRICE > 0 ? cCol.CALC_TOTAL_PRICE : cCol.TOTAL_PRICE > 0 ? cCol.TOTAL_PRICE : 0;
+                    salesChildReturn.ED = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='ED'").ToList().Count() > 0 ? (cCol.ED > 0 ? cCol.ED : cCol.ED > 0 ? cCol.ED : 0) : 0;
+                    salesChildReturn.SD = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='SD'").ToList().Count() > 0 ? (cCol.SD > 0 ? cCol.SD : cCol.SD > 0 ? cCol.SD : 0) : 0;
+                    salesChildReturn.VT = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='VT'").ToList().Count() > 0 ? (cCol.VT > 0 ? cCol.VT : cCol.VT > 0 ? cCol.VT : 0) : 0;
+                    salesChildReturn.TA = cCol.TA > 0 ? cCol.TA : cCol.TA > 0 ? cCol.TA : 0;
+                    salesChildReturn.NA = cCol.NA > 0 ? cCol.NA : cCol.NA > 0 ? cCol.NA : 0;
                     salesChildReturn.REMARKS = string.IsNullOrEmpty(cCol.REMARKS) ? masterValue.REMARKS : cCol.REMARKS;
                     salesChildReturn.FORM_CODE = string.IsNullOrEmpty(cCol.FORM_CODE) ? formCode : cCol.FORM_CODE;
                     salesChildReturn.COMPANY_CODE = _workContext.CurrentUserinformation.company_code;
@@ -2001,11 +2006,11 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     //var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
 
                     var querySalesorder = $@"Insert into SA_SALES_RETURN (RETURN_NO, RETURN_DATE, CUSTOMER_CODE, SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, 
-                      REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE,TRACKING_NO,SESSION_ROWID, MODIFY_BY, DIVISION_CODE,TO_LOCATION_CODE,PARTY_TYPE_CODE,SECOND_QUANTITY) 
+                      REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE,TRACKING_NO,SESSION_ROWID, MODIFY_BY, DIVISION_CODE,TO_LOCATION_CODE,PARTY_TYPE_CODE,SECOND_QUANTITY,EXCISE_ITEM_AMOUNT,DISCOUNT_ITEM_AMOUNT,VAT_ITEM_AMOUNT,TAXABLE_AMOUNT,NET_AMOUNT) 
                      Values ('{salesChildReturn.RETURN_NO}',TO_DATE('{salesChildReturn.RETURN_DATE}','DD-MON-YYYY hh24:mi:ss'), '{salesChildReturn.CUSTOMER_CODE}', {salesChildReturn.SERIAL_NO}, 
                     '{salesChildReturn.ITEM_CODE}', '{salesChildReturn.MU_CODE}', {salesChildReturn.QUANTITY}, {salesChildReturn.UNIT_PRICE}, {salesChildReturn.TOTAL_PRICE}, 
                      {salesChildReturn.CALC_QUANTITY}, {salesChildReturn.CALC_UNIT_PRICE}, {salesChildReturn.CALC_TOTAL_PRICE}, '{salesChildReturn.REMARKS}','{salesChildReturn.FORM_CODE}', '{salesChildReturn.COMPANY_CODE}', '{salesChildReturn.BRANCH_CODE}', '{salesChildReturn.CREATED_BY}', SYSDATE, 
-                    'N', '{salesChildReturn.CURRENCY_CODE}', {salesChildReturn.EXCHANGE_RATE},'{salesChildReturn.TRACKING_NO}', '{salesChildReturn.SESSION_ROWID}', '', '{salesChildReturn.DIVISION_CODE}','{salesChildReturn.TO_LOCATION_CODE}','{salesChildReturn.PARTY_TYPE_CODE}','{cCol.SECOND_QUANTITY}')";
+                    'N', '{salesChildReturn.CURRENCY_CODE}', {salesChildReturn.EXCHANGE_RATE},'{salesChildReturn.TRACKING_NO}', '{salesChildReturn.SESSION_ROWID}', '', '{salesChildReturn.DIVISION_CODE}','{salesChildReturn.TO_LOCATION_CODE}','{salesChildReturn.PARTY_TYPE_CODE}','{cCol.SECOND_QUANTITY}','{cCol.ED}','{cCol.SD}','{cCol.VT}','{cCol.TA}','{cCol.NA}')";
                     var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
                     serialNo++;
 
