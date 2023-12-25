@@ -8132,7 +8132,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                 var data = new ChargeOnSales();
                 var data1 = new ChargeOnSales();
                 //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
-                string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}'";
+                string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}' order by priority_index_no";
                 var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
                 result.Add(data);
                 data.CHARGE_CODE = "NA";

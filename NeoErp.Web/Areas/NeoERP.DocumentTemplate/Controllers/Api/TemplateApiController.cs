@@ -96,17 +96,17 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 if (orderno.Contains("undefined"))
                 {
                     columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no from charge_setup CH
                                 INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y'";
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
                 }
                 else
                 {
                     columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no from charge_setup CH
                                 LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
                                 LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}'";
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}' order by CH.priority_index_no";
                 }                            
                 List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();               
                 for (int i = 0; i < columnameentity.Count; i++)
@@ -124,10 +124,22 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
                     columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
                     columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
-                   
-                    if (!data.Select(x=>x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
-                       data.Add(columncharge);
-                    
+                    if (!data.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
+                        data.Add(columncharge);
+                    if (columnameentity[i].CHARGE_CODE != "VT")
+                    {
+                        var manualCalculation = new FormDetailSetup();
+                        manualCalculation.SERIAL_NO = 25;
+                        manualCalculation.DISPLAY_FLAG = "Y";
+                        manualCalculation.FORM_CODE = formCode;
+                        manualCalculation.DELETED_FLAG = "N";
+                        manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
+                        manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
+                        manualCalculation.MASTER_CHILD_FLAG = "C";
+                        manualCalculation.LEFT_POSITION = 1600;
+                        if (!data.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
+                            data.Add(manualCalculation);
+                    }                 
                 }
                 _logErp.InfoInFile(data.Count() + " Form Details setup has been fetched from cached for " + formCode + " formcode");
                 //response = data;
@@ -141,17 +153,17 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 if (orderno.Contains("undefined"))
                 {
                     columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM, CH.priority_index_no from charge_setup CH
                                 INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y'";
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
                 }
                 else
                 {
                     columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no from charge_setup CH
                                 LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
                                 LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}'";
+                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}' order by CH.priority_index_no";
                 }
 
                 List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();
@@ -170,9 +182,23 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
                     columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
                     columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
-                    columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
+                    columncharge.ON_ITEM = columnameentity[i].ON_ITEM;                  
                     if (!formDetailList.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
-                        formDetailList.Add(columncharge);                    
+                        formDetailList.Add(columncharge);
+                    if (columnameentity[i].CHARGE_CODE != "VT")
+                    {
+                        var manualCalculation = new FormDetailSetup();
+                        manualCalculation.SERIAL_NO = 25;
+                        manualCalculation.DISPLAY_FLAG = "Y";
+                        manualCalculation.FORM_CODE = formCode;
+                        manualCalculation.DELETED_FLAG = "N";
+                        manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
+                        manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
+                        manualCalculation.MASTER_CHILD_FLAG = "C";
+                        manualCalculation.LEFT_POSITION = 1600;
+                        if (!formDetailList.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
+                            formDetailList.Add(manualCalculation);
+                    }
                 }
               
                 this._cacheManager.Set($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}", formDetailList, 20);
@@ -180,6 +206,8 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 //response = formDetailList;
                 response = formDetailList.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE") && !x.COLUMN_NAME.Contains("COMPLETED_QUANTITY")).ToList();
             }
+           
+
             var ta = new FormDetailSetup();
             ta.SERIAL_NO = 26;
             ta.DISPLAY_FLAG = "Y";
