@@ -8136,8 +8136,26 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                 var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
                 result.Add(data);
                 data.CHARGE_CODE = "NA";
+                //data.CHARGE_TYPE_FLAG = "A";
+                //data.DELETED_FLAG = "N";
                 result.Add(data1);
                 data1.CHARGE_CODE = "TA";
+               // data1.CHARGE_TYPE_FLAG = "A";
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode)
+        {
+            try
+            {
+                //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
+                string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}' and charge_code = '{ChargeCode}' order by priority_index_no";
+                var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
                 return result;
             }
             catch (Exception)

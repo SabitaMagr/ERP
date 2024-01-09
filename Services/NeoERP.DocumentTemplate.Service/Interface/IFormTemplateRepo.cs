@@ -306,6 +306,7 @@ namespace NeoERP.DocumentTemplate.Service.Interface
         bool CheckVoucherNoPosted(string voucherno);
         List<CompanyInfo> GetCompanyList();
         List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode);
+        List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode, string ChargeCode);
         List<Document> getDocumentByFilter(string filter);
         List<AccountSetup> getALLAccountGroupForIntrestCalc();
 

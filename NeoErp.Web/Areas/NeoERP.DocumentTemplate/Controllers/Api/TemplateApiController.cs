@@ -96,14 +96,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 if (orderno.Contains("undefined"))
                 {
                     columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
                                 INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
                                 where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
                 }
                 else
                 {
                     columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
                                 LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
                                 LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
                                 where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}' order by CH.priority_index_no";
@@ -124,6 +124,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
                     columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
                     columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
+                    columncharge.MANUAL_CALC_CHARGE = columnameentity[i].MANUAL_CALC_CHARGE;
                     if (!data.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
                         data.Add(columncharge);
                     if (columnameentity[i].CHARGE_CODE != "VT")
@@ -153,14 +154,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 if (orderno.Contains("undefined"))
                 {
                     columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM, CH.priority_index_no from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM, CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
                                 INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
                                 where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
                 }
                 else
                 {
                     columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no from charge_setup CH
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
                                 LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
                                 LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
                                 where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}' order by CH.priority_index_no";
@@ -182,6 +183,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
                     columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
                     columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
+                    columncharge.MANUAL_CALC_CHARGE = columnameentity[i].MANUAL_CALC_CHARGE;
                     columncharge.ON_ITEM = columnameentity[i].ON_ITEM;                  
                     if (!formDetailList.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
                         formDetailList.Add(columncharge);
@@ -9052,6 +9054,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         {
             _logErp.InfoInFile("Get CompanyInfo:  For Print");
             var response = _FormTemplateRepo.GetLineItemChargeInfo(companycode,FormCode);
+            return response;
+        }
+
+        [HttpGet]
+        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode)
+        {
+            _logErp.InfoInFile("Get CompanyInfo:  For Print");
+            var response = _FormTemplateRepo.GetLineItemChargeParticularInfo(companycode, FormCode,ChargeCode);
             return response;
         }
 

@@ -761,6 +761,7 @@
         right: 455px;
         top: 0px;
     }
+	
 </style>
 
 <div class="col-md-12" id="FormTemplateCtrl">
@@ -1025,320 +1026,372 @@
             <div class="portlet-body">
                 <div class="row boxbg">
 
-                    <div class="col-xs-11 col-sm-11 col-md-11 custom-col-width">
+					<div class="col-xs-11 col-sm-11 col-md-11 custom-col-width">
 
-                        <form id="documentformelementvalues" class="documentform">
-                            <!-- rendering master elements -->
-                            <div class="row masterDiv">
+						<form id="documentformelementvalues" class="documentform">
+							<!-- rendering master elements -->
+							<div class="row masterDiv">
 
-                                @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_masterFieldPartial.cshtml")
-                            </div>
+								@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_masterFieldPartial.cshtml")
+							</div>
 
-                            <div class="clearfix"></div>
-
-
-                            <div ng-if="ModuleCode== '01'">
-                                @{
-                                    @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_FinancialAccFormTab.cshtml")
-                                }
-                            </div>
-
-                            <div ng-if="ModuleCode== '02'">
-                                @{
-                                    @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_InvPurcurementFormTab.cshtml")
-                                }
-                            </div>
-
-                            <div ng-if="ModuleCode== '03'">
-                                @{
-                                    @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_PrdManagementFormTab.cshtml")
-                                }
-                            </div>
-
-                            <div ng-if="ModuleCode== '04'">
-                                @{
-                                    @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_SalesNRevenuFormTab.cshtml")
-                                }
-                            </div>
-
-                        </form>
+							<div class="clearfix"></div>
 
 
-                        @*<div class="summary-table" ng-if="freeze_manual_entry_flag==='Y'">
-                                <div class="row">
+							<div ng-if="ModuleCode== '01'">
+								@{
+									@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_FinancialAccFormTab.cshtml")
+								}
+							</div>
 
-                                    <div ng-if="ChargeList!='' && freeze_manual_entry_flag==='N'" class="col-xs-12 col-sm-8 col-md-6">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered charge-table">
+							<div ng-if="ModuleCode== '02'">
+								@{
+									@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_InvPurcurementFormTab.cshtml")
+								}
+							</div>
 
-                                                <thead class="font-green">
-                                                    <tr>
-                                                        <th width="20%" colspan="2">Charge On</th>
-                                                        <th width="10%">Type</th>
-                                                        <th width="15%">Charge Amount</th>
-                                                        <th width="15%">Manual Amt</th>
-                                                        <th width="40%">Acc Code</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="(chargeIndex,item) in ChargeList">
-                                                        <td>
-                                                            <input type="checkbox" ng-click="sync(bool, item)" ng-init="bool=false" ng-model="bool" ng-checked="isChecked(item.CHARGE_CODE)" title="{{item.CHARGE_EDESC}}">
-                                                        </td>
-                                                        <td>{{item.CHARGE_EDESC}}  <label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label></td>
-                                                        <td width="10%">
-                                                            <label ng-if="item.CHARGE_TYPE_FLAG ==='D'">Deduction</label>
-                                                            <label ng-if="item.CHARGE_TYPE_FLAG ==='A'">Addition</label>
-                                                        </td>
+							<div ng-if="ModuleCode== '03'">
+								@{
+									@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_PrdManagementFormTab.cshtml")
+								}
+							</div>
 
-                                                        <td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
-                                                            <input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
-                                                        </td>
-                                                        <td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
-                                                            <input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
-                                                        </td>
+							<div ng-if="ModuleCode== '04'">
+								@{
+									@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/ModulePartialView/_SalesNRevenuFormTab.cshtml")
+								}
+							</div>
+
+						</form>
 
 
+						@*<div class="summary-table" ng-if="freeze_manual_entry_flag==='Y'">
+			<div class="row">
 
-                                                        <td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
-                                                            <input type="number" min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT">
-                                                        </td>
-                                                        <td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
-                                                            <input type="number" min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT">
-                                                        </td>
+				<div ng-if="ChargeList!='' && freeze_manual_entry_flag==='N'" class="col-xs-12 col-sm-8 col-md-6">
+					<div class="table-responsive">
+						<table class="table table-bordered charge-table">
 
-                                                        <td width="40%;">
-                                                            @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
+							<thead class="font-green">
+								<tr>
+									<th width="20%" colspan="2">Charge On</th>
+									<th width="10%">Type</th>
+									<th width="15%">Charge Amount</th>
+									<th width="15%">Manual Amt</th>
+									<th width="40%">Acc Code</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="(chargeIndex,item) in ChargeList">
+									<td>
+										<input type="checkbox" ng-click="sync(bool, item)" ng-init="bool=false" ng-model="bool" ng-checked="isChecked(item.CHARGE_CODE)" title="{{item.CHARGE_EDESC}}">
+									</td>
+									<td>{{item.CHARGE_EDESC}}  <label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label></td>
+									<td width="10%">
+										<label ng-if="item.CHARGE_TYPE_FLAG ==='D'">Deduction</label>
+										<label ng-if="item.CHARGE_TYPE_FLAG ==='A'">Addition</label>
+									</td>
 
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div ng-if="ChargeList!='' && freeze_manual_entry_flag==='Y'" class="col-xs-12 col-sm-8 col-md-6">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered charge-table">
-                                                <thead class="font-green">
-                                                    <tr>
-                                                        <th width="20%" colspan="2">Charge On</th>
-                                                        <th width="10%">Type</th>
-                                                        <th width="15%">Charge Amount</th>
-                                                        <th width="15%">Manual Amt</th>
-                                                        <th width="40%">Acc Code</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="(chargeIndex,item) in ChargeList">
-                                                        <td>
-                                                            <input type="checkbox" ng-click="sync(bool, item)" ng-init="bool=false" ng-model="bool" ng-checked="isChecked(item.CHARGE_CODE)" style="pointer-events:none;" title="" readonly>
-                                                        </td>
-                                                        <td>{{item.CHARGE_EDESC}}  <label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label></td>
-                                                        <td width="10%">
-                                                            <label ng-if="item.CHARGE_TYPE_FLAG ==='D'">Deduction</label>
-                                                            <label ng-if="item.CHARGE_TYPE_FLAG ==='A'">Addition</label>
-                                                        </td>
-
-                                                        <td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
-                                                            <input type="number" min="0" style="pointer-events:none;" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab readonly>
-                                                        </td>
-                                                        <td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
-                                                            <input type="number" min="0" class="form-control textbox" style="pointer-events:none;" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab readonly>
-                                                        </td>
+									<td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
+										<input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
+									</td>
+									<td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
+										<input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
+									</td>
 
 
 
-                                                        <td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
-                                                            <input type="number" min="0" class="form-control textbox" style="pointer-events:none;" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
-                                                        </td>
-                                                        <td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
-                                                            <input type="number" min="0" class="form-control textbox" style="pointer-events:none;" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
-                                                        </td>
+									<td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
+										<input type="number" min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT">
+									</td>
+									<td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
+										<input type="number" min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT">
+									</td>
 
-                                                        <td width="40%">
-                                                            @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
+									<td width="40%;">
+										@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
 
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-2 col-md-3">
-                                        <table class="table table-bordered">
-                                            <thead class="font-green">
-                                                <tr>
-                                                    <th colspan="2">Amount Summary</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Total:</td>
-                                                    <td ng-bind="summary.grandTotal">0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Addition:</td>
-                                                    <td ng-bind="addition">0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Deduction:</td>
-                                                    <td ng-bind="deduction">0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Grand Total:</td>
-                                                    <td class="ng-binding" ng-bind="adtotal">0</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-2 col-md-3">
-                                        <table class="table table-bordered">
-                                            <thead class="font-green">
-                                                <tr>
-                                                    <th colspan="2">Unit Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr ng-repeat="unit in units">
-                                                    <td>Total {{unit.mu_name}}</td>
-                                                    <td class="ng-binding">{{unit.mu_code_value}}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Grand Total</td>
-                                                    <td ng-bind="totalQty">0</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
-                                            <div ng-if="element.HELP_DESCRIPTION">
-                                                <label class="control-label" for="element">{{element.COLUMN_HEADER}} <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="{{element.HELP_DESCRIPTION}}"></i></label>
-                                            </div>
-                                            <div ng-if="!element.HELP_DESCRIPTION">
-                                                <label class="control-label" for="element">{{element.COLUMN_HEADER}}</label>
-                                            </div>
-                                            <textarea type="textarea" id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="form-control salestype" style="width: 100%; height:50px;" next-on-tab
-                                                      onkeypress="return checkSpcialChar(event)" maxlength="200" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>*@
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div ng-if="ChargeList!='' && freeze_manual_entry_flag==='Y'" class="col-xs-12 col-sm-8 col-md-6">
+					<div class="table-responsive">
+						<table class="table table-bordered charge-table">
+							<thead class="font-green">
+								<tr>
+									<th width="20%" colspan="2">Charge On</th>
+									<th width="10%">Type</th>
+									<th width="15%">Charge Amount</th>
+									<th width="15%">Manual Amt</th>
+									<th width="40%">Acc Code</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="(chargeIndex,item) in ChargeList">
+									<td>
+										<input type="checkbox" ng-click="sync(bool, item)" ng-init="bool=false" ng-model="bool" ng-checked="isChecked(item.CHARGE_CODE)" style="pointer-events:none;" title="" readonly>
+									</td>
+									<td>{{item.CHARGE_EDESC}}  <label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label></td>
+									<td width="10%">
+										<label ng-if="item.CHARGE_TYPE_FLAG ==='D'">Deduction</label>
+										<label ng-if="item.CHARGE_TYPE_FLAG ==='A'">Addition</label>
+									</td>
+
+									<td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
+										<input type="number" min="0" style="pointer-events:none;" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab readonly>
+									</td>
+									<td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
+										<input type="number" min="0" class="form-control textbox" style="pointer-events:none;" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab readonly>
+									</td>
 
 
 
-                        @*<div class="summary-table" ng-if="freeze_manual_entry_flag==='N'">*@
-                        <div class="row">
-                            <div ng-if="ChargeList!=''" class="col-xs-12 col-sm-8 col-md-6">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered charge-table">
+									<td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
+										<input type="number" min="0" class="form-control textbox" style="pointer-events:none;" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
+									</td>
+									<td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
+										<input type="number" min="0" class="form-control textbox" style="pointer-events:none;" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
+									</td>
 
-                                        <thead class="font-green">
-                                            <tr>
-                                                <th width="20%" colspan="2">Charge On</th>
-                                                <th width="10%">Type</th>
-                                                <th width="15%">Charge Rate</th>
-                                                <th width="15%">Charge Amount</th>
-                                                <th width="40%">Acc Code</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="(chargeIndex,item) in ChargeList">
-                                                <td>
-                                                    <input type="checkbox" ng-click="sync(bool, item)" ng-init="bool=false" ng-model="bool" ng-checked="isChecked(item.CHARGE_CODE)">
-                                                </td>
-                                                <td>{{item.CHARGE_EDESC}}({{item.VALUE_PERCENT_FLAG}})  <label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label></td>
-                                                <td width="10%">
-                                                    <label ng-if="item.CHARGE_TYPE_FLAG ==='D'">Deduction</label>
-                                                    <label ng-if="item.CHARGE_TYPE_FLAG ==='A'">Addition</label>
-                                                </td>
+									<td width="40%">
+										@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
 
-                                                <td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
-                                                    <input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
-                                                </td>
-                                                <td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
-                                                    <input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
-                                                </td>
-                                                <td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
-                                                    <input type="number" min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
-                                                </td>
-                                                <td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
-                                                    <input type="number" min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
-                                                </td>
-
-                                                <td width="40%">
-                                                    @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
-
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-2 col-md-3">
-                                <table class="table table-bordered">
-                                    <thead class="font-green">
-                                        <tr>
-                                            <th colspan="2">Amount Summary</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Total:</td>
-                                            <td ng-bind="summary.grandTotal">0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Addition:</td>
-                                            <td ng-bind="addition">0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Deduction:</td>
-                                            <td ng-bind="deduction">0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Grand Total:</td>
-                                            <td class="ng-binding" ng-bind="adtotal">0</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-xs-12 col-sm-2 col-md-3">
-                                <table class="table table-bordered">
-                                    <thead class="font-green">
-                                        <tr>
-                                            <th colspan="2">Unit Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="unit in units">
-                                            <td>Total {{unit.mu_name}}</td>
-                                            <td class="ng-binding">{{unit.mu_code_value}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Grand Total</td>
-                                            <td ng-bind="totalQty">0</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
-                                    <label class="control-label" for="element">{{element.COLUMN_HEADER}} <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="{{element.HELP_DESCRIPTION}}"></i></label>
-
-                                    <textarea type="textarea" id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="form-control salestype" style="width: 100%; height:50px;" next-on-tab
-                                              onkeypress="return checkSpcialChar(event)" maxlength="200" />
-                                </div>
-                            </div>
-                        </div>
-
-                        @*</div>*@
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-2 col-md-3">
+					<table class="table table-bordered">
+						<thead class="font-green">
+							<tr>
+								<th colspan="2">Amount Summary</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Total:</td>
+								<td ng-bind="summary.grandTotal">0</td>
+							</tr>
+							<tr>
+								<td>Addition:</td>
+								<td ng-bind="addition">0</td>
+							</tr>
+							<tr>
+								<td>Deduction:</td>
+								<td ng-bind="deduction">0</td>
+							</tr>
+							<tr>
+								<td>Grand Total:</td>
+								<td class="ng-binding" ng-bind="adtotal">0</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-xs-12 col-sm-2 col-md-3">
+					<table class="table table-bordered">
+						<thead class="font-green">
+							<tr>
+								<th colspan="2">Unit Total</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="unit in units">
+								<td>Total {{unit.mu_name}}</td>
+								<td class="ng-binding">{{unit.mu_code_value}}</td>
+							</tr>
+							<tr>
+								<td>Grand Total</td>
+								<td ng-bind="totalQty">0</td>
+							</tr>
+						</tbody>
+					</table>
+					<div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
+						<div ng-if="element.HELP_DESCRIPTION">
+							<label class="control-label" for="element">{{element.COLUMN_HEADER}} <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="{{element.HELP_DESCRIPTION}}"></i></label>
+						</div>
+						<div ng-if="!element.HELP_DESCRIPTION">
+							<label class="control-label" for="element">{{element.COLUMN_HEADER}}</label>
+						</div>
+						<textarea type="textarea" id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="form-control salestype" style="width: 100%; height:50px;" next-on-tab
+								  onkeypress="return checkSpcialChar(event)" maxlength="200" />
+					</div>
+				</div>
+			</div>
+		</div>*@
 
 
-                        @*<div class="row">
-                                <div class="col-xs-6 col-sm-4 col-md-4">
-                                        <div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
-                                            <label style="font-size:10px" for="element">{{element.COLUMN_HEADER}}</label>
-                                            <textarea id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="salestype" type="textarea" style="width: 130%; height:72px;" next-on-tab />
-                                        </div>
-                                    </div>
-                            </div>*@
-                    </div>
+
+						@*<div class="summary-table" ng-if="freeze_manual_entry_flag==='N'">*@
+						<label style="padding-top: 5px;">Deduction : <span class="clsTotalDeduction"></span></label>
+						<div id="toggle_icon">+</div>
+						<div class="row">
+							<div ng-if="ChargeList!=''" class="col-xs-12 col-sm-8 col-md-6">
+								<div class="table-responsive">
+									@*<button id="toggle_icon">+</button>*@
+									@*<div id="toggle_text" style="display: none">*@
+									<div id="toggle_text" style="display: none">
+										@*<label>Deduction</label>*@
+										<table class="table table-bordered charge-table">
+
+											<thead class="font-green">
+												<tr>
+													@*<th width="20%" colspan="2">Charge On</th>*@
+													<th width="20%">Charge On</th>
+													@*<th width="10%">Type</th>*@
+													<th width="15%">Charge Rate</th>
+													<th width="15%">Charge Amount</th>
+													<th width="40%">Acc Code</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr ng-repeat="(chargeIndex,item) in ChargeList" ng-if="item.CHARGE_TYPE_FLAG == 'D'">
+													<td>
+														{{item.CHARGE_EDESC}}   @*({{item.VALUE_PERCENT_FLAG}})*@
+														@*<label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label>*@
+													</td>
+
+													<td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
+														<input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
+													</td>
+													<td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
+														<input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
+													</td>
+													<td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
+														<input type="number" id={{item.CHARGE_CODE}} min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
+													</td>
+													<td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
+														<input type="number" id={{item.CHARGE_CODE}} min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
+													</td>
+
+													<td width="40%">
+														@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
+
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+
+									<label>Additon : <span class="clsTotalAddition"></span></label>
+									<table class="table table-bordered charge-table">
+
+										<thead class="font-green">
+											<tr>
+												@*<th width="20%" colspan="2">Charge On</th>*@
+												<th width="20%">Charge On</th>
+												@*<th width="10%">Type</th>*@
+												<th width="15%">Charge Rate</th>
+												<th width="15%">Charge Amount</th>
+												<th width="40%">Acc Code</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="(chargeIndex,item) in ChargeList" ng-if="item.CHARGE_TYPE_FLAG == 'A'">
+												@*<td>
+									<input type="checkbox" ng-click="sync(bool, item)" ng-init="bool=false" ng-model="bool" ng-checked="isChecked(item.CHARGE_CODE)">
+								</td>*@
+												<td>
+													{{item.CHARGE_EDESC}}   @*({{item.VALUE_PERCENT_FLAG}})*@
+													@*<label ng-if="item.VALUE_PERCENT_FLAG ==='P'">%</label>*@
+												</td>
+												@*<td width="10%">
+									<label ng-if="item.CHARGE_TYPE_FLAG ==='D'">Deduction</label>
+									<label ng-if="item.CHARGE_TYPE_FLAG ==='A'">Addition</label>
+								</td>*@
+
+												<td width="15%" ng-if="item.CHARGE_CODE ==='VT'">
+													<input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
+												</td>
+												<td width="15%" ng-if="item.CHARGE_CODE !=='VT'">
+													<input type="number" min="0" class="form-control textbox" ng-change="sync(bool, item)" ng-model="item.VALUE_PERCENT_AMOUNT" next-on-tab>
+												</td>
+												<td width="15%" ng-if="item.VALUE_PERCENT_FLAG ==='P'">
+													<input type="number" id={{item.CHARGE_CODE}} min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
+												</td>
+												<td width="15%" ng-if="item.VALUE_PERCENT_FLAG !=='P'">
+													<input type="number" id={{item.CHARGE_CODE}} min="0" class="form-control textbox" ng-change="msync(bool, item)" step="0.01" ng-model="item.CHARGE_AMOUNT" readonly>
+												</td>
+
+												<td width="40%">
+													@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_chargeAccCodePartial.cshtml")
+
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-2 col-md-3">
+								<table class="table table-bordered">
+									<thead class="font-green">
+										<tr>
+											<th colspan="2">Amount Summary</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>Total:</td>
+											<td ng-bind="summary.grandTotal">0</td>
+										</tr>
+										<tr>
+											<td>Addition:</td>
+											<td ng-bind="addition">0</td>
+										</tr>
+										<tr>
+											<td>Deduction:</td>
+											<td ng-bind="deduction">0</td>
+										</tr>
+										<tr>
+											<td>Grand Total:</td>
+											<td class="ng-binding" ng-bind="adtotal">0</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="col-xs-12 col-sm-2 col-md-3">
+								<table class="table table-bordered">
+									<thead class="font-green">
+										<tr>
+											<th colspan="2">Unit Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="unit in units">
+											<td>Total {{unit.mu_name}}</td>
+											<td class="ng-binding">{{unit.mu_code_value}}</td>
+										</tr>
+										<tr>
+											<td>Grand Total</td>
+											<td ng-bind="totalQty">0</td>
+										</tr>
+									</tbody>
+								</table>
+								<div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
+									<label class="control-label" for="element">{{element.COLUMN_HEADER}} <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="{{element.HELP_DESCRIPTION}}"></i></label>
+
+									<textarea type="textarea" id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="form-control salestype" style="width: 100%; height:50px;" next-on-tab
+											  onkeypress="return checkSpcialChar(event)" maxlength="200" />
+								</div>
+							</div>
+						</div>
+
+						@*</div>*@
+
+
+						@*<div class="row">
+			<div class="col-xs-6 col-sm-4 col-md-4">
+					<div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
+						<label style="font-size:10px" for="element">{{element.COLUMN_HEADER}}</label>
+						<textarea id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="salestype" type="textarea" style="width: 130%; height:72px;" next-on-tab />
+					</div>
+				</div>
+		</div>*@
+					</div>
                     @*<div class="col-xs-1 col-sm-1 col-md-1 custom-width-2">*@
                     @*<div id="style-switcher">
                             <div id="toggle-switcher" style="cursor:pointer;" class="">
@@ -1714,6 +1767,15 @@
             }
 
         });
+
+		$("#toggle_text").hide();
+		$("#toggle_icon").show();
+
+		$('#toggle_icon').click(function () {
+            $('#toggle_icon').text('-');
+			$("#toggle_text").slideToggle();
+		});
+
     });
 
     function ConvertEngDateToNep(eng) {

@@ -182,6 +182,9 @@
     .ALT1_QUANTITY, .ALT1_QUANTITY_div{
          width:93px;
     }
+	.columnWidth {
+		width: 100px;
+	}
 </style>
 
 
@@ -243,9 +246,9 @@
                 <table class="document_child_table dynamic-table  table-fixed">
                     <thead class="child-table-head">
                         <tr>
-                            <th ng-repeat="item in ChildFormElement[0].element | orderBy: 'SERIAL_NO*1'" class="{{item.COLUMN_NAME}} {{item.COLUMN_NAME}}-child ">{{item.COLUMN_HEADER}}  
+                            <th  ng-repeat="item in ChildFormElement[0].element | orderBy: 'SERIAL_NO*1'" class="{{item.COLUMN_NAME}} {{item.COLUMN_NAME}}-child columnWidth">{{item.COLUMN_HEADER}}  
                                  <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="{{item.HELP_DESCRIPTION}}"></i>                              
-                            <th class="btn-action" style="width:10%;">
+                            <th class="btn-action columnWidth">
                                 &nbsp;
                             </th>
                         </tr>

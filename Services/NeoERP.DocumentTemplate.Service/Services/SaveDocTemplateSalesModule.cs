@@ -7,6 +7,9 @@ using NeoERP.DocumentTemplate.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+//using NeoErp.Models.Common;
+//using System.Data.Entity;
+//using System.Data.OracleClient;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -2192,7 +2195,8 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     salesChildInvoice.SECTOR_CODE = string.IsNullOrEmpty(cCol.SECTOR_CODE) ? masterValue.SECTOR_CODE : cCol.SECTOR_CODE;
                     //salesChildInvoice.SECOND_QUANTITY = cCol.SECOND_QUANTITY > 0 ? cCol.SECOND_QUANTITY : 1;
 
-
+                    
+                   
                     //     salesChildInvoice.pay
 
 

@@ -120,6 +120,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string CHARGE_TYPE_FLAG { get; set; }
         public string VALUE_PERCENT_FLAG { get; set; }
         public decimal VALUE_PERCENT_AMOUNT { get; set; }
+        public string MANUAL_CALC_CHARGE { get; set; }
         public Char? ON_ITEM { get; set; }
 
     }

@@ -71,6 +71,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string VALUE_PERCENT_FLAG { get; set; }
         public decimal VALUE_PERCENT_AMOUNT { get; set; }
         public char? ON_ITEM { get; set; }
+        public string MANUAL_CALC_CHARGE { get; set; }
 
     }
     public class DraftFormModel

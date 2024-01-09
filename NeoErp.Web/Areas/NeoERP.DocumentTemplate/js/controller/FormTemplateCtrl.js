@@ -2,7 +2,6 @@
 /* eslint-disable */
 function focusNextFunction(e, pageElements) {
     debugger
-
     var pageElems = pageElements,
         elem = e.srcElement
     focusNext = false,
@@ -21,7 +20,6 @@ function focusNextFunction(e, pageElements) {
 }
 
 function specialTab() {
-
     $('.cacccode, .acccode, .issuetype, .location, .currency, .cust, .supplier, .prority, .products, .budget').keydown(function (e) {
         if (e.keyCode == 9) {  //tab pressed
             e.preventDefault();
@@ -65,7 +63,6 @@ DTModule.directive('nextOnTab',
     });
 
 DTModule.directive('financialform', function () {
-
     return {
         templateUrl: '/DocumentTemplate/Template/ModuleFormTab'
     };
@@ -73,7 +70,6 @@ DTModule.directive('financialform', function () {
 
 
 DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $routeParams, formtemplateservice, $window, $filter, hotkeys) {
-
 
     const CALC_QUANTITY = "CALC_QUANTITY";
     const CALC_TOTAL_PRICE = "CALC_TOTAL_PRICE";
@@ -100,6 +96,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     $scope.discount_schedule_flag = "";
     $scope.price_control_flag = "";
     $scope.rate_diff_flag = "";
+    //$scope.percentFlag = "P";
+    //$scope.percentAmount = 0;
 
     $scope.accsummary = {
         drTotal: null,
@@ -167,6 +165,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     $scope.datePattern = /^[01][0-9]-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\d{4}$/
     $scope.companycode = "";
     $scope.ChargeList = [];
+    $scope.lineItemParticularChargeDetails = []
     ///subin declare for storing initial charge data
     $scope.Initialchargedata = [];
     $scope.todaydate = "";
@@ -367,6 +366,12 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     $rootScope.ITEM_CODE_DEFAULTVAL = "";
 
     $scope.fromCustomer = false;
+
+    //$scope.onUpdate(function () {
+    //    alert(5)
+    //    //$(".refrencetype").focus();
+    //});
+
     //summary Object
     $scope.summary = { 'grandTotal': 0 }
     $scope.newgenorderno = "";
@@ -397,6 +402,10 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     //    callback: function (event, hotkey) {
     //    }
     //});
+
+    
+
+    //onUpdate(function (event) { alert(6); });
 
     hotkeys.add({
         combo: 'ctrl+enter',
@@ -582,6 +591,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         }, 30);
         debugger;
     }
+
+   /* onUpdate(function (event) { alert(6) });*/
 
     //var frominfourl = "/api/SetupApi/GetFormControlByFormCode?formcode=" + $scope.FormCode;
     //$http.get(frominfourl).then(function (response) {
@@ -1302,7 +1313,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
 
                 if (typeof value[TOTAL_PRICE] !== 'undefined' && value[TOTAL_PRICE] !== null && value[TOTAL_PRICE] !== "") {
 
-                    //console.log('value', value);
                     sum = parseFloat(sum) + (parseFloat(value[TOTAL_PRICE]));
                 }
                 else
@@ -1759,6 +1769,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
 
         }
         var values = $scope.formDetail;
+       
         //collection of Master elements
         angular.forEach(values, function (value, key) {
 
@@ -1800,7 +1811,9 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         var count = 0;
         //AA
         var tempFn = function (result) {
-           
+            //$scope.childModels[0].ITEM_CODE = 30;
+            //$scope.childModels[index]["BC"] = 30;
+            
             $scope.INDIV_ITEM_CHARGE_MODAL.push({ ITEM_CODE: "", QUANTITY: "", UNIT_PRICE: "", TOTAL_PRICE: "", CALC_QUANTITY: "", CALC_UNIT_PRICE: "", CALC_TOTAL_PRICE: "", INV_ITEM_CHARGE_AMOUNT_WISE: [], INV_ITEM_CHARGE_QUANTITY_WISE: [] });
             $scope.INDIV_ITEM_CHARGE_MODAL_AMOUNT.push({ CHARGE_CODE: "", CHARGE_TYPE: "", CHARGE_EDESC: "", IMPACT_ON: "", APPLY_QUANTITY: "", VALUE_PERCENT_AMOUNT: "", CHARGE_AMOUNT: "", VALUE_PERCENT_FLAG: "", ACC_CODE: "", SUB_CODE: "", BUDGET_CODE: "", GL: "", APPORTION_FLAG: "", CALC: "", APPLY_ON: "" });
             $scope.INDIV_ITEM_CHARGE_MODAL_QUANTITY.push({ CHARGE_CODE: "", CHARGE_TYPE: "", CHARGE_EDESC: "", IMPACT_ON: "", APPLY_QUANTITY: "", VALUE_PERCENT_AMOUNT: "", CHARGE_AMOUNT: "", VALUE_PERCENT_FLAG: "", ACC_CODE: "", SUB_CODE: "", BUDGET_CODE: "", GL: "", APPORTION_FLAG: "", CALC: "", APPLY_ON: "" });
@@ -1940,12 +1953,11 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                     $scope.childModels.push($scope.getObjWithKeysFromOtherObj(tempCopy, rows[i]));
                     //subin
                     setTimeout(function () {
-
                         $("#products_" + i).data('kendoComboBox').dataSource.data([{ ItemCode: rows[i].ITEM_CODE, ItemDescription: rows[i].ITEM_EDESC, Type: "code" }]);
                         console.log("value of productCode from kendo===================>>>>" + JSON.stringify($("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode));
                         $scope.childModels[i].ITEM_CODE = $("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode;
 
-
+                        
 
                         $("#customers").data('kendoComboBox').dataSource.data([{ CustomerCode: rows[i].CUSTOMER_CODE, CustomerName: rows[i].CUSTOMER_EDESC, Type: "code", REGD_OFFICE_EADDRESS: rows[i].REGD_OFFICE_EADDRESS, TPIN_VAT_NO: rows[i].TPIN_VAT_NO, TEL_MOBILE_NO1: rows[i].TEL_MOBILE_NO1, CUSTOMER_NDESC: rows[i].CUSTOMER_NDESC }]);
                         console.log("value of customer from kendo===================>>>>" + JSON.stringify($('#customers').data('kendoComboBox').dataSource.data()[0].CustomerCode));
@@ -2479,6 +2491,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     });
     //$(".c").css("border:0px solid blue");
     $scope.loadingBtn = function () {
+
         $("#savedocumentformdata").button('loading');
         $(".portlet-title .btn").attr("disabled", "disabled");
 
@@ -2638,7 +2651,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                     var ireq = "/api/TemplateApi/getItemEdesc?code=" + cval.ITEM_CODE;
                     $http.get(ireq).then(function (results) {
                         setTimeout(function () {
-
                             $("#products_" + ckey).data('kendoComboBox').dataSource.data([{ ItemCode: cval.ITEM_CODE, ItemDescription: results.data, Type: "code" }]);
                         }, 0);
                     });
@@ -2923,7 +2935,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     }
 
     $scope.refresh = function () {
-
         //location.reload();
         $scope.ResetDocument();
 
@@ -4825,17 +4836,48 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         var taxableAmount = totalAmount;
         var netAmount = 0;
         var totalchangeAmount = 0;
-        console.log("i amd childmodel", $scope.childModels);
-        //var totalAddition = 0;
-        //var totalDeduction = 0;
+        var check = 0;
+        var checkPopUpFlag = document.querySelector('input[name="checkRadio"]:checked');
+        if (checkPopUpFlag == null)
+            checkPopUpFlag = "0";
         var _discount = 0;//$scope.childModels[index][UNIT_PRICE];
         $.each(list, function (i, valer) {
+            if (checkPopUpFlag.id == "P") {
+                if ($('#P_Id').val() > 0) {
+                    if (list[i].CHARGE_CODE == $('#charge_Code').val()) {
+                        if ($('#P_Id').val() > 0) {
+                            list[i].VALUE_PERCENT_FLAG = "P";
+                            list[i].VALUE_PERCENT_AMOUNT = $('#P_Id').val();
+                        }
+                    }
+                }
+            }
+            if (checkPopUpFlag.id == "V") {
+                if ($('#V_Id').val() > 0) {
+                    if (list[i].CHARGE_CODE == $('#charge_Code').val()) {
+                        if ($('#V_Id').val() > 0) {
+                            list[i].VALUE_PERCENT_FLAG = "V";
+                            list[i].VALUE_PERCENT_AMOUNT = $('#V_Id').val();
+                        }
+                    }
+                }
+            }
+            if (checkPopUpFlag.id == "Q") {
+                if ($('#Q_Id').val() > 0) {
+                    if (list[i].CHARGE_CODE == $('#charge_Code').val()) {
+                        if ($('#Q_Id').val() > 0) {
+                            list[i].VALUE_PERCENT_FLAG = "Q";
+                            list[i].VALUE_PERCENT_AMOUNT = $('#Q_Id').val();
+                        }
+                    }
+                }
+            }
             var chargecodeval = $scope.childModels[index][valer.CHARGE_CODE];
             if (valer.CHARGE_CODE == "VT") {
                 if (valer.ON_ITEM == 'Y') {
                     if (valer.VALUE_PERCENT_FLAG == "V") {
                         if (valer.CHARGE_TYPE_FLAG == "D") {
-                            $scope.childModels[index][valer.CHARGE_CODE] = valer.VALUE_PERCENT_AMOUNT;
+                            $scope.childModels[i][valer.CHARGE_CODE] = valer.VALUE_PERCENT_AMOUNT;
                             netAmount = netAmount - taxableAmount - valer.VALUE_PERCENT_AMOUNT;
                         }
                         else {
@@ -4859,7 +4901,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                         if (valer.VALUE_PERCENT_AMOUNT > 0)
                             $scope.childModels[index][valer.CHARGE_CODE] = valer.VALUE_PERCENT_AMOUNT;
                         if (valer.CHARGE_TYPE_FLAG == "D") {
-                            taxableAmount = taxableAmount - $scope.childModels[index][valer.CHARGE_CODE];//- chargecodeval;
+                            taxableAmount = parseFloat(taxableAmount).toFixed(2) - parseFloat($scope.childModels[index][valer.CHARGE_CODE]).toFixed(2);//- chargecodeval;
                             netAmount = taxableAmount;
                             if (valer.CHARGE_CODE == "SD")
                                 $scope.childModels[index]["MCSD"] = valer.VALUE_PERCENT_AMOUNT;
@@ -4867,7 +4909,9 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                 $scope.childModels[index]["MCED"] = valer.VALUE_PERCENT_AMOUNT;
                         }
                         else {
-                            taxableAmount = taxableAmount + $scope.childModels[index][valer.CHARGE_CODE]; //+ chargecodeval;
+                            if ($scope.childModels[index][valer.CHARGE_CODE] == "")
+                                $scope.childModels[index][valer.CHARGE_CODE] = 0;
+                            taxableAmount = taxableAmount + parseFloat($scope.childModels[index][valer.CHARGE_CODE]);
                             netAmount = taxableAmount;
                             if (valer.CHARGE_CODE == "SD")
                                 $scope.childModels[index]["MCSD"] = valer.VALUE_PERCENT_AMOUNT;
@@ -4877,37 +4921,54 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                     }
                 }
                 else if (valer.VALUE_PERCENT_FLAG == "P") {
+                   
                     if (valer.ON_ITEM == 'Y') {
-
+                       
                         if (valer.VALUE_PERCENT_AMOUNT > 0)
                         {
-                            $scope.childModels[index][valer.CHARGE_CODE] = ((taxableAmount) * valer.VALUE_PERCENT_AMOUNT) / 100;
+                            check = $scope.childModels[index][valer.CHARGE_CODE] = ((taxableAmount) * valer.VALUE_PERCENT_AMOUNT) / 100;
                         }
                         if (valer.CHARGE_TYPE_FLAG == "D") {
                             if (valer.VALUE_PERCENT_AMOUNT == 0)
+                            {
                                 totalchangeAmount = ((taxableAmount - totalchangeAmount) * $scope.childModels[index][valer.CHARGE_CODE]) / 100;
+                                taxableAmount = taxableAmount - totalchangeAmount;
+                            }
                             else
+                            {                              
                                 totalchangeAmount = ((taxableAmount - totalchangeAmount) * valer.VALUE_PERCENT_AMOUNT) / 100;
-                            taxableAmount = taxableAmount - totalchangeAmount;
+                                taxableAmount = taxableAmount - totalchangeAmount;
+                            }                         
                             if (valer.CHARGE_CODE == "SD")
                                 $scope.childModels[index]["MCSD"] = totalchangeAmount;
                             else
-                                $scope.childModels[index]["MCED"] = totalchangeAmount;
-                            netAmount = taxableAmount;                           
+                                $scope.childModels[index]["MCED"] = totalchangeAmount;                         
                         }
                         else {
-                            if (valer.VALUE_PERCENT_AMOUNT == 0)
-                                totalchangeAmount = (taxableAmount * $scope.childModels[index][valer.CHARGE_CODE]) / 100;
+                            if (valer.VALUE_PERCENT_AMOUNT == 0) {
+                                totalchangeAmount = ((taxableAmount ) * $scope.childModels[index][valer.CHARGE_CODE]) / 100;
+                                taxableAmount = taxableAmount + totalchangeAmount;
+                                if (valer.CHARGE_CODE == "SD")
+                                    $scope.childModels[index]["MCSD"] = totalchangeAmount;
+                                else
+                                    $scope.childModels[index]["MCED"] = totalchangeAmount;
+                            }
                             else
-                                totalchangeAmount = (taxableAmount * valer.VALUE_PERCENT_AMOUNT) / 100;
-                            taxableAmount = taxableAmount + totalchangeAmount;
+                            {
+                                totalchangeAmount = ((taxableAmount + totalchangeAmount) * valer.VALUE_PERCENT_AMOUNT) / 100;
+                                taxableAmount = taxableAmount + check;
+                                if (valer.CHARGE_CODE == "SD")
+                                    $scope.childModels[index]["MCSD"] = totalchangeAmount;
+                                else
+                                    $scope.childModels[index]["MCED"] = totalchangeAmount;
+                            }                           
                             if (valer.CHARGE_CODE == "SD")
                                 $scope.childModels[index]["MCSD"] = totalchangeAmount;
                             else
                                 $scope.childModels[index]["MCED"] = totalchangeAmount;
-                            netAmount += taxableAmount;
+                            netAmount = taxableAmount;
                         }
-                    }
+                    }                  
                 }
                 else if (valer.VALUE_PERCENT_FLAG == "Q") {
                     if (valer.ON_ITEM == 'Y') {
@@ -4922,7 +4983,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                 $scope.childModels[index]["MCED"] = $scope.childModels[index][valer.CHARGE_CODE];
                         }
                         else {
-                            taxableAmount = taxableAmount + $scope.childModels[index][valer.CHARGE_CODE];;
+                            taxableAmount = taxableAmount + $scope.childModels[index][valer.CHARGE_CODE];
                             netAmount = taxableAmount;
                             if (valer.CHARGE_CODE == "SD")
                                 $scope.childModels[index]["MCSD"] = $scope.childModels[index][valer.CHARGE_CODE];
@@ -4946,12 +5007,109 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         }
         $scope.childModels[index]["TA"] = parseFloat(taxableAmount).toFixed(2);
         $scope.childModels[index]["NA"] = parseFloat(netAmount).toFixed(2);
+        var sd = 0;
+        var ed = 0;
+        var bc = 0;
+        var vt = 0;
+        var sum = 0;
+        angular.forEach($scope.childModels, function (value, key) {
+            if (typeof value.SD !== 'undefined' && value.SD !== null && value.SD !== "") {
+                sd += value.SD;
+            }
+            if (typeof value.ED !== 'undefined' && value.ED !== null && value.ED !== "") {
+                ed += value.ED;
+            }
+            if (typeof value.BC !== 'undefined' && value.BC !== null && value.BC !== "") {
+                bc += value.BC;
+            }
+            if (typeof value.VT !== 'undefined' && value.VT !== null && value.VT !== "") {
+                vt += value.VT;
+            }
+            if (typeof value[TOTAL_PRICE] !== 'undefined' && value[TOTAL_PRICE] !== null && value[TOTAL_PRICE] !== "") {
+                sum = parseFloat(sum) + (parseFloat(value[TOTAL_PRICE]));
+            }
+        });
+
+        var totalAddition = 0;
+        var totalDeduction = 0;
+        $.each($scope.ChargeList, function (i, v) {
+            if (v.CHARGE_CODE == "SD") {
+                v.CHARGE_AMOUNT = sd.toFixed(2);
+                if (v.CHARGE_TYPE_FLAG == "A")
+                    totalAddition += sd;
+                else
+                    totalDeduction += sd;
+                $scope.sync(true, v);
+            }
+            if (v.CHARGE_CODE == "ED") {
+                v.CHARGE_AMOUNT = ed.toFixed(2);
+                if (v.CHARGE_TYPE_FLAG == "A")
+                    totalAddition += ed;
+                else
+                    totalDeduction += ed;
+                $scope.sync(true, v);
+            }
+            if (v.CHARGE_CODE == "BC") {
+                v.CHARGE_AMOUNT = bc.toFixed(2);
+                if (v.CHARGE_TYPE_FLAG == "A")
+                    totalAddition += bc;
+                else
+                    totalDeduction += bc;
+                $scope.sync(true, v);
+            }
+            if (v.CHARGE_CODE == "VT") {
+                v.CHARGE_AMOUNT = vt.toFixed(2);
+                if (v.CHARGE_TYPE_FLAG == "A")
+                    totalAddition += vt;
+                else
+                    totalDeduction += vt;
+                $scope.sync(true, v);
+            }
+        });
+
+        $('#SD').val(sd);
+        $('#ED').val(ed);
+        $('#BC').val(bc);
+        $('#VT').val(vt);
+ 
+        var totalAddition = parseFloat(parseFloat(ed) + parseFloat(bc) + parseFloat(vt));
+        var totalDeduction = parseFloat(sd);
+        var netTotal = 0;
+        var totalchangeAmount = 0;
+
+        $scope.deduction = totalDeduction.toFixed(2);
+        $scope.addition = totalAddition.toFixed(2);
+        $scope.deductionCalc = totalDeduction.toFixed(2);
+        $scope.additionCalc = totalAddition.toFixed(2);
+        $('.clsTotalDeduction').text(totalDeduction.toFixed(2));
+        $('.clsTotalAddition').text(totalAddition.toFixed(2));
+        $scope.summary.grandTotal = sum;
+
+        netTotal = parseFloat(parseFloat($scope.summary.grandTotal) + parseFloat($scope.additionCalc) - parseFloat($scope.deductionCalc)).toFixed(2);
+        $scope.adtotal = isNaN(netTotal) ? 0 : netTotal;
     }
     /*sashi*/
 
+    //$scope.Click_SD = function (index) {
+    //    alert(1);
+    //}
+
+    //$('#input#item\.COLUMN_NAME.form-control.SD_O.textbox').click(function (e) {
+    //        e.preventDefault;
+    //        alert(1);
+    // });
+
+    //$("#input#item\.COLUMN_NAME.form-control.SD_O.textbox").on("click", function () {
+    //    alert(4);
+    //});
+
+
+    //$('.ng-scope.SD_0').click(function () {
+    //    alert(12);
+    //});
 
     $scope.sum = function (index) {
-
+        $('#item.COLUMN_NAME').trigger('click');
         $scope.iamFromReference = false;
         if (!$scope.iamFromReference) {
             var child_rate = $scope.childModels[index].UNIT_PRICE;
@@ -5031,7 +5189,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                 angular.forEach($scope.childModels, function (value, key) {
 
                     if (typeof value[CALC_TOTAL_PRICE] !== 'undefined' && value[CALC_TOTAL_PRICE] != null) {
-                        //console.log('value', value);
                         calcsum = calcsum + parseFloat(value[CALC_TOTAL_PRICE].toFixed(2));
                     }
                 });
@@ -5152,7 +5309,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     };
 
     $scope.msync = function (bool, item) {
-  
         if ($scope.OrderNo != "undefined") {
             for (var i = 0; i < $scope.data.length; i++) {
                 if ($scope.data[i].CHARGE_CODE == item.CHARGE_CODE) {
@@ -5200,7 +5356,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         }
     };
     $scope.sync = function (bool, item) {
-
         if ($scope.OrderNo === "undefined" && $scope.youFromReference == false) {
 
             for (var i = 0; i < $scope.data.length; i++) {
@@ -5214,7 +5369,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             if (bool)
                 $scope.data.push(item);
 
-            $scope.calculateChargeAmount($scope.data, bool);
+            //$scope.calculateChargeAmount($scope.data, bool);
         }
         if ($scope.OrderNo === "undefined" && $scope.youFromReference == true) {
             $scope.rsync(bool, item);
@@ -5311,7 +5466,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
 
             if (typeof value[TOTAL_PRICE] !== 'undefined' && value[TOTAL_PRICE] !== null && value[TOTAL_PRICE] !== "") {
 
-                //console.log('value', value);
                 sum = parseFloat(sum) + (parseFloat(value[TOTAL_PRICE]));
             }
             else
@@ -5319,17 +5473,16 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         });
 
         $scope.summary.grandTotal = (parseFloat(sum)).toFixed(2);
-        if ($scope.data.length < 0 || $scope.data.length == "undefined") {
-            $scope.adtotal = $scope.summary.grandTotal;
-        }
-        else {
-            $scope.adtotal = $scope.summary.grandTotal;
-        }
+        //if ($scope.data.length < 0 || $scope.data.length == "undefined") {
+        //    $scope.adtotal = $scope.summary.grandTotal;
+        //}
+        //else {
+        //    $scope.adtotal = $scope.summary.grandTotal;
+        //}
         //$scope.adtotal = $scope.summary.grandTotal;
        
         $scope.data;
         $.each($scope.ChargeList, function (i, v) {
-
             $.each($scope.data, function (it, val) {
                 if (typeof (val) != "undefined") {
 
@@ -5349,6 +5502,32 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                 }
             });
         });
+
+        /*sashi*/
+        $scope.lineItemParticularChargeData
+        $.each($scope.lineItemParticularChargeDetails, function (i, v) {
+            $.each($scope.lineItemParticularChargeData, function (it, val) {
+                if (typeof (val) != "undefined") {
+
+                    if (val.CHARGE_CODE == v.CHARGE_CODE) {
+
+
+                        //if (val.VALUE_PERCENT_FLAG == "P") {
+                        //    $scope.ChargeList[i].VALUE_PERCENT_AMOUNT = parseFloat((val.CHARGE_AMOUNT * 100) / $scope.adtotal).toFixed(2);
+                        //    $scope.ChargeList[i].CHARGE_AMOUNT = (parseFloat(sum.toFixed(2)) * $scope.ChargeList[i].VALUE_PERCENT_AMOUNT / 100);
+                        //}
+                        //else {
+                        //    $scope.ChargeList[i].VALUE_PERCENT_AMOUNT = v.VALUE_PERCENT_AMOUNT;
+                        //    $scope.ChargeList[i].CHARGE_AMOUNT = $scope.ChargeList[i].VALUE_PERCENT_AMOUNT;
+                        //}
+                        //$scope.eesync(true, v);
+                    }
+                }
+            });
+        });
+        /*sashi */
+
+
     }
     $scope.getmucode = function (index, productId) {
 
@@ -5530,6 +5709,11 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     });
 
 
+    //}
+
+    //$scope.checkAll = function (bool) {
+    //        $scope.data = $scope.ChargeList;
+    //    $scope.calculateChargeAmount($scope.data, true);
     //}
 
     $scope.checkAll = function (bool) {
@@ -5782,8 +5966,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             var netTotal = 0;
             var totalchangeAmount = 0;
             var totalGrandchangeAmount = 0;
-            //console.log("I am datalist", sortedObjs);
-            //alert(1);
             $.each(sortedObjs, function (i, val) {
                 var percent_amount = val.VALUE_PERCENT_AMOUNT;
                 var grand_total = $scope.summary.grandTotal;
@@ -5819,104 +6001,104 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                             var tiqty = 0;
                             var Deduction = 0;
                             var Addition = 0;
-                            if (val.VALUE_PERCENT_AMOUNT > 0) {
-                                $.each($scope.childModels, function (int, itn) {
-                                    tiqty = tiqty + ((itn.TOTAL_PRICE) * val.VALUE_PERCENT_AMOUNT) / 100
-                                });
-                                Deduction = parseFloat(tiqty);
-                            }
-                            else {
-                                $.each($scope.childModels, function (int, itn) {
-                                    if (val.CHARGE_CODE == "ED")
-                                        tiqty = tiqty + ((itn.ED * itn.TOTAL_PRICE) / 100)
-                                    else if (val.CHARGE_CODE == "SD")
-                                        tiqty = tiqty + ((itn.SD * itn.TOTAL_PRICE) / 100)
-                                    else if (val.CHARGE_CODE == "VT")
-                                        tiqty = tiqty + ((itn.VT * itn.TOTAL_PRICE) / 100)
-                                });
-                                Deduction = parseFloat(tiqty);
-                            }
 
+                            $.each($scope.childModels, function (int, itn) {
+                                if (val.VALUE_PERCENT_AMOUNT > 0) {
+                                    tiqty = tiqty + ((itn.TOTAL_PRICE) * val.VALUE_PERCENT_AMOUNT) / 100
+                                    Deduction = parseFloat(tiqty);
+                                }
+                                else {
+                                    $.each($scope.childModels, function (int, itn) {
+                                        if (val.CHARGE_CODE == "ED")
+                                            tiqty = tiqty + ((itn.ED * itn.TOTAL_PRICE) / 100)
+                                        else if (val.CHARGE_CODE == "SD")
+                                            tiqty = tiqty + ((itn.SD * itn.TOTAL_PRICE) / 100)
+                                        else if (val.CHARGE_CODE == "VT")
+                                            tiqty = tiqty + ((itn.VT * itn.TOTAL_PRICE) / 100)
+                                    });
+                                    Deduction = parseFloat(tiqty);
+                                }
+                            });
                             val.CHARGE_AMOUNT = Deduction;
                             totalDeduction += Deduction;
                         }
                         else {
 
                             var tiqty = 0;
-                            if (val.VALUE_PERCENT_AMOUNT > 0) {
-                                $.each($scope.childModels, function (int, itn) {
-                                    tiqty = tiqty + (parseFloat(itn.TOTAL_PRICE - parseFloat((itn.SD * itn.TOTAL_PRICE)/100 )) * val.VALUE_PERCENT_AMOUNT) / 100
-                                });
-                                Addition = parseFloat(tiqty);
-                            }
-                            else {
-                                $.each($scope.childModels, function (int, itn) {
+                            $.each($scope.childModels, function (int, itn) {
+                                if (val.VALUE_PERCENT_AMOUNT > 0) {
                                     if (val.CHARGE_CODE == "ED") {
-                                        tiqty = tiqty + ((itn.ED * parseFloat(itn.TOTAL_PRICE - itn.SD)) / 100)
+                                        tiqty = tiqty + itn.ED
                                     }
                                     else if (val.CHARGE_CODE == "SD") {
-                                        tiqty = tiqty + ((itn.SD * itn.TOTAL_PRICE) / 100)
+                                        tiqty = tiqty + itn.SD
                                     }
                                     else if (val.CHARGE_CODE == "VT") {
-                                        tiqty = tiqty + ((itn.VT * itn.TOTAL_PRICE) / 100)
+                                        tiqty = tiqty + itn.VT
                                     }
-                                });
-                                Addition = parseFloat(tiqty);
-                            }
+                                    Addition = parseFloat(tiqty);
+                                }
+                                else {
+                                    tiqty = tiqty + (parseFloat(itn.TOTAL_PRICE - parseFloat((itn.SD * itn.TOTAL_PRICE) / 100)) * val.VALUE_PERCENT_AMOUNT) / 100
+                                    Addition = parseFloat(tiqty);
+                                }
+                            });
                             val.CHARGE_AMOUNT = Addition;
                             totalAddition += Addition;
                         }
-					}                  
+                    }
                 }
                 else if (val.VALUE_PERCENT_FLAG === 'Q') {
                     if (val.CHARGE_TYPE_FLAG == "D") {
                         var tiqty = 0;
                         var Deduction = 0;
                         var Addition = 0;
-                        if (val.VALUE_PERCENT_AMOUNT > 0) {
-                            $.each($scope.childModels, function (int, itn) {
+
+                        $.each($scope.childModels, function (int, itn) {
+                            if (val.VALUE_PERCENT_AMOUNT > 0) {
                                 tiqty = tiqty + itn.VALUE_PERCENT_AMOUNT
-                            });
-                             Deduction = parseFloat(tiqty);
-                        }
-                        else {
-                            $.each($scope.childModels, function (int, itn) {
-                                if (val.CHARGE_CODE == "ED")
-                                    tiqty = tiqty + itn.ED
-                                else if (val.CHARGE_CODE == "SD")
-                                    tiqty = tiqty + itn.SD
-                                else if (val.CHARGE_CODE == "VT")
-                                    tiqty = tiqty + itn.VT
-                            });
-                            Deduction = parseFloat(tiqty);
-                        }                       
+                                Deduction = parseFloat(tiqty);
+                            }
+                            else {
+                                $.each($scope.childModels, function (int, itn) {
+                                    if (val.CHARGE_CODE == "ED")
+                                        tiqty = tiqty + itn.ED
+                                    else if (val.CHARGE_CODE == "SD")
+                                        tiqty = tiqty + itn.SD
+                                    else if (val.CHARGE_CODE == "VT")
+                                        tiqty = tiqty + itn.VT
+                                });
+                                Deduction = parseFloat(tiqty);
+                            }
+                        });
                         val.CHARGE_AMOUNT = Deduction;
                         totalDeduction += Deduction;
                     }
                     else {
                         var tiqty = 0;
-                        if (val.VALUE_PERCENT_AMOUNT > 0) {
-                            $.each($scope.childModels, function (int, itn) {
+
+                        $.each($scope.childModels, function (int, itn) {
+                            if (val.VALUE_PERCENT_AMOUNT > 0) {
                                 tiqty = tiqty + itn.QUANTITY
-                            });
-                            Addition = parseFloat(percent_amount) * parseFloat(tiqty);
-                        }
-                        else {
-                            $.each($scope.childModels, function (int, itn) {
-                                if (val.CHARGE_CODE == "ED")
-                                    tiqty = tiqty + itn.ED
-                                else if (val.CHARGE_CODE == "SD")
-                                    tiqty = tiqty + itn.SD
-                                else if (val.CHARGE_CODE == "VT")
-                                    tiqty = tiqty + itn.VT
-                            });
-                            Addition = parseFloat(tiqty);
-						}
+                                Addition = parseFloat(percent_amount) * parseFloat(tiqty);
+                            }
+                            else {
+                                $.each($scope.childModels, function (int, itn) {
+                                    if (val.CHARGE_CODE == "ED")
+                                        tiqty = tiqty + itn.ED
+                                    else if (val.CHARGE_CODE == "SD")
+                                        tiqty = tiqty + itn.SD
+                                    else if (val.CHARGE_CODE == "VT")
+                                        tiqty = tiqty + itn.VT
+                                });
+                                Addition = parseFloat(tiqty);
+                            }
+                        });
                         val.CHARGE_AMOUNT = Addition;
                         totalAddition += Addition;
                     }
                 }
-                    /*sashi*/
+                /*sashi*/
                 else if (val.VALUE_PERCENT_FLAG === 'V') {
                     if (val.CHARGE_TYPE_FLAG == "D") {
                         var tival = 0;
@@ -5942,7 +6124,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                         totalAddition += Addition;
                     }
                 }
-                    /*sashi*/
+                /*sashi*/
                 else {
                     if (val.CHARGE_TYPE_FLAG == "D") {
                         var Deduction = parseFloat(percent_amount);
@@ -5969,6 +6151,203 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             $scope.adtotal = isNaN(netTotal) ? 0 : netTotal;
         }
 
+        /*before used*/
+     //   $scope.calculateChargeAmount = function (dataList, bool) {
+            
+     //       //var lista = dataList.sort((a, b) => (a.PRIORITY_INDEX_NO > b.PRIORITY_INDEX_NO) ? 1 : -1);
+     //       var sortedObjs = _.sortBy(dataList, 'PRIORITY_INDEX_NO');
+     //       var totalAddition = 0;
+     //       var totalDeduction = 0;
+     //       var netTotal = 0;
+     //       var totalchangeAmount = 0;
+     //       var totalGrandchangeAmount = 0;
+     //       //console.log("I am datalist", sortedObjs);
+     //       //alert(1);
+     //       $.each(sortedObjs, function (i, val) {
+     //           var percent_amount = val.VALUE_PERCENT_AMOUNT;
+     //           var grand_total = $scope.summary.grandTotal;
+     //           var charge_amount = val.CHARGE_AMOUNT;
+     //           //totalchangeAmount = 0;
+     //           if (percent_amount === null || percent_amount === "" || percent_amount === NaN || percent_amount === undefined) {
+     //               percent_amount = 0;
+     //           }
+     //           if (grand_total === null || grand_total === "" || grand_total === NaN || grand_total === undefined) {
+     //               grand_total = 0;
+     //           }
+     //           if (val.VALUE_PERCENT_FLAG === 'P') {
+
+     //               if (val.CHARGE_CODE == "VT") {
+     //                   if (val.CHARGE_TYPE_FLAG == "D") {
+     //                       grand_total = parseFloat($scope.summary.grandTotal) + parseFloat(totalAddition) - parseFloat(totalDeduction);
+     //                       var Deduction = parseFloat(((percent_amount * grand_total) / 100).toFixed(2));
+
+     //                       val.CHARGE_AMOUNT = Deduction;
+     //                       totalDeduction += Deduction;
+
+     //                   }
+     //                   else {
+     //                       grand_total = parseFloat($scope.summary.grandTotal) + parseFloat(totalAddition) - parseFloat(totalDeduction);
+     //                       var Addition = parseFloat(((percent_amount * grand_total) / 100).toFixed(2));
+
+     //                       val.CHARGE_AMOUNT = Addition;
+     //                       totalAddition += Addition;
+     //                   }
+     //               }
+     //               else {
+     //                   if (val.CHARGE_TYPE_FLAG == "D") {
+     //                       var tiqty = 0;
+     //                       var Deduction = 0;
+     //                       var Addition = 0;
+                            
+     //                       $.each($scope.childModels, function (int, itn) {
+     //                           if (val.VALUE_PERCENT_AMOUNT > 0) {
+     //                               tiqty = tiqty + ((itn.TOTAL_PRICE) * val.VALUE_PERCENT_AMOUNT) / 100
+     //                               Deduction = parseFloat(tiqty);
+     //                           }
+     //                           else {
+     //                               $.each($scope.childModels, function (int, itn) {
+     //                                   if (val.CHARGE_CODE == "ED")
+     //                                       tiqty = tiqty + ((itn.ED * itn.TOTAL_PRICE) / 100)
+     //                                   else if (val.CHARGE_CODE == "SD")
+     //                                       tiqty = tiqty + ((itn.SD * itn.TOTAL_PRICE) / 100)
+     //                                   else if (val.CHARGE_CODE == "VT")
+     //                                       tiqty = tiqty + ((itn.VT * itn.TOTAL_PRICE) / 100)
+     //                               });
+     //                               Deduction = parseFloat(tiqty);
+     //                           }
+     //                           });                       
+     //                       val.CHARGE_AMOUNT = Deduction;
+     //                       totalDeduction += Deduction;
+     //                   }
+     //                   else {
+
+     //                       var tiqty = 0;
+     //                       $.each($scope.childModels, function (int, itn) {
+     //                           if (val.VALUE_PERCENT_AMOUNT > 0) {
+     //                               if (val.CHARGE_CODE == "ED") {
+     //                                   tiqty = tiqty + itn.ED 
+     //                               }
+     //                               else if (val.CHARGE_CODE == "SD") {
+     //                                   tiqty = tiqty + itn.SD
+     //                               }
+     //                               else if (val.CHARGE_CODE == "VT") {
+     //                                   tiqty = tiqty + itn.VT
+     //                               }
+     //                               Addition = parseFloat(tiqty);
+     //                           }
+     //                           else {
+     //                               tiqty = tiqty + (parseFloat(itn.TOTAL_PRICE - parseFloat((itn.SD * itn.TOTAL_PRICE) / 100)) * val.VALUE_PERCENT_AMOUNT) / 100
+     //                               Addition = parseFloat(tiqty);
+     //                           }
+     //                           });
+     //                       val.CHARGE_AMOUNT = Addition;
+     //                       totalAddition += Addition;
+     //                   }
+					//}                  
+     //           }
+     //           else if (val.VALUE_PERCENT_FLAG === 'Q') {
+     //               if (val.CHARGE_TYPE_FLAG == "D") {
+     //                   var tiqty = 0;
+     //                   var Deduction = 0;
+     //                   var Addition = 0;
+                        
+     //                   $.each($scope.childModels, function (int, itn) {
+     //                       if (val.VALUE_PERCENT_AMOUNT > 0) {
+     //                           tiqty = tiqty + itn.VALUE_PERCENT_AMOUNT
+     //                           Deduction = parseFloat(tiqty);
+     //                       }
+     //                       else {
+     //                           $.each($scope.childModels, function (int, itn) {
+     //                               if (val.CHARGE_CODE == "ED")
+     //                                   tiqty = tiqty + itn.ED
+     //                               else if (val.CHARGE_CODE == "SD")
+     //                                   tiqty = tiqty + itn.SD
+     //                               else if (val.CHARGE_CODE == "VT")
+     //                                   tiqty = tiqty + itn.VT
+     //                           });
+     //                           Deduction = parseFloat(tiqty);
+     //                       }
+     //                   });
+     //                   val.CHARGE_AMOUNT = Deduction;
+     //                   totalDeduction += Deduction;
+     //               }
+     //               else {
+     //                   var tiqty = 0;
+                        
+     //                   $.each($scope.childModels, function (int, itn) {
+     //                       if (val.VALUE_PERCENT_AMOUNT > 0) {
+     //                           tiqty = tiqty + itn.QUANTITY
+     //                           Addition = parseFloat(percent_amount) * parseFloat(tiqty);
+     //                       }
+     //                       else {
+     //                           $.each($scope.childModels, function (int, itn) {
+     //                               if (val.CHARGE_CODE == "ED")
+     //                                   tiqty = tiqty + itn.ED
+     //                               else if (val.CHARGE_CODE == "SD")
+     //                                   tiqty = tiqty + itn.SD
+     //                               else if (val.CHARGE_CODE == "VT")
+     //                                   tiqty = tiqty + itn.VT
+     //                           });
+     //                           Addition = parseFloat(tiqty);
+     //                       }
+     //                   });
+     //                   val.CHARGE_AMOUNT = Addition;
+     //                   totalAddition += Addition;
+     //               }
+     //           }
+     //               /*sashi*/
+     //           else if (val.VALUE_PERCENT_FLAG === 'V') {
+     //               if (val.CHARGE_TYPE_FLAG == "D") {
+     //                   var tival = 0;
+     //                   $.each($scope.childModels, function (int, itn) {
+     //                       tival = tival + itn.SD
+     //                   });
+     //                   var Deduction = parseFloat(tival);
+     //                   val.CHARGE_AMOUNT = Deduction;
+     //                   totalDeduction += Deduction;
+     //               }
+     //               else {
+     //                   var tival = 0;
+     //                   $.each($scope.childModels, function (int, itn) {
+     //                       if (val.CHARGE_CODE == "ED")
+     //                           tival = tival + itn.ED
+     //                       else if (val.CHARGE_CODE == "SD")
+     //                           tival = tival + itn.SD
+     //                       else if (val.CHARGE_CODE == "VT")
+     //                           tival = tival + itn.VT
+     //                   });
+     //                   var Addition = parseFloat(tival);
+     //                   val.CHARGE_AMOUNT = Addition;
+     //                   totalAddition += Addition;
+     //               }
+     //           }
+     //               /*sashi*/
+     //           else {
+     //               if (val.CHARGE_TYPE_FLAG == "D") {
+     //                   var Deduction = parseFloat(percent_amount);
+     //                   val.CHARGE_AMOUNT = Deduction;
+     //                   totalDeduction += Deduction;
+     //                   if (charge_amount > 0) {
+     //                       $scope.PrintDiscount = charge_amount;
+     //                   }
+     //               }
+     //               else {
+
+     //                   var Addition = parseFloat(percent_amount);
+     //                   val.CHARGE_AMOUNT = Addition;
+     //                   totalAddition += Addition;
+     //               }
+     //           }
+     //       });
+     //       $scope.deduction = isNaN(totalDeduction.toFixed(2)) ? 0 : totalDeduction.toFixed(2);
+     //       $scope.addition = isNaN(totalAddition.toFixed(2)) ? 0 : totalAddition.toFixed(2);
+     //       $scope.deductionCalc = isNaN(totalDeduction.toFixed(2)) ? 0 : totalDeduction.toFixed(2);
+     //       $scope.additionCalc = isNaN(totalAddition.toFixed(2)) ? 0 : totalAddition.toFixed(2);
+     //       netTotal = parseFloat(parseFloat($scope.summary.grandTotal) + parseFloat($scope.additionCalc) - parseFloat($scope.deductionCalc)).toFixed(2);
+
+     //       $scope.adtotal = isNaN(netTotal) ? 0 : netTotal;
+     //   }
+        /*before used*/
         //$scope.calculateChargeAmount = function (dataList, bool) {
 
         //    //var lista = dataList.sort((a, b) => (a.PRIORITY_INDEX_NO > b.PRIORITY_INDEX_NO) ? 1 : -1);
@@ -6257,7 +6636,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     //}
 
     $scope.calculateChargeAmounteditedit = function (dataList, bool) {
-
         if ($scope.OrderNo != "undefined" && $scope.youFromReference == false) {
             $scope.checkLineItemCharges();
             var sortedObjs = _.sortBy(dataList, 'PRIORITY_INDEX_NO');
@@ -6314,10 +6692,10 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                             var Deduction = 0;
                             var Addition = 0;
                             if (val.VALUE_PERCENT_AMOUNT > 0) {
-                                $.each($scope.childModels, function (int, itn) {
-                                    tiqty = tiqty + (itn.TOTAL_PRICE * tiqty) / 100
+                                 $.each($scope.childModels, function (int, itn) {
+                                     tiqty = tiqty + (itn.TOTAL_PRICE * parseFloat(percent_amount)) / 100
                                 });
-                                Deduction = parseFloat(percent_amount) - parseFloat(tiqty);
+                                Deduction =  parseFloat(tiqty);                              
                             }
                             else {
                                 $.each($scope.childModels, function (int, itn) {
@@ -6450,13 +6828,55 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                     }
                 }
             });
+            //$scope.deduction = isNaN(totalDeduction.toFixed(2)) ? 0 : totalDeduction.toFixed(2);
+            //$scope.addition = isNaN(totalAddition.toFixed(2)) ? 0 : totalAddition.toFixed(2);
+            //$scope.deductionCalc = isNaN(totalDeduction.toFixed(2)) ? 0 : totalDeduction.toFixed(2);
+            //$scope.additionCalc = isNaN(totalAddition.toFixed(2)) ? 0 : totalAddition.toFixed(2);
+            //netTotal = parseFloat(parseFloat($scope.summary.grandTotal) + parseFloat($scope.additionCalc) - parseFloat($scope.deductionCalc)).toFixed(2);
+            //$scope.adtotal = isNaN(netTotal) ? 0 : netTotal;
+
+            var sd = 0;
+            var ed = 0;
+            var bc = 0;
+            var vt = 0;
+            var sum = 0;
+
+            angular.forEach($scope.childModels, function (value, key) {
+                if (typeof value.SD !== 'undefined' && value.SD !== null && value.SD !== "") {
+                    sd += value.SD;
+                }
+                if (typeof value.ED !== 'undefined' && value.ED !== null && value.ED !== "") {
+                    ed += value.ED;
+                }
+                if (typeof value.BC !== 'undefined' && value.BC !== null && value.BC !== "") {
+                    bc += value.BC;
+                }
+                if (typeof value.VT !== 'undefined' && value.VT !== null && value.VT !== "") {
+                    vt += value.VT;
+                }
+                if (typeof value[TOTAL_PRICE] !== 'undefined' && value[TOTAL_PRICE] !== null && value[TOTAL_PRICE] !== "") {
+                    sum = parseFloat(sum) + (parseFloat(value[TOTAL_PRICE]));
+                }
+            });
             
-            $scope.deduction = isNaN(totalDeduction.toFixed(2)) ? 0 : totalDeduction.toFixed(2);
-            $scope.addition = isNaN(totalAddition.toFixed(2)) ? 0 : totalAddition.toFixed(2);
-            $scope.deductionCalc = isNaN(totalDeduction.toFixed(2)) ? 0 : totalDeduction.toFixed(2);
-            $scope.additionCalc = isNaN(totalAddition.toFixed(2)) ? 0 : totalAddition.toFixed(2);
+            $('#SD').val(sd);
+            $('#ED').val(ed);
+            $('#BC').val(bc);
+            $('#VT').val(vt);
+            var totalAddition = parseFloat(parseFloat($('#ED').val()) + parseFloat($('#BC').val()) + parseFloat($('#VT').val()));
+            var totalDeduction = parseFloat($('#SD').val());
+            var netTotal = 0;
+            $scope.deduction = totalDeduction;
+            $scope.addition = totalAddition;
+            $scope.deductionCalc = totalDeduction;
+            $scope.additionCalc = totalAddition;
+            $('.clsTotalDeduction').text(totalDeduction);
+            $('.clsTotalAddition').text(totalAddition);
+            $scope.summary.grandTotal = sum;
+
             netTotal = parseFloat(parseFloat($scope.summary.grandTotal) + parseFloat($scope.additionCalc) - parseFloat($scope.deductionCalc)).toFixed(2);
             $scope.adtotal = isNaN(netTotal) ? 0 : netTotal;
+
         }
     }
     //}
