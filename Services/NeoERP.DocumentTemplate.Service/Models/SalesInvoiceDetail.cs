@@ -28,6 +28,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
 
         public decimal ED { get; set; } //
         public decimal SD { get; set; }
+        public decimal BC { get; set; }
         public decimal VT { get; set; }
 
         public decimal TA { get; set; }
@@ -88,6 +89,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string SECTOR_CODE { get; set; }
 
         public decimal? SECOND_QUANTITY { get; set; }
+        public decimal? THIRD_QUANTITY { get; set; }
 
         public List<ChargeListDetails> ChargeList { get; set; }
     }

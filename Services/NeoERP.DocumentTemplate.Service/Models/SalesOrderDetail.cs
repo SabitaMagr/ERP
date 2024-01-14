@@ -65,7 +65,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public decimal? LINE_ITEM_DISCOUNT { get; set; }
         public string SECTOR_CODE { get; set; }
         public decimal? SECOND_QUANTITY { get; set; }
-
+        public decimal? THIRD_QUANTITY { get; set; }
         public Dictionary<string,string> SalesOrderColumn { get; set; }
     }
 

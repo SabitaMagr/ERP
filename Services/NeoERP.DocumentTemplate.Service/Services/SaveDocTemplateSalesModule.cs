@@ -1198,12 +1198,12 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     var querySalesorder = $@"Insert into SA_SALES_ORDER (ORDER_NO, ORDER_DATE, CUSTOMER_CODE, SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, 
                       REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, DELIVERY_DATE, CURRENCY_CODE, 
                     EXCHANGE_RATE,TRACKING_NO, STOCK_BLOCK_FLAG, SESSION_ROWID, MODIFY_BY, DIVISION_CODE,MANUAL_NO,SHIPPING_ADDRESS,SHIPPING_CONTACT_NO,
-                    AREA_CODE,SALES_TYPE_CODE,EMPLOYEE_CODE,PARTY_TYPE_CODE,PRIORITY_CODE,LINE_ITEM_DISCOUNT,AGENT_CODE,SECTOR_CODE,SECOND_QUANTITY) 
+                    AREA_CODE,SALES_TYPE_CODE,EMPLOYEE_CODE,PARTY_TYPE_CODE,PRIORITY_CODE,LINE_ITEM_DISCOUNT,AGENT_CODE,SECTOR_CODE,SECOND_QUANTITY,THIRD_QUANTITY) 
                      Values ('{salesChildOrder.ORDER_NO}',TO_DATE('{salesChildOrder.ORDER_DATE}','DD-MON-YYYY hh24:mi:ss'), '{salesChildOrder.CUSTOMER_CODE}', {salesChildOrder.SERIAL_NO}, 
                     '{salesChildOrder.ITEM_CODE}', '{salesChildOrder.MU_CODE}', {salesChildOrder.QUANTITY}, {salesChildOrder.UNIT_PRICE}, {salesChildOrder.TOTAL_PRICE}, 
                      {salesChildOrder.CALC_QUANTITY}, {salesChildOrder.CALC_UNIT_PRICE}, {salesChildOrder.CALC_TOTAL_PRICE}, '{salesChildOrder.REMARKS}','{salesChildOrder.FORM_CODE}', '{salesChildOrder.COMPANY_CODE}', '{salesChildOrder.BRANCH_CODE}', '{salesChildOrder.CREATED_BY}', SYSDATE, 
                     'N', TO_DATE('{salesChildOrder.DELIVERY_DATE}','DD-MON-YYYY hh24:mi:ss'), '{salesChildOrder.CURRENCY_CODE}', {salesChildOrder.EXCHANGE_RATE},'{salesChildOrder.TRACKING_NO}', '{salesChildOrder.STOCK_BLOCK_FLAG}', '{salesChildOrder.SESSION_ROWID}', '', '{salesChildOrder.DIVISION_CODE}','{salesChildOrder.MANUAL_NO}','{salesChildOrder.SHIPPING_ADDRESS}','{salesChildOrder.SHIPPING_CONTACT_NO}',
-                    '{salesChildOrder.AREA_CODE}','{salesChildOrder.SALES_TYPE_CODE}','{salesChildOrder.EMPLOYEE_CODE}','{salesChildOrder.PARTY_TYPE_CODE}','{salesChildOrder.PRIORITY_CODE}','{salesChildOrder.LINE_ITEM_DISCOUNT}','{salesChildOrder.AGENT_CODE}','{salesChildOrder.SECTOR_CODE}','{cCol.SECOND_QUANTITY}')";
+                    '{salesChildOrder.AREA_CODE}','{salesChildOrder.SALES_TYPE_CODE}','{salesChildOrder.EMPLOYEE_CODE}','{salesChildOrder.PARTY_TYPE_CODE}','{salesChildOrder.PRIORITY_CODE}','{salesChildOrder.LINE_ITEM_DISCOUNT}','{salesChildOrder.AGENT_CODE}','{salesChildOrder.SECTOR_CODE}','{cCol.SECOND_QUANTITY}','{cCol.THIRD_QUANTITY}')";
                     if (dbcontext == null)
                     {
                         var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
@@ -1881,7 +1881,7 @@ namespace NeoERP.DocumentTemplate.Service.Services
                                         (CHALAN_NO, CHALAN_DATE, CUSTOMER_CODE, FROM_LOCATION_CODE, 
                                             SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, 
                                             DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE, TRACKING_NO, SESSION_ROWID, MODIFY_BY, PARTY_TYPE_CODE, PRIORITY_CODE, 
-                                            SHIPPING_ADDRESS, SHIPPING_CONTACT_NO, SALES_TYPE_CODE, EMPLOYEE_CODE, AREA_CODE,MANUAL_NO,REMARKS,AGENT_CODE,DIVISION_CODE,SECTOR_CODE,ALT1_MU_CODE,ALT1_QUANTITY,SECOND_QUANTITY)
+                                            SHIPPING_ADDRESS, SHIPPING_CONTACT_NO, SALES_TYPE_CODE, EMPLOYEE_CODE, AREA_CODE,MANUAL_NO,REMARKS,AGENT_CODE,DIVISION_CODE,SECTOR_CODE,ALT1_MU_CODE,ALT1_QUANTITY,SECOND_QUANTITY,THIRD_QUANTITY)
                                          Values
                                        ('{salesChildChalan.CHALAN_NO}', TO_DATE('{salesChildChalan.CHALAN_DATE}', 'DD-MON-YYYY hh24:mi:ss'), '{salesChildChalan.CUSTOMER_CODE}', '{salesChildChalan.FROM_LOCATION_CODE}', 
                                         {salesChildChalan.SERIAL_NO}, '{salesChildChalan.ITEM_CODE}', '{salesChildChalan.MU_CODE}', {salesChildChalan.QUANTITY}, {salesChildChalan.UNIT_PRICE}, 
@@ -1889,7 +1889,7 @@ namespace NeoERP.DocumentTemplate.Service.Services
     '{salesChildChalan.FORM_CODE}', '{salesChildChalan.COMPANY_CODE}', '{salesChildChalan.BRANCH_CODE}', '{salesChildChalan.CREATED_BY}', 
     sysdate, 'N', '{salesChildChalan.CURRENCY_CODE}', {salesChildChalan.EXCHANGE_RATE}, 
     '{salesChildChalan.TRACKING_NO}', '{salesChildChalan.SYN_ROWID}', '', '{salesChildChalan.PARTY_TYPE_CODE}', '{salesChildChalan.PRIORITY_CODE}', 
-                        '{salesChildChalan.SHIPPING_ADDRESS}', '{salesChildChalan.SHIPPING_CONTACT_NO}', '{salesChildChalan.SALES_TYPE_CODE}', '{salesChildChalan.EMPLOYEE_CODE}', '{salesChildChalan.AREA_CODE}','{salesChildChalan.MANUAL_NO}','{salesChildChalan.REMARKS}','{salesChildChalan.AGENT_CODE}','{salesChildChalan.DIVISION_CODE}','{salesChildChalan.SECTOR_CODE}','{salesChildChalan.ALT1_MU_CODE}','{salesChildChalan.ALT1_QUANTITY}','{cCol.SECOND_QUANTITY}')";
+                        '{salesChildChalan.SHIPPING_ADDRESS}', '{salesChildChalan.SHIPPING_CONTACT_NO}', '{salesChildChalan.SALES_TYPE_CODE}', '{salesChildChalan.EMPLOYEE_CODE}', '{salesChildChalan.AREA_CODE}','{salesChildChalan.MANUAL_NO}','{salesChildChalan.REMARKS}','{salesChildChalan.AGENT_CODE}','{salesChildChalan.DIVISION_CODE}','{salesChildChalan.SECTOR_CODE}','{salesChildChalan.ALT1_MU_CODE}','{salesChildChalan.ALT1_QUANTITY}','{cCol.SECOND_QUANTITY}','{cCol.THIRD_QUANTITY}')";
 
                     //var querySalesorder = $@"Insert into SA_SALES_CHALAN (CHALAN_NO, CHALAN_DATE, CUSTOMER_CODE, SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, 
                     //  REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, DELIVERY_DATE, CURRENCY_CODE, EXCHANGE_RATE,TRACKING_NO, STOCK_BLOCK_FLAG, SESSION_ROWID, MODIFY_BY, DIVISION_CODE) 
@@ -1969,6 +1969,7 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     salesChildReturn.CALC_UNIT_PRICE = cCol.CALC_UNIT_PRICE > 0 ? cCol.CALC_UNIT_PRICE : cCol.UNIT_PRICE > 0 ? cCol.UNIT_PRICE : 0;
                     salesChildReturn.CALC_TOTAL_PRICE = cCol.CALC_TOTAL_PRICE > 0 ? cCol.CALC_TOTAL_PRICE : cCol.TOTAL_PRICE > 0 ? cCol.TOTAL_PRICE : 0;
                     salesChildReturn.ED = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='ED'").ToList().Count() > 0 ? (cCol.ED > 0 ? cCol.ED : cCol.ED > 0 ? cCol.ED : 0) : 0;
+                    salesChildReturn.BC = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='BC'").ToList().Count() > 0 ? (cCol.BC > 0 ? cCol.BC : cCol.BC > 0 ? cCol.BC : 0) : 0;
                     salesChildReturn.SD = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='SD'").ToList().Count() > 0 ? (cCol.SD > 0 ? cCol.SD : cCol.SD > 0 ? cCol.SD : 0) : 0;
                     salesChildReturn.VT = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='VT'").ToList().Count() > 0 ? (cCol.VT > 0 ? cCol.VT : cCol.VT > 0 ? cCol.VT : 0) : 0;
                     salesChildReturn.TA = cCol.TA > 0 ? cCol.TA : cCol.TA > 0 ? cCol.TA : 0;
@@ -2009,11 +2010,11 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     //var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
 
                     var querySalesorder = $@"Insert into SA_SALES_RETURN (RETURN_NO, RETURN_DATE, CUSTOMER_CODE, SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, 
-                      REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE,TRACKING_NO,SESSION_ROWID, MODIFY_BY, DIVISION_CODE,TO_LOCATION_CODE,PARTY_TYPE_CODE,SECOND_QUANTITY,EXCISE_ITEM_AMOUNT,DISCOUNT_ITEM_AMOUNT,VAT_ITEM_AMOUNT,TAXABLE_AMOUNT,NET_AMOUNT) 
+                      REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE,TRACKING_NO,SESSION_ROWID, MODIFY_BY, DIVISION_CODE,TO_LOCATION_CODE,PARTY_TYPE_CODE,SECOND_QUANTITY,THIRD_QUANTITY,EXCISE_ITEM_AMOUNT,BANKCHARGE_ITEM_AMOUNT,DISCOUNT_ITEM_AMOUNT,VAT_ITEM_AMOUNT,TAXABLE_AMOUNT,NET_AMOUNT) 
                      Values ('{salesChildReturn.RETURN_NO}',TO_DATE('{salesChildReturn.RETURN_DATE}','DD-MON-YYYY hh24:mi:ss'), '{salesChildReturn.CUSTOMER_CODE}', {salesChildReturn.SERIAL_NO}, 
                     '{salesChildReturn.ITEM_CODE}', '{salesChildReturn.MU_CODE}', {salesChildReturn.QUANTITY}, {salesChildReturn.UNIT_PRICE}, {salesChildReturn.TOTAL_PRICE}, 
                      {salesChildReturn.CALC_QUANTITY}, {salesChildReturn.CALC_UNIT_PRICE}, {salesChildReturn.CALC_TOTAL_PRICE}, '{salesChildReturn.REMARKS}','{salesChildReturn.FORM_CODE}', '{salesChildReturn.COMPANY_CODE}', '{salesChildReturn.BRANCH_CODE}', '{salesChildReturn.CREATED_BY}', SYSDATE, 
-                    'N', '{salesChildReturn.CURRENCY_CODE}', {salesChildReturn.EXCHANGE_RATE},'{salesChildReturn.TRACKING_NO}', '{salesChildReturn.SESSION_ROWID}', '', '{salesChildReturn.DIVISION_CODE}','{salesChildReturn.TO_LOCATION_CODE}','{salesChildReturn.PARTY_TYPE_CODE}','{cCol.SECOND_QUANTITY}','{cCol.ED}','{cCol.SD}','{cCol.VT}','{cCol.TA}','{cCol.NA}')";
+                    'N', '{salesChildReturn.CURRENCY_CODE}', {salesChildReturn.EXCHANGE_RATE},'{salesChildReturn.TRACKING_NO}', '{salesChildReturn.SESSION_ROWID}', '', '{salesChildReturn.DIVISION_CODE}','{salesChildReturn.TO_LOCATION_CODE}','{salesChildReturn.PARTY_TYPE_CODE}','{cCol.SECOND_QUANTITY}','{cCol.THIRD_QUANTITY}','{cCol.ED}','{cCol.BC}','{cCol.SD}','{cCol.VT}','{cCol.TA}','{cCol.NA}')";
                     var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
                     serialNo++;
 
@@ -2135,6 +2136,10 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     salesChildInvoice.ITEM_CODE = string.IsNullOrEmpty(cCol.ITEM_CODE) ? "" : cCol.ITEM_CODE;
                     salesChildInvoice.MU_CODE = string.IsNullOrEmpty(cCol.MU_CODE) ? "" : cCol.MU_CODE;
                     salesChildInvoice.QUANTITY = cCol.QUANTITY > 0 ? cCol.QUANTITY : cCol.CALC_QUANTITY > 0 ? cCol.CALC_QUANTITY :0;
+
+                    salesChildInvoice.SECOND_QUANTITY = cCol.SECOND_QUANTITY > 0 ? cCol.SECOND_QUANTITY : 0;
+                    salesChildInvoice.THIRD_QUANTITY = cCol.THIRD_QUANTITY > 0 ? cCol.THIRD_QUANTITY  : 0;
+
                     salesChildInvoice.UNIT_PRICE = cCol.UNIT_PRICE > 0 ? cCol.UNIT_PRICE : cCol.CALC_UNIT_PRICE > 0 ? cCol.CALC_UNIT_PRICE : 0;
                     salesChildInvoice.TOTAL_PRICE = cCol.TOTAL_PRICE;
                     salesChildInvoice.CALC_QUANTITY = cCol.CALC_QUANTITY > 0 ? cCol.CALC_QUANTITY : cCol.QUANTITY > 0 ? cCol.QUANTITY : 0;
@@ -2142,6 +2147,8 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     salesChildInvoice.CALC_TOTAL_PRICE = cCol.CALC_TOTAL_PRICE > 0 ? cCol.CALC_TOTAL_PRICE : cCol.TOTAL_PRICE > 0 ? cCol.TOTAL_PRICE : 0;
                     salesChildInvoice.ED = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='ED'").ToList().Count() > 0 ? (cCol.ED > 0 ? cCol.ED : cCol.ED > 0 ? cCol.ED : 0) : 0;
                     salesChildInvoice.SD = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='SD'").ToList().Count() > 0 ? (cCol.SD > 0 ? cCol.SD : cCol.SD > 0 ? cCol.SD : 0) : 0;
+                    
+                    salesChildInvoice.BC = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='BC'").ToList().Count() > 0 ? (cCol.BC > 0 ? cCol.BC : cCol.BC > 0 ? cCol.BC : 0) : 0;
                     salesChildInvoice.VT = _objectEntity.SqlQuery<ChargeSetup>($@"select * from charge_setup where form_code = '{formCode}' and company_code ='{_workContext.CurrentUserinformation.company_code}' and ON_ITEM = 'Y' and charge_code ='VT'").ToList().Count() > 0 ? (cCol.VT > 0 ? cCol.VT : cCol.VT > 0 ? cCol.VT : 0) : 0;
                     salesChildInvoice.TA = cCol.TA > 0 ? cCol.TA : cCol.TA > 0 ? cCol.TA : 0;
                     salesChildInvoice.NA = cCol.NA > 0 ? cCol.NA : cCol.NA > 0 ? cCol.NA : 0;
@@ -2204,16 +2211,16 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     //var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
 
 
-                    var querySalesorder = $@"Insert into SA_SALES_INVOICE (SALES_NO, SALES_DATE, CUSTOMER_CODE, SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, 
+                    var querySalesorder = $@"Insert into SA_SALES_INVOICE (SALES_NO, SALES_DATE, CUSTOMER_CODE, SERIAL_NO, ITEM_CODE, MU_CODE,QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, 
                       REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG,CURRENCY_CODE, EXCHANGE_RATE,TRACKING_NO,SESSION_ROWID, MODIFY_BY, DIVISION_CODE,MANUAL_NO,BUDGET_FLAG,CREDIT_DAYS,
                            SYN_ROWID,FROM_LOCATION_CODE, BATCH_NO,SMS_FLAG,DESCRIPTION,PAYMENT_MODE,PRIORITY_CODE,MEMBER_SHIP_CARD,PAYMODE_VALUE,
-                            SHIPPING_ADDRESS,SHIPPING_CONTACT_NO,SALES_TYPE_CODE,EMPLOYEE_CODE,REASON,MISC_CODE,AGENT_CODE,AREA_CODE,SECTOR_CODE,PARTY_TYPE_CODE,SECOND_QUANTITY,EXCISE_ITEM_AMOUNT,DISCOUNT_ITEM_AMOUNT,VAT_ITEM_AMOUNT,TAXABLE_AMOUNT,NET_AMOUNT) 
+                            SHIPPING_ADDRESS,SHIPPING_CONTACT_NO,SALES_TYPE_CODE,EMPLOYEE_CODE,REASON,MISC_CODE,AGENT_CODE,AREA_CODE,SECTOR_CODE,PARTY_TYPE_CODE,SECOND_QUANTITY,THIRD_QUANTITY,EXCISE_ITEM_AMOUNT,BANKCHARGE_ITEM_AMOUNT,DISCOUNT_ITEM_AMOUNT,VAT_ITEM_AMOUNT,TAXABLE_AMOUNT,NET_AMOUNT) 
                      Values ('{salesChildInvoice.SALES_NO}',TO_DATE('{salesChildInvoice.SALES_DATE}','DD-MON-YYYY hh24:mi:ss'), '{salesChildInvoice.CUSTOMER_CODE}', {salesChildInvoice.SERIAL_NO}, 
                     '{salesChildInvoice.ITEM_CODE}', '{salesChildInvoice.MU_CODE}', {salesChildInvoice.QUANTITY}, {salesChildInvoice.UNIT_PRICE}, {salesChildInvoice.TOTAL_PRICE}, 
                      {salesChildInvoice.CALC_QUANTITY}, {salesChildInvoice.CALC_UNIT_PRICE}, {salesChildInvoice.CALC_TOTAL_PRICE}, '{salesChildInvoice.REMARKS}','{salesChildInvoice.FORM_CODE}', '{salesChildInvoice.COMPANY_CODE}', '{salesChildInvoice.BRANCH_CODE}', '{salesChildInvoice.CREATED_BY}', SYSDATE, 
                     'N','{salesChildInvoice.CURRENCY_CODE}', {salesChildInvoice.EXCHANGE_RATE},'{salesChildInvoice.TRACKING_NO}', '{salesChildInvoice.SESSION_ROWID}', '', '{salesChildInvoice.DIVISION_CODE}','{salesChildInvoice.MANUAL_NO}','L','{salesChildInvoice.CREDIT_DAYS}'
                        ,'{salesChildInvoice.SYN_ROWID}','{salesChildInvoice.FROM_LOCATION_CODE}','{salesChildInvoice.BATCH_NO}','N','{salesChildInvoice.DESCRIPTION}','{salesChildInvoice.PAYMENT_MODE}','{salesChildInvoice.PRIORITY_CODE}','{salesChildInvoice.MEMBER_SHIP_CARD}','{salesChildInvoice.PAYMODE_VALUE}',
-                           '{salesChildInvoice.SHIPPING_ADDRESS}','{salesChildInvoice.SHIPPING_CONTACT_NO}','{salesChildInvoice.SALES_TYPE_CODE}','{salesChildInvoice.EMPLOYEE_CODE}','{salesChildInvoice.REASON}','{salesChildInvoice.MISC_CODE}','{salesChildInvoice.AGENT_CODE}','{salesChildInvoice.AREA_CODE}','{salesChildInvoice.SECTOR_CODE}','{salesChildInvoice.PARTY_TYPE_CODE}','{cCol.SECOND_QUANTITY}','{cCol.ED}','{cCol.SD}','{cCol.VT}','{cCol.TA}','{cCol.NA}' )";
+                           '{salesChildInvoice.SHIPPING_ADDRESS}','{salesChildInvoice.SHIPPING_CONTACT_NO}','{salesChildInvoice.SALES_TYPE_CODE}','{salesChildInvoice.EMPLOYEE_CODE}','{salesChildInvoice.REASON}','{salesChildInvoice.MISC_CODE}','{salesChildInvoice.AGENT_CODE}','{salesChildInvoice.AREA_CODE}','{salesChildInvoice.SECTOR_CODE}','{salesChildInvoice.PARTY_TYPE_CODE}','{cCol.SECOND_QUANTITY}',{cCol.THIRD_QUANTITY},'{cCol.ED}','{cCol.BC}','{cCol.SD}','{cCol.VT}','{cCol.TA}','{cCol.NA}' )";
                     var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
                     serialNo++;
 
@@ -2261,16 +2268,12 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     salesChildInvoice.QUANTITY = cCol.QUANTITY > 0 ? cCol.QUANTITY : cCol.CALC_QUANTITY > 0 ? cCol.CALC_QUANTITY : 1;
                     salesChildInvoice.UNIT_PRICE = cCol.UNIT_PRICE > 0 ? cCol.UNIT_PRICE : cCol.CALC_UNIT_PRICE > 0 ? cCol.CALC_UNIT_PRICE : 1;
                     salesChildInvoice.TOTAL_PRICE = cCol.TOTAL_PRICE;
-
-
                     salesChildInvoice.ED = cCol.ED;
+                    salesChildInvoice.BC = cCol.BC;
                     salesChildInvoice.SD = cCol.SD;
                     salesChildInvoice.VT = cCol.VT;
                     salesChildInvoice.TA = cCol.TA;
                     salesChildInvoice.NA = cCol.NA;
-
-
-
                     salesChildInvoice.CALC_QUANTITY = cCol.CALC_QUANTITY > 0 ? cCol.CALC_QUANTITY : cCol.QUANTITY > 0 ? cCol.QUANTITY : 1;
                     salesChildInvoice.CALC_UNIT_PRICE = cCol.CALC_UNIT_PRICE > 0 ? cCol.CALC_UNIT_PRICE : cCol.UNIT_PRICE > 0 ? cCol.UNIT_PRICE : 1;
                     salesChildInvoice.CALC_TOTAL_PRICE = cCol.CALC_TOTAL_PRICE > 0 ? cCol.CALC_TOTAL_PRICE : cCol.TOTAL_PRICE > 0 ? cCol.TOTAL_PRICE : 1;
@@ -2304,7 +2307,7 @@ namespace NeoERP.DocumentTemplate.Service.Services
                     // {salesChildInvoice.CALC_QUANTITY}, {salesChildInvoice.CALC_UNIT_PRICE}, {salesChildInvoice.CALC_TOTAL_PRICE}, '{salesChildInvoice.REMARKS}','{salesChildInvoice.FORM_CODE}', '{salesChildInvoice.COMPANY_CODE}', '{salesChildInvoice.BRANCH_CODE}', '{salesChildInvoice.CREATED_BY}', SYSDATE, 
                     //'N','{salesChildInvoice.CURRENCY_CODE}', {salesChildInvoice.EXCHANGE_RATE},'{salesChildInvoice.TRACKING_NO}', '{salesChildInvoice.SESSION_ROWID}', '', '{salesChildInvoice.DIVISION_CODE}')";
                     //var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
-                    var querySalesorder = $@"UPDATE SA_SALES_INVOICE SET SALES_DATE=TO_DATE('{salesChildInvoice.SALES_DATE}','DD-MON-YYYY hh24:mi:ss'), CUSTOMER_CODE='{salesChildInvoice.CUSTOMER_CODE}',ITEM_CODE='{salesChildInvoice.ITEM_CODE}',MU_CODE='{salesChildInvoice.MU_CODE}',QUANTITY={salesChildInvoice.QUANTITY},UNIT_PRICE={salesChildInvoice.UNIT_PRICE},TOTAL_PRICE={salesChildInvoice.TOTAL_PRICE},CALC_QUANTITY={salesChildInvoice.CALC_QUANTITY},CALC_UNIT_PRICE={salesChildInvoice.CALC_UNIT_PRICE},CALC_TOTAL_PRICE={salesChildInvoice.CALC_TOTAL_PRICE},EXCISE_ITEM_AMOUNT={salesChildInvoice.ED},DISCOUNT_ITEM_AMOUNT={salesChildInvoice.SD},VAT_ITEM_AMOUNT={salesChildInvoice.VT},TAXABLE_AMOUNT={salesChildInvoice.TA},NET_AMOUNT={salesChildInvoice.NA},REMARKS='{salesChildInvoice.REMARKS}',CURRENCY_CODE='{salesChildInvoice.CURRENCY_CODE}',EXCHANGE_RATE={salesChildInvoice.EXCHANGE_RATE},MODIFY_BY='{_workContext.CurrentUserinformation.login_code}',PARTY_TYPE_CODE='{salesChildInvoice.PARTY_TYPE_CODE}',MODIFY_DATE=SYSDATE WHERE SALES_NO='{salesChildInvoice.SALES_NO}' AND SERIAL_NO='{serialNo}'";
+                    var querySalesorder = $@"UPDATE SA_SALES_INVOICE SET SALES_DATE=TO_DATE('{salesChildInvoice.SALES_DATE}','DD-MON-YYYY hh24:mi:ss'), CUSTOMER_CODE='{salesChildInvoice.CUSTOMER_CODE}',ITEM_CODE='{salesChildInvoice.ITEM_CODE}',MU_CODE='{salesChildInvoice.MU_CODE}',QUANTITY={salesChildInvoice.QUANTITY},UNIT_PRICE={salesChildInvoice.UNIT_PRICE},TOTAL_PRICE={salesChildInvoice.TOTAL_PRICE},CALC_QUANTITY={salesChildInvoice.CALC_QUANTITY},CALC_UNIT_PRICE={salesChildInvoice.CALC_UNIT_PRICE},CALC_TOTAL_PRICE={salesChildInvoice.CALC_TOTAL_PRICE},EXCISE_ITEM_AMOUNT={salesChildInvoice.ED},BANKCHARGE_ITEM_AMOUNT={salesChildInvoice.BC},DISCOUNT_ITEM_AMOUNT={salesChildInvoice.SD},VAT_ITEM_AMOUNT={salesChildInvoice.VT},TAXABLE_AMOUNT={salesChildInvoice.TA},NET_AMOUNT={salesChildInvoice.NA},REMARKS='{salesChildInvoice.REMARKS}',CURRENCY_CODE='{salesChildInvoice.CURRENCY_CODE}',EXCHANGE_RATE={salesChildInvoice.EXCHANGE_RATE},MODIFY_BY='{_workContext.CurrentUserinformation.login_code}',PARTY_TYPE_CODE='{salesChildInvoice.PARTY_TYPE_CODE}',MODIFY_DATE=SYSDATE WHERE SALES_NO='{salesChildInvoice.SALES_NO}' AND SERIAL_NO='{serialNo}'";
                     var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesorder);
                     serialNo++;
                 }

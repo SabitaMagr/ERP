@@ -1187,7 +1187,7 @@ namespace NeoERP.DocumentTemplate.Service.Repository
                                         (CHALAN_NO, CHALAN_DATE, CUSTOMER_CODE, FROM_LOCATION_CODE, 
                                             SERIAL_NO, ITEM_CODE, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, 
                                             DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE, TRACKING_NO, SESSION_ROWID, MODIFY_BY, PARTY_TYPE_CODE, PRIORITY_CODE, 
-                                            SHIPPING_ADDRESS, SHIPPING_CONTACT_NO, SALES_TYPE_CODE, EMPLOYEE_CODE, AREA_CODE,MANUAL_NO,REMARKS,AGENT_CODE,DIVISION_CODE,SECTOR_CODE,ALT1_MU_CODE,ALT1_QUANTITY,SECOND_QUANTITY)
+                                            SHIPPING_ADDRESS, SHIPPING_CONTACT_NO, SALES_TYPE_CODE, EMPLOYEE_CODE, AREA_CODE,MANUAL_NO,REMARKS,AGENT_CODE,DIVISION_CODE,SECTOR_CODE,ALT1_MU_CODE,ALT1_QUANTITY,SECOND_QUANTITY,THIRD_QUANTITY)
                                          Values
                                        ('{salesChildChalan.CHALAN_NO}', TO_DATE('{salesChildChalan.CHALAN_DATE}', 'DD-MON-YYYY hh24:mi:ss'), '{salesChildChalan.CUSTOMER_CODE}', '{salesChildChalan.FROM_LOCATION_CODE}', 
                                         {salesChildChalan.SERIAL_NO}, '{salesChildChalan.ITEM_CODE}', '{salesChildChalan.MU_CODE}', {salesChildChalan.QUANTITY}, {salesChildChalan.UNIT_PRICE}, 
@@ -1195,7 +1195,7 @@ namespace NeoERP.DocumentTemplate.Service.Repository
     '{salesChildChalan.FORM_CODE}', '{salesChildChalan.COMPANY_CODE}', '{salesChildChalan.BRANCH_CODE}', '{salesChildChalan.CREATED_BY}', 
     sysdate, 'N', '{salesChildChalan.CURRENCY_CODE}', {salesChildChalan.EXCHANGE_RATE}, 
     '{salesChildChalan.TRACKING_NO}', '{salesChildChalan.SYN_ROWID}', '', '{salesChildChalan.PARTY_TYPE_CODE}', '{salesChildChalan.PRIORITY_CODE}', 
-                        '{salesChildChalan.SHIPPING_ADDRESS}', '{salesChildChalan.SHIPPING_CONTACT_NO}', '{salesChildChalan.SALES_TYPE_CODE}', '{salesChildChalan.EMPLOYEE_CODE}', '{salesChildChalan.AREA_CODE}','{salesChildChalan.MANUAL_NO}','{salesChildChalan.REMARKS}','{salesChildChalan.AGENT_CODE}','{salesChildChalan.DIVISION_CODE}','{salesChildChalan.SECTOR_CODE}','{salesChildChalan.ALT1_MU_CODE}','{salesChildChalan.ALT1_QUANTITY}','{cCol.SECOND_QUANTITY}')";
+                        '{salesChildChalan.SHIPPING_ADDRESS}', '{salesChildChalan.SHIPPING_CONTACT_NO}', '{salesChildChalan.SALES_TYPE_CODE}', '{salesChildChalan.EMPLOYEE_CODE}', '{salesChildChalan.AREA_CODE}','{salesChildChalan.MANUAL_NO}','{salesChildChalan.REMARKS}','{salesChildChalan.AGENT_CODE}','{salesChildChalan.DIVISION_CODE}','{salesChildChalan.SECTOR_CODE}','{salesChildChalan.ALT1_MU_CODE}','{salesChildChalan.ALT1_QUANTITY}','{cCol.SECOND_QUANTITY}','{cCol.THIRD_QUANTITY}')";
                     var InsertedData = _objectEntity.ExecuteSqlCommand(querySalesChalan);
                     serialNo++;
                 }

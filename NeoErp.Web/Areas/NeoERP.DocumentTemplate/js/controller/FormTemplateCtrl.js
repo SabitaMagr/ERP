@@ -82,6 +82,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     const UNIT_PRICE = "UNIT_PRICE";
     const TA = "TA";
     const NA = "NA";
+    const SECOND_QUANTITY = "SECOND_QUANTITY";
+    const THIRD_QUANTITY = "THIRD_QUANTITY";
     $scope.save = "Save";
     $scope.savecontinue = "Save & Continue";
     $scope.tempCode = "";
@@ -4805,6 +4807,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             $scope.lineItemChargeDetails = results.data;
         });
     }
+    
     /*sashi*/
 
     $scope.monthSelectorOptionsSingle = {
@@ -5090,25 +5093,9 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     }
     /*sashi*/
 
-    //$scope.Click_SD = function (index) {
-    //    alert(1);
-    //}
+   
 
-    //$('#input#item\.COLUMN_NAME.form-control.SD_O.textbox').click(function (e) {
-    //        e.preventDefault;
-    //        alert(1);
-    // });
-
-    //$("#input#item\.COLUMN_NAME.form-control.SD_O.textbox").on("click", function () {
-    //    alert(4);
-    //});
-
-
-    //$('.ng-scope.SD_0').click(function () {
-    //    alert(12);
-    //});
-
-    $scope.sum = function (index) {
+    $scope.sum = function (index) {     
         $('#item.COLUMN_NAME').trigger('click');
         $scope.iamFromReference = false;
         if (!$scope.iamFromReference) {
@@ -5159,6 +5146,38 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             $scope.childModels[index][CALC_QUANTITY] = $scope.childModels[index][QUANTITY];
 
 
+            $('.clsQty').change(function (e) {
+                var req_second = "/api/TemplateApi/GetSecondQuantity?companycode=" + $scope.companycode + "&itemCode=" + $scope.childModels[index][ITEM_CODE] + "&quantity=" + $scope.childModels[index][QUANTITY];
+                $http.get(req_second).then(function (results) {
+                    $scope.childModels[index][SECOND_QUANTITY] = results.data;
+                });
+                var req_third = "/api/TemplateApi/GetThirdQuantity?companycode=" + $scope.companycode + "&itemCode=" + $scope.childModels[index][ITEM_CODE] + "&quantity=" + $scope.childModels[index][QUANTITY];
+                $http.get(req_third).then(function (results) {
+                    $scope.childModels[index][THIRD_QUANTITY] = results.data;
+                });
+            });
+            $('.clsSecQty').change(function (e) {
+                var req_thirdFirst = "/api/TemplateApi/GetSecondFirstQuantity?companycode=" + $scope.companycode + "&itemCode=" + $scope.childModels[index][ITEM_CODE] + "&quantity=" + $scope.childModels[index][SECOND_QUANTITY];
+                $http.get(req_thirdFirst).then(function (results) {
+                    $scope.childModels[index][QUANTITY] = results.data;
+                });
+                var req_thirdFirst = "/api/TemplateApi/GetSecondThirdQuantity?companycode=" + $scope.companycode + "&itemCode=" + $scope.childModels[index][ITEM_CODE] + "&quantity=" + $scope.childModels[index][SECOND_QUANTITY];
+                $http.get(req_thirdFirst).then(function (results) {
+                    $scope.childModels[index][THIRD_QUANTITY] = results.data;
+                });
+            });
+            $('.clsThdQty').change(function (e) {
+                var req_thirdFirst = "/api/TemplateApi/GetThirdFirstQuantity?companycode=" + $scope.companycode + "&itemCode=" + $scope.childModels[index][ITEM_CODE] + "&quantity=" + $scope.childModels[index][THIRD_QUANTITY];
+                $http.get(req_thirdFirst).then(function (results) {
+                    $scope.childModels[index][QUANTITY] = results.data;
+                });
+                var req_thirdFirst = "/api/TemplateApi/GetThirdSecondQuantity?companycode=" + $scope.companycode + "&itemCode=" + $scope.childModels[index][ITEM_CODE] + "&quantity=" + $scope.childModels[index][THIRD_QUANTITY];
+                $http.get(req_thirdFirst).then(function (results) {
+                    $scope.childModels[index][SECOND_QUANTITY] = results.data;
+                });
+            });
+
+           
             if ($scope.childModels[index][UNIT_PRICE] === 0 || $scope.childModels[index][UNIT_PRICE] === "" || $scope.childModels[index][QUANTITY] === 0 || $scope.childModels[index][QUANTITY] === "" || $scope.childModels[index][UNIT_PRICE] === null || $scope.childModels[index][QUANTITY] === null) {
                 if ($scope.childModels[index][UNIT_PRICE] === 0 || $scope.childModels[index][UNIT_PRICE] === "" || $scope.childModels[index][UNIT_PRICE] === null) {
                     $scope.childModels[index][TOTAL_PRICE] = "";
@@ -6033,6 +6052,9 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                     else if (val.CHARGE_CODE == "SD") {
                                         tiqty = tiqty + itn.SD
                                     }
+                                    else if (val.CHARGE_CODE == "BC") {
+                                        tiqty = tiqty + itn.BC
+                                    }
                                     else if (val.CHARGE_CODE == "VT") {
                                         tiqty = tiqty + itn.VT
                                     }
@@ -6065,6 +6087,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                         tiqty = tiqty + itn.ED
                                     else if (val.CHARGE_CODE == "SD")
                                         tiqty = tiqty + itn.SD
+                                    else if (val.CHARGE_CODE == "BC")
+                                        tiqty = tiqty + itn.BC
                                     else if (val.CHARGE_CODE == "VT")
                                         tiqty = tiqty + itn.VT
                                 });
@@ -6088,6 +6112,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                         tiqty = tiqty + itn.ED
                                     else if (val.CHARGE_CODE == "SD")
                                         tiqty = tiqty + itn.SD
+                                    else if (val.CHARGE_CODE == "BC")
+                                        tiqty = tiqty + itn.BC
                                     else if (val.CHARGE_CODE == "VT")
                                         tiqty = tiqty + itn.VT
                                 });
@@ -6116,6 +6142,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                 tival = tival + itn.ED
                             else if (val.CHARGE_CODE == "SD")
                                 tival = tival + itn.SD
+                            else if (val.CHARGE_CODE == "BC")
+                                tival = tival + itn.BC
                             else if (val.CHARGE_CODE == "VT")
                                 tival = tival + itn.VT
                         });
@@ -6703,6 +6731,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                         tiqty = tiqty + ((itn.ED * itn.TOTAL_PRICE) / 100)
                                     else if (val.CHARGE_CODE == "SD")
                                         tiqty = tiqty + ((itn.SD * itn.TOTAL_PRICE) / 100)
+                                    else if (val.CHARGE_CODE == "BC")
+                                        tiqty = tiqty + ((itn.BC * itn.TOTAL_PRICE) / 100)
                                     else if (val.CHARGE_CODE == "VT")
                                         tiqty = tiqty + ((itn.VT * itn.TOTAL_PRICE) / 100)
                                 });
@@ -6725,6 +6755,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                         tiqty = tiqty + ((itn.ED * parseFloat(itn.TOTAL_PRICE - itn.SD)) / 100)
                                     else if (val.CHARGE_CODE == "SD")
                                         tiqty = tiqty + ((itn.SD * itn.TOTAL_PRICE) / 100)
+                                    else if (val.CHARGE_CODE == "BC")
+                                        tiqty = tiqty + ((itn.BC * itn.TOTAL_PRICE) / 100)
                                     else if (val.CHARGE_CODE == "VT")
                                         tiqty = tiqty + ((itn.VT * itn.TOTAL_PRICE) / 100)
                                 });
@@ -6753,6 +6785,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                     tiqty = tiqty + itn.ED
                                 else if (val.CHARGE_CODE == "SD")
                                     tiqty = tiqty + itn.SD
+                                else if (val.CHARGE_CODE == "BC")
+                                    tiqty = tiqty + itn.BC
                                 else if (val.CHARGE_CODE == "VT")
                                     tiqty = tiqty + itn.VT
                             });
@@ -6775,6 +6809,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                     tiqty = tiqty + itn.ED
                                 else if (val.CHARGE_CODE == "SD")
                                     tiqty = tiqty + itn.SD
+                                else if (val.CHARGE_CODE == "BC")
+                                    tiqty = tiqty + itn.BC
                                 else if (val.CHARGE_CODE == "VT")
                                     tiqty = tiqty + itn.VT
                             });
@@ -6802,6 +6838,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                                 tival = tival + itn.ED
                             else if (val.CHARGE_CODE == "SD")
                                 tival = tival + itn.SD
+                            else if (val.CHARGE_CODE == "BC")
+                                tival = tival + itn.BC
                             else if (val.CHARGE_CODE == "VT")
                                 tival = tival + itn.VT
                         });
@@ -6863,8 +6901,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             $('#ED').val(ed);
             $('#BC').val(bc);
             $('#VT').val(vt);
-            var totalAddition = parseFloat(parseFloat($('#ED').val()) + parseFloat($('#BC').val()) + parseFloat($('#VT').val()));
-            var totalDeduction = parseFloat($('#SD').val());
+            var totalAddition = parseFloat(parseFloat(ed) + parseFloat(bc) + parseFloat(vt));;
+            var totalDeduction = parseFloat(sd);
             var netTotal = 0;
             $scope.deduction = totalDeduction;
             $scope.addition = totalAddition;

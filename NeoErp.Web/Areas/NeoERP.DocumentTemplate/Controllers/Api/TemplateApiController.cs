@@ -91,6 +91,8 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                  data = _cacheManager.Get<List<FormDetailSetup>>($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}");
                 var checkchargelist = $@"select * from charge_setup where form_code = '{formCode}' and company_code ='{company_code}'";
                 List<ChargeSetup> checkchargelistentity = this._dbContext.SqlQuery<ChargeSetup>(checkchargelist).ToList();
+                var thrdQty = data.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").FirstOrDefault().SERIAL_NO = data.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
+                var sndQty = data.Where(x => x.COLUMN_NAME == "SECOND_QUANTITY").FirstOrDefault().SERIAL_NO = data.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();               
                 data.RemoveAll(x => checkchargelistentity.Any(t => t.CHARGE_CODE == x.COLUMN_NAME));
                 string columname = "";
                 if (orderno.Contains("undefined"))
@@ -9054,6 +9056,60 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         {
             _logErp.InfoInFile("Get CompanyInfo:  For Print");
             var response = _FormTemplateRepo.GetLineItemChargeInfo(companycode,FormCode);
+            return response;
+        }
+
+        [HttpGet]
+        public decimal GetSecondQuantity(string companycode, string itemCode, string quantity)
+        {
+            _logErp.InfoInFile("Get SecondQuantityInfo:  For Print");
+            var templateInsertQry = $@"select FN_SECONDUNIT('{itemCode}',{quantity},'{companycode}') as value1 from dual";
+            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
+            return response;
+        }
+
+        [HttpGet]
+        public decimal GetThirdQuantity(string companycode, string itemCode, string quantity)
+        {
+            _logErp.InfoInFile("Get ThirdQuantityInfo:  For Print");
+            var templateInsertQry = $@"select FN_THIRDUNIT('{itemCode}',{quantity},'{companycode}') as value1 from dual";
+            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
+            return response;
+        }
+
+        [HttpGet]
+        public decimal GetSecondFirstQuantity(string companycode, string itemCode, string quantity)
+        {
+            _logErp.InfoInFile("Get SecondFirstQuantityInfo:  For Print");
+            var templateInsertQry = $@"select FN_SECONDFIRST('{itemCode}',{quantity},'{companycode}') as value1 from dual";
+            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
+            return response;
+        }
+
+        [HttpGet]
+        public decimal GetThirdFirstQuantity(string companycode, string itemCode, string quantity)
+        {
+            _logErp.InfoInFile("Get ThirdFirstQuantityInfo:  For Print");
+            var templateInsertQry = $@"select FN_THIRDFIRST('{itemCode}',{quantity},'{companycode}') as value1 from dual";
+            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
+            return response;
+        }
+
+        [HttpGet]
+        public decimal GetSecondThirdQuantity(string companycode, string itemCode, string quantity)
+        {
+            _logErp.InfoInFile("Get ThirdFirstQuantityInfo:  For Print");
+            var templateInsertQry = $@"select FN_SECONDTHIRD('{itemCode}',{quantity},'{companycode}') as value1 from dual";
+            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
+            return response;
+        }
+
+        [HttpGet]
+        public decimal GetThirdSecondQuantity(string companycode, string itemCode, string quantity)
+        {
+            _logErp.InfoInFile("Get ThirdFirstQuantityInfo:  For Print");
+            var templateInsertQry = $@"select FN_THIRDSECOND('{itemCode}',{quantity},'{companycode}') as value1 from dual";
+            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
             return response;
         }
 

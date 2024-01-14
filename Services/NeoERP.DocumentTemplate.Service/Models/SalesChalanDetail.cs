@@ -9,6 +9,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
     public class SalesChalanDetail
     {
         public decimal? SECOND_QUANTITY { get; set; }
+        public decimal? THIRD_QUANTITY { get; set; }
         public string CHALAN_NO { get; set; }
         public string CHALAN_DATE { get; set; }
         public DateTime VOUCHER_DATE { get; set; }

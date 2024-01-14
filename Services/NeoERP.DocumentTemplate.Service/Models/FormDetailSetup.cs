@@ -116,8 +116,10 @@ namespace NeoERP.DocumentTemplate.Service.Models
 
     public class COMMON_COLUMN {
         public decimal? SECOND_QUANTITY { get; set; }
+        public decimal? THIRD_QUANTITY { get; set; }
         public decimal? TOTAL_PRICE { get; set; }
         public decimal ED { get; set; }
+        public decimal BC { get; set; }
         public decimal SD { get; set; }
         public decimal VT { get; set; }
         public decimal TA { get; set; }
