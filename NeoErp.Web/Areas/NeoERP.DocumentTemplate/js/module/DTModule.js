@@ -498,6 +498,11 @@ DTModule.config(function ($routeProvider, $locationProvider) {
         controller: 'bankGuranteeCtrl'
     });
 
+    $routeProvider.when('/projectManagement', {
+        templateUrl: '/DocumentTemplate/CustomForm/ProjectManagement',
+        controller: 'ProjectManagementCtrl'
+    });
+
 
     $routeProvider.when('/SalesOrderAdjustment',
         {

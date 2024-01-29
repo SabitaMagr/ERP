@@ -145,7 +145,8 @@
 							<div class="table-responsive">
 								<table class="table table-bordered charge-table">
 									<tbody>
-											<tr class="P_checkRadio">
+
+										<tr class="P_checkRadio">
 											<td class="P_checkRadio ng-scope" ng-if="percentFlag === 'P'">
 												<input type="hidden" id="charge_Code" value={{ChargeCode}} />
 												<input class="P_checkRadio" type="radio" name="checkRadio" id="P" ng-init="bool=true" ng-model="bool" ng-checked="true">
@@ -155,10 +156,10 @@
 											</td>
 											<td>Percentage</td>
 											<td class="P_checkRadio ng-scope" ng-if="percentFlag === 'P'">
-												<input type="number" placeholder="0" id="P_Id" class="form-control textbox P_checkRadio" ng-model="P" value={{percentAmount}} style="background-color:#ddd;" />
+												<input type="number" string-to-number placeholder="0" id="P_Id" class="clsPID form-control textbox P_checkRadio" ng-model="P" value={{percentAmount}} style="background-color:#ddd;" />
 											</td>
 											<td class="P_checkRadio ng-scope" ng-if="percentFlag != 'P'">
-												<input type="number" placeholder="0" id="P_Id" class="form-control textbox P_checkRadio" ng-model="P"  value="0" style="background-color:#ddd;" />
+												<input type="number" string-to-number placeholder="0" id="P_Id" class="clsPID form-control textbox P_checkRadio" ng-model="P" value="0" style="background-color:#ddd;" />
 											</td>
 										</tr>
 										<tr class="V_checkRadio">
@@ -171,10 +172,10 @@
 											</td>
 											<td>Value</td>
 											<td class="V_checkRadio ng-scope" ng-if="percentFlag === 'V'">
-												<input type="number" id="V_Id" placeholder="0" ng-model="V_Id" value={{percentAmount}} class="form-control textbox V_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="V_Id" placeholder="0" ng-model="V_Id" value={{percentAmount}} class="form-control textbox V_checkRadio" style="background-color:#ddd;" />
 											</td>
 											<td class="V_checkRadio ng-scope" ng-if="percentFlag != 'V'">
-												<input type="number" id="V_Id" placeholder="0" ng-model="V_Id" class="form-control textbox V_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="V_Id" placeholder="0" ng-model="V_Id" class="form-control textbox V_checkRadio" value="0" style="background-color:#ddd;" />
 											</td>
 										</tr>
 										<tr class="Q_checkRadio">
@@ -187,31 +188,23 @@
 											</td>
 											<td>Quantity</td>
 											<td class="Q_checkRadio ng-scope" ng-if="percentFlag != 'Q'">
-												<input type="number" id="Q_Id" placeholder="0" ng-model="Q_Id" value="0" class="form-control textbox Q_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="Q_Id" placeholder="0" ng-model="Q_Id" value="0" class="form-control textbox Q_checkRadio" style="background-color:#ddd;" />
 											</td>
 											<td class="Q_checkRadio ng-scope" ng-if="percentFlag == 'Q'">
-												<input type="number" id="Q_Id" placeholder="0" ng-model="Q_Id" value={{percentAmount}} class="form-control textbox Q_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="Q_Id" placeholder="0" ng-model="Q_Id" value={{percentAmount}} class="form-control textbox Q_checkRadio" style="background-color:#ddd;" />
 											</td>
 										</tr>
-
-										
-
 									</tbody>
 								</table>
 							</div>
 						</div>
-
 					</div>
-
-
-
-
-					
-
-
 				</div>
-				<div class="modal-footer">
-					<button type="button" ng-click="sum(key)" data-dismiss="modal" class="btn btn-sm btn-default btnOk"  title="Ok">Ok</button>
+				<div class="modal-footer" ng-if="ManualCalCharge !== 'N'">
+					<button type="button" ng-click="sum(key)" data-dismiss="modal" class="btn btn-sm btn-default btnOk" title="Ok">Ok</button>
+				</div>
+				<div class="modal-footer" ng-if="ManualCalCharge === 'N'">
+					<button type="button"  data-dismiss="modal" class="btn btn-sm btn-default btnOk" title="Ok" disabled>Ok</button>
 				</div>
 			</div>
 		</div>
@@ -248,35 +241,30 @@
 			$('.V_checkRadio').prop('checked', false);
 			$('#P_Id').val(0);
 			$('#V_Id').val(0);
-			//if ($('.P_checkRadio:checked').length > 0) {
-			//	//$('.noDefault').prop('checked', false);
-			//}
-			//else {
-			//	//$('.noDefault').prop('checked', false);
-			//}
 		});
 	});
-	
+
+	$('.close').click(function (e) {
+		e.preventDefault;
+		$('#item.COLUMN_NAME').trigger('click');
+	});
 
 	$('.btnOk').click(function (e) {
 		e.preventDefault;
-		//alert(56);
-		//$("#products_" + $scope.childRowIndex).val(30);
-		//$("#products_" + $scope.childRowIndex).text(30);
-
-		//console.log($scope.calculateChargeAmount)
-		//console.log($('#P').val());
-		//$("#products_0").val(30);
-		//$("#lineItemChargeCtrl #products_0").val(30);
 		$('#item.COLUMN_NAME').trigger('click');
 
-		var p = document.getElementsByClassName('P_checkRadio');
-		var v = document.getElementsByClassName('V_checkRadio');
-		var q = document.getElementsByClassName('Q_checkRadio');
+		//console.log("this is e", $('#item.COLUMN_NAME'));
+		//console.log("this is e", $('#item.COLUMN_NAME').prevObject);
+		//console.log("this is e", $('#item.COLUMN_NAME').prevObject[0]);
+		//console.log("this is e", $('#item.COLUMN_NAME').prevObject[0]["VALUE_PERCENT_AMOUNT"]);
 
-		console.log("i am checked_P1", p.checked);
-		console.log("i am checked_V1", v.checked);
-		console.log("i am checked_Q1", q.checked);
+		//var p = document.getElementsByClassName('P_checkRadio');
+		//var v = document.getElementsByClassName('V_checkRadio');
+		//var q = document.getElementsByClassName('Q_checkRadio');
+
+		//console.log("i am checked_P1", p.checked);
+		//console.log("i am checked_V1", v.checked);
+		//console.log("i am checked_Q1", q.checked);
 		//$('#lineItemChargeCtrl #products_0 .k-input').trigger('click');
 
 		//$('#lineItemChargeCtrl #products_0 .k-input').val(30);

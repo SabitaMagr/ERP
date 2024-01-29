@@ -8126,14 +8126,37 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
             }
         }
 
-        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode)
+        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode,string CustomerCode, string ItemCode)
         {
             try
             {
                 var data = new ChargeOnSales();
                 var data1 = new ChargeOnSales();
                 //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
-                string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}' order by priority_index_no";
+                //string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}' order by priority_index_no";
+                //                string query = $@" select DISTINCT CS.*,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' 
+                //order by CS.priority_index_no";
+
+                string query = $@" select CHARGE_CODE,CHARGE_TYPE_FLAG,VALUE_PERCENT_FLAG,VALUE_PERCENT_AMOUNT,GL_FLAG,PRIORITY_INDEX_NO,CHARGE_APPLY_ON,FORM_CODE,COMPANY_CODE,DELETED_FLAG,APPORTION_ON,IMPACT_ON,APPLY_ON,CHARGE_ACTIVE_FLAG,MANUAL_CALC_CHARGE,ON_ITEM,SPECIFIC_CHARGE_FLAG 
+from (select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}'
+and IIDS.form_code = '{FormCode}') > 0 THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   'P' ELSE 'V' END  
+from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}'
+and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),'P')
+ELSE CS.VALUE_PERCENT_FLAG END VALUE_PERCENT_FLAG,CASE WHEN 
+(select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code
+where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 
+THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   NVL(IIDS.DISCOUNT_PERCENT,0) ELSE NVL( iids.discount_rate,0) END  
+from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}'
+and IIDS.form_code = '{FormCode}' and IIDS.cs_code = '{CustomerCode}'
+and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),0) ELSE
+CS.VALUE_PERCENT_AMOUNT END VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,
+CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}'
+and IIDS.form_code = '{FormCode}') > 0 THEN 'N' ELSE CS.MANUAL_CALC_CHARGE END MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG
+from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code  where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag IN ('D','B','C','S','Y')
+UNION
+select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CS.VALUE_PERCENT_FLAG,CS.VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CS.MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code 
+where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag not IN ('D','B','C','S','Y')) order by priority_index_no";
+
                 var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
                 result.Add(data);
                 data.CHARGE_CODE = "NA";
@@ -8150,12 +8173,48 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
             }
         }
 
-        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode)
+        public List<CustomerItemType> GetItemDiscountScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
+        {
+            try
+            {
+
+                //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
+                string query1 = $@"select distinct IIDS.discount_rate,IIDS.DISCOUNT_PERCENT  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}' and IIDS.cs_code = {CustomerCode} and IIDS.item_code = {ItemCode} and FS.DISCOUNT_SCHEDULE_FLAG ='Y'";
+                var result = _dbContext.SqlQuery<CustomerItemType>(query1).ToList();
+               
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode, string CustomerCode, string ItemCode)
         {
             try
             {
                 //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
-                string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}' and charge_code = '{ChargeCode}' order by priority_index_no";
+                //string query = $@" select * from charge_setup where company_code = '{companycode}' and form_code = '{FormCode}' and charge_code = '{ChargeCode}' order by priority_index_no";
+                string query = $@"select CHARGE_CODE,CHARGE_TYPE_FLAG,VALUE_PERCENT_FLAG,VALUE_PERCENT_AMOUNT,GL_FLAG,PRIORITY_INDEX_NO,CHARGE_APPLY_ON,FORM_CODE,COMPANY_CODE,DELETED_FLAG,APPORTION_ON,IMPACT_ON,APPLY_ON,CHARGE_ACTIVE_FLAG,MANUAL_CALC_CHARGE,ON_ITEM,SPECIFIC_CHARGE_FLAG 
+from (select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}'
+and IIDS.form_code = '{FormCode}') > 0 THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   'P' ELSE 'V' END  
+from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}'
+and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),'P')
+ELSE CS.VALUE_PERCENT_FLAG END VALUE_PERCENT_FLAG,CASE WHEN 
+(select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code
+where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 
+THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   NVL(IIDS.DISCOUNT_PERCENT,0) ELSE NVL( iids.discount_rate,0) END  
+from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}'
+and IIDS.form_code = '{FormCode}' and IIDS.cs_code = '{CustomerCode}'
+and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),0) ELSE
+CS.VALUE_PERCENT_AMOUNT END VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,
+CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}'
+and IIDS.form_code = '{FormCode}') > 0 THEN 'N' ELSE CS.MANUAL_CALC_CHARGE END MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG
+from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code  where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag IN ('D','B','C','S','Y')
+UNION
+select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CS.VALUE_PERCENT_FLAG,CS.VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CS.MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code 
+where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag not IN ('D','B','C','S','Y')) order by priority_index_no";
                 var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
                 return result;
             }

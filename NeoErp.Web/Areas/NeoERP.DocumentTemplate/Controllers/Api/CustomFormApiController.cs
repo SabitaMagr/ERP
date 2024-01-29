@@ -125,7 +125,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         }
 
         [HttpGet]
-        public List<string> GenerateNewBGVoucher() 
+        public List<string> GenerateNewBGVoucher()
         {
             try
             {
@@ -200,11 +200,11 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         }
 
         [HttpGet]
-        public PDCFormSaveModal EditPDCFormDetail(string pdcId,string pdcStatus)
+        public PDCFormSaveModal EditPDCFormDetail(string pdcId, string pdcStatus)
         {
             try
             {
-                var editedResponse = _postDataCheque.EditPDCFormDetail(pdcId,pdcStatus);
+                var editedResponse = _postDataCheque.EditPDCFormDetail(pdcId, pdcStatus);
                 return editedResponse;
 
             }
@@ -527,6 +527,23 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
 
         #endregion
 
+        #region PROJECT MANAGEMENT
+
+        [HttpGet]
+        public List<BankGuranteeModal> GetProjecManagementList()
+        {
+            try
+            {
+                var guranteeList = _postDataCheque.GetBankGuranteeList();
+                return guranteeList;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        #endregion
 
         #region BANK GURANTEE
 
@@ -560,7 +577,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             }
         }
 
-       
+
 
         #endregion
     }

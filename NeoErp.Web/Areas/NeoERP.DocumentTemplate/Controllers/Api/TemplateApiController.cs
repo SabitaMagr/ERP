@@ -129,20 +129,20 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     columncharge.MANUAL_CALC_CHARGE = columnameentity[i].MANUAL_CALC_CHARGE;
                     if (!data.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
                         data.Add(columncharge);
-                    if (columnameentity[i].CHARGE_CODE != "VT")
-                    {
-                        var manualCalculation = new FormDetailSetup();
-                        manualCalculation.SERIAL_NO = 25;
-                        manualCalculation.DISPLAY_FLAG = "Y";
-                        manualCalculation.FORM_CODE = formCode;
-                        manualCalculation.DELETED_FLAG = "N";
-                        manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
-                        manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
-                        manualCalculation.MASTER_CHILD_FLAG = "C";
-                        manualCalculation.LEFT_POSITION = 1600;
-                        if (!data.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
-                            data.Add(manualCalculation);
-                    }                 
+                    //if (columnameentity[i].CHARGE_CODE != "VT")
+                    //{
+                    //    var manualCalculation = new FormDetailSetup();
+                    //    manualCalculation.SERIAL_NO = 25;
+                    //    manualCalculation.DISPLAY_FLAG = "Y";
+                    //    manualCalculation.FORM_CODE = formCode;
+                    //    manualCalculation.DELETED_FLAG = "N";
+                    //    manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
+                    //    manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
+                    //    manualCalculation.MASTER_CHILD_FLAG = "C";
+                    //    manualCalculation.LEFT_POSITION = 1600;
+                    //    if (!data.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
+                    //        data.Add(manualCalculation);
+                    //}                 
                 }
                 _logErp.InfoInFile(data.Count() + " Form Details setup has been fetched from cached for " + formCode + " formcode");
                 //response = data;
@@ -152,7 +152,13 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             {
                 var formDetailList = this._FormTemplateRepo.GetFormDetailSetup(formCode, orderno);
 
+                var checkchargelist = $@"select * from charge_setup where form_code = '{formCode}' and company_code ='{company_code}'";
+                List<ChargeSetup> checkchargelistentity = this._dbContext.SqlQuery<ChargeSetup>(checkchargelist).ToList();
+                var thrdQty = formDetailList.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").FirstOrDefault().SERIAL_NO = formDetailList.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
+                var sndQty = formDetailList.Where(x => x.COLUMN_NAME == "SECOND_QUANTITY").FirstOrDefault().SERIAL_NO = formDetailList.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
+                formDetailList.RemoveAll(x => checkchargelistentity.Any(t => t.CHARGE_CODE == x.COLUMN_NAME));
                 string columname = "";
+
                 if (orderno.Contains("undefined"))
                 {
                     columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
@@ -189,20 +195,20 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     columncharge.ON_ITEM = columnameentity[i].ON_ITEM;                  
                     if (!formDetailList.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
                         formDetailList.Add(columncharge);
-                    if (columnameentity[i].CHARGE_CODE != "VT")
-                    {
-                        var manualCalculation = new FormDetailSetup();
-                        manualCalculation.SERIAL_NO = 25;
-                        manualCalculation.DISPLAY_FLAG = "Y";
-                        manualCalculation.FORM_CODE = formCode;
-                        manualCalculation.DELETED_FLAG = "N";
-                        manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
-                        manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
-                        manualCalculation.MASTER_CHILD_FLAG = "C";
-                        manualCalculation.LEFT_POSITION = 1600;
-                        if (!formDetailList.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
-                            formDetailList.Add(manualCalculation);
-                    }
+                    //if (columnameentity[i].CHARGE_CODE != "VT")
+                    //{
+                    //    var manualCalculation = new FormDetailSetup();
+                    //    manualCalculation.SERIAL_NO = 25;
+                    //    manualCalculation.DISPLAY_FLAG = "Y";
+                    //    manualCalculation.FORM_CODE = formCode;
+                    //    manualCalculation.DELETED_FLAG = "N";
+                    //    //manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
+                    //    //manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
+                    //    manualCalculation.MASTER_CHILD_FLAG = "C";
+                    //    manualCalculation.LEFT_POSITION = 1600;
+                    //    if (!formDetailList.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
+                    //        formDetailList.Add(manualCalculation);
+                    //}
                 }
               
                 this._cacheManager.Set($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}", formDetailList, 20);
@@ -9052,10 +9058,18 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         }
 
         [HttpGet]
-        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode)
+        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
         {
-            _logErp.InfoInFile("Get CompanyInfo:  For Print");
-            var response = _FormTemplateRepo.GetLineItemChargeInfo(companycode,FormCode);
+            _logErp.InfoInFile("Get LineItemChargeInfo:  For Calculation");
+            var response = _FormTemplateRepo.GetLineItemChargeInfo(companycode,FormCode, CustomerCode, ItemCode);
+            return response;
+        }
+
+        [HttpGet]
+        public List<CustomerItemType> GetItemDiscountScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
+        {
+            _logErp.InfoInFile("Get ItemDiscountScheduleInfo:  For Calculation");
+            var response = _FormTemplateRepo.GetItemDiscountScheduleInfo(companycode, FormCode, CustomerCode, ItemCode);
             return response;
         }
 
@@ -9114,10 +9128,10 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         }
 
         [HttpGet]
-        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode)
+        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode, string CustomerCode, string ItemCode)
         {
             _logErp.InfoInFile("Get CompanyInfo:  For Print");
-            var response = _FormTemplateRepo.GetLineItemChargeParticularInfo(companycode, FormCode,ChargeCode);
+            var response = _FormTemplateRepo.GetLineItemChargeParticularInfo(companycode, FormCode,ChargeCode, CustomerCode, ItemCode);
             return response;
         }
 

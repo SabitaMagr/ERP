@@ -269,9 +269,8 @@ DTModule.controller('lineItemChargeCtrl', function ($scope, $rootScope, $http, $
 
 
     //show modal popup
-    $scope.BrowseLineItemCharge = function (index, columnName) {
-
-        console.log("i am columnname", columnName);
+    $scope.BrowseLineItemCharge = function (index, columnName,customer) {
+       
         if ($scope.havRefrence == 'Y' && $scope.freeze_master_ref_flag == "Y") {
             var referencenumber = $('#refrencetype').val();
             var custref = $(".referenceCustomer").val();
@@ -280,17 +279,100 @@ DTModule.controller('lineItemChargeCtrl', function ($scope, $rootScope, $http, $
                 return;
             }
         }
+       
         if ($scope.freeze_master_ref_flag == "N") {
+
 
             $('#lineItemChargeModal_' + index).modal('show');
 
-            var req = "/api/TemplateApi/GetLineItemChargeParticularInfo?companycode=" + $scope.companycode + "&FormCode=" + $scope.FormCode + "&ChargeCode=" + columnName;
-            $http.get(req).then(function (results) {
-                $scope.percentFlag = results.data[0].VALUE_PERCENT_FLAG;
-                $scope.percentAmount = results.data[0].VALUE_PERCENT_AMOUNT;
-                $scope.ChargeCode = columnName;
-                $scope.lineItemParticularChargeDetails = results.data;
+            if ($scope.percentFlag === undefined) {
+                var req = "/api/TemplateApi/GetLineItemChargeParticularInfo?companycode=" + $scope.companycode + "&FormCode=" + $scope.FormCode + "&ChargeCode=" + columnName + "&CustomerCode=" + $scope.masterModels.CUSTOMER_CODE + "&ItemCode=" + $scope.childModels[index]["ITEM_CODE"];
+                $http.get(req).then(function (results) {
+                   
+                    $scope.percentFlag = results.data[0].VALUE_PERCENT_FLAG;
+                    $scope.percentAmount = results.data[0].VALUE_PERCENT_AMOUNT;
+                    $scope.ChargeCode = columnName;
+                    $scope.ManualCalCharge = results.data[0].MANUAL_CALC_CHARGE;
+                    $scope.lineItemParticularChargeDetails = results.data;
+                    $('#lineItemChargeModal_' + index).modal('show');
+                    if ($scope.percentFlag == 'P') {
+                        $('#P_Id').val($scope.percentAmount);
+                        $('#P').val($scope.percentFlag);
+                        $('#P').prop('checked', true);
+                        $('#Q_Id').val(0);
+                        $('#V_Id').val(0);
+                    }
+                    if ($scope.percentFlag == 'V') {
+                        $('#V_Id').val($scope.percentAmount);
+                        $('#V').val($scope.percentFlag);
+                        $('#V').prop('checked', true);
+                        $('#P_Id').val(0);
+                        $('#Q_Id').val(0);
+                    }
+                    if ($scope.percentFlag == 'Q') {
+                        $('#Q_Id').val($scope.percentAmount);
+                        $('#Q').val($scope.percentFlag);
+                        $('#Q').prop('checked', true);
+                        $('#P_Id').val(0);
+                        $('#V_Id').val(0);
+                    }
                 });
+            }
+            else {
+                $('#lineItemChargeModal_' + index).modal('show');
+                if ($scope.percentFlag == 'P') {
+
+                    $('#P_Id').val($scope.percentAmount);
+                    $('#P').val($scope.percentFlag);
+                    $('#P').prop('checked', true);
+                    $('#Q_Id').val(0);
+                    $('#V_Id').val(0);
+                }
+                if ($scope.percentFlag == 'V') {
+
+                    $('#V_Id').val($scope.percentAmount);
+                    $('#V').val($scope.percentFlag);
+                    $('#V').prop('checked', true);
+                    $('#P_Id').val(0);
+                    $('#Q_Id').val(0);
+                }
+                if ($scope.percentFlag == 'Q') {
+
+                    $('#Q_Id').val($scope.percentAmount);
+                    $('#Q').val($scope.percentFlag);
+                    $('#Q').prop('checked', true);
+                    $('#P_Id').val(0);
+                    $('#V_Id').val(0);
+                }
+            }
+            $('input#P.P_checkRadio').change(function (e) {
+                e.preventDefault;
+                $('#P_Id').val($scope.percentAmount);
+                $('.V_checkRadio').prop('checked', false);
+                $('.Q_checkRadio').prop('checked', false);
+                $scope.percentFlag = 'P';
+                $('#V_Id').val('0');
+                $('#Q_Id').val('0');
+            });
+            $('input#V.V_checkRadio').change(function (e) {
+                e.preventDefault;
+                $('#V_Id').val($scope.percentAmount);
+                $('.P_checkRadio').prop('checked', false);
+                $('.Q_checkRadio').prop('checked', false);
+                $scope.percentFlag = 'V';
+                $('.V_checkRadio').prop('checked', true);
+                $('#P_Id').val(0);
+                $('#Q_Id').val(0);
+            });
+            $('input#Q.Q_checkRadio').change(function (e) {
+                e.preventDefault;
+                $('#Q_Id').val($scope.percentAmount);
+                $('.P_checkRadio').prop('checked', false);
+                $('.V_checkRadio').prop('checked', false);
+                $scope.percentFlag = 'Q';
+                $('#P_Id').val(0);
+                $('#V_Id').val(0);
+            });
         }
     }
 });

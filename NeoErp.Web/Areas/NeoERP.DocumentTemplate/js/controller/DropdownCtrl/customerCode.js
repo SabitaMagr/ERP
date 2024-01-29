@@ -131,7 +131,6 @@ DTModule.controller('customerCtrl', function ($scope, $rootScope, $http, $routeP
 
     //master validation
     $scope.customerCodeOnChange = function (kendoEvent) {
-
         if (kendoEvent.sender.dataItem() == undefined) {
             $scope.customererror = "Please Enter Valid Code."
             $('#customers').data("kendoComboBox").value([]);
@@ -143,7 +142,6 @@ DTModule.controller('customerCtrl', function ($scope, $rootScope, $http, $routeP
         }
     }
     $scope.onChange = function (kendoEvent) {
-
         $(".divsearchoption").css({ display: 'none' });
         $("#RefrenceModel").modal('toggle');
         //$scope.bindReferenceGrid(true);
@@ -202,6 +200,7 @@ DTModule.controller('customerCtrl', function ($scope, $rootScope, $http, $routeP
             $('#customerGrid').removeClass("show-displaygrid");
             $("#customerGrid").html("");
             BindCustomerGrid(currentItem.customerId, currentItem.masterCustomerCode, "");
+            $scope.CustomerId;
             $scope.$apply();
         },
     };
@@ -277,7 +276,6 @@ DTModule.controller('customerCtrl', function ($scope, $rootScope, $http, $routeP
                 wordwrapmenu(e);
             },
             dataBound: function (e) {
-                debugger;
                 $("#customerGrid tbody tr").css("cursor", "pointer");
                 //DisplayNoResultsFound($('#kGrid'));
                 DisplayNoResultsFound($('#customerGrid'));
@@ -357,7 +355,6 @@ DTModule.controller('customerCtrl', function ($scope, $rootScope, $http, $routeP
 
     //show modal popup
     $scope.BrowseTreeListForCustomers = function (kendoEvent) {
-        debugger;
         if ($scope.havRefrence == 'Y' && $scope.freeze_master_ref_flag == "Y") {
             var referencenumber = $('#refrencetype').val();
             if ($scope.ModuleCode != '01' && referencenumber !== "") {

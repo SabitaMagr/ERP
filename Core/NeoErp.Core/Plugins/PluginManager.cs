@@ -143,11 +143,12 @@ namespace NeoErp.Core.Plugins
                             pluginDescriptor.ReferencedAssembly = PerformFileDeploy(mainPluginFile);
 
                             //load all other referenced assemblies now
+                            
                             foreach (var plugin in pluginFiles
                                 .Where(x => !x.Name.Equals(mainPluginFile.Name, StringComparison.InvariantCultureIgnoreCase))
                                 .Where(x => !IsAlreadyLoaded(x)))
                                     PerformFileDeploy(plugin);
-                            
+
                             //init plugin type (only one plugin per assembly is allowed)
                             foreach (var t in pluginDescriptor.ReferencedAssembly.GetTypes())
                                 if (typeof(IPlugin).IsAssignableFrom(t))

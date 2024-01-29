@@ -363,6 +363,11 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string TYPE_CODE { get; set; }
         public string TYPE_EDESC { get; set; }
     }
+    public class CustomerItemType
+    {
+        public decimal DISCOUNT_RATE { get; set; }
+        public decimal DISCOUNT_PERCENT { get; set; }
+    }
     public class RefrenceType
     {
         public string REFERENCE_FLAG { get; set; }
@@ -399,6 +404,8 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string APPORTION_FLAG { get; set; }
         public string APPORTION { get; set; }
         public string ON_ITEM { get; set; }
+        public string MANUAL_CALC_CHARGE { get; set; }
+        public string SPECIFIC_CHARGE_FLAG { get; set; }
 
         //AA Added to check whether the charges are active or not 
         public string CHARGE_ACTIVE_FLAG { get; set; }
