@@ -475,35 +475,48 @@
 
 					</div>
 					<!--<div ng-if="item.COLUMN_NAME ==='SECOND_QUANTITY'">
-						<div ng-if="item.REF_FIX_QUANTITY==='Y'">
-							<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter second quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
-						</div>
-						<div ng-if="item.REF_FIX_QUANTITY==='N'">
-							<div ng-if="havRefrence==='Y'">
-								<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox"--> @*onclick="checkQuantity(event)" onkeyup="compareQuantity(event)"*@ <!--/>
-							</div>
-							<div ng-if="havRefrence==='N'">
-								<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" />
-							</div>
-						</div>
-					</div>-->
-					<div ng-if="item.COLUMN_NAME.indexOf('SECOND_QUANTITY') !== -1">
-			<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="Enter second quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="clsSecQty form-control {{item.COLUMN_NAME}}_{{key}} textbox" />
-
+	<div ng-if="item.REF_FIX_QUANTITY==='Y'">
+		<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter second quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
+	</div>
+	<div ng-if="item.REF_FIX_QUANTITY==='N'">
+		<div ng-if="havRefrence==='Y'">
+			<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox"-->
+					@*onclick="checkQuantity(event)" onkeyup="compareQuantity(event)"*@
+					<!--/>
+			</div>
+			<div ng-if="havRefrence==='N'">
+				<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" />
+			</div>
 		</div>
+	</div>-->
+					<div ng-if="item.COLUMN_NAME.indexOf('SECOND_QUANTITY') !== -1">
+						<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="Enter second quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="clsSecQty form-control {{item.COLUMN_NAME}}_{{key}} textbox" />
+
+					</div>
 					<div ng-if="item.COLUMN_NAME.indexOf('THIRD_QUANTITY') !== -1">
 						<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="Enter third quantity" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="clsThdQty form-control {{item.COLUMN_NAME}}_{{key}} textbox" />
 					</div>
 					@*AA*@
+					@*<div ng-if="item.COLUMN_NAME==='UNIT_PRICE'">
+			<div ng-if="item.REF_FIX_PRICE==='Y' || item.PRICE_CONTROL_FLAG==='Y'">
+				<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter unit price" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control  {{item.COLUMN_NAME}}_{{key}}  textbox" readonly />
+			</div>
+			<div ng-if="item.REF_FIX_PRICE==='N' || item.PRICE_CONTROL_FLAG==='N'">
+				<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter unit price" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control  {{item.COLUMN_NAME}}_{{key}}  textbox" />
+			</div>
+		</div>*@
+
 					<div ng-if="item.COLUMN_NAME==='UNIT_PRICE'">
-						<div ng-if="item.REF_FIX_PRICE==='Y'">
+						<div ng-if="item.PRICE_CONTROL_FLAG==='Y'">
 							<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter unit price" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control  {{item.COLUMN_NAME}}_{{key}}  textbox" readonly />
 						</div>
-						<div ng-if="item.REF_FIX_PRICE==='N'">
-							<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter unit price" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control  {{item.COLUMN_NAME}}_{{key}}  textbox" />
+						<div ng-if="item.PRICE_CONTROL_FLAG==='N'">
+							<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter unit price" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="clsUnitPrice form-control  {{item.COLUMN_NAME}}_{{key}}  textbox" />
 						</div>
 					</div>
-
+					<div ng-if="item.RATE_SCHEDULE_FIX_PRICE ==='Y'">
+						<input type="hidden" class="clsRateSchedulefixPrice" value="Y" name="item.RATE_SCHEDULE_FIX_PRICE" min="0" form-control {{item.RATE_SCHEDULE_FIX_PRICE}} _{{key}} ng-model="childRow">
+					</div>
 					<div ng-if="item.COLUMN_NAME.indexOf('CALC_UNIT_PRICE') !== -1">
 						<div ng-if="item.REF_FIX_PRICE==='Y'">
 							<input type="number" id="item.COLUMN_NAME" min="0" placeholder="Enter calc_unit price" ng-change="ChildCalcSum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
@@ -521,24 +534,24 @@
 							@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DropDownPartialView/ChildPartialView/_lineItemChargeChildPartial.cshtml")
 						</div>
 						@*<div ng-if="item.MANUAL_CALC_CHARGE != 'Y'">
-							<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
-						</div>*@
+				<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
+			</div>*@
 					</div>
 					<div ng-if="item.COLUMN_NAME.indexOf('SD') !== -1">
 						<div>
 							@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DropDownPartialView/ChildPartialView/_lineItemChargeChildPartial.cshtml")
 						</div>
 						@*<div ng-if="item.MANUAL_CALC_CHARGE != 'Y'">
-							<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
-						</div>*@
+				<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" readonly />
+			</div>*@
 					</div>
 					<div ng-if="item.COLUMN_NAME.indexOf('BC') !== -1">
 						<div>
 							@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DropDownPartialView/ChildPartialView/_lineItemChargeChildPartial.cshtml")
 						</div>
 						@*<div ng-if="item.MANUAL_CALC_CHARGE != 'Y'">
-							<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox " readonly />
-						</div>*@
+				<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox " readonly />
+			</div>*@
 					</div>
 					<div ng-if="item.COLUMN_NAME.indexOf('VT') !== -1">
 						<input type="number" string-to-number id="item.COLUMN_NAME" min="0" placeholder="0.0" ng-change="sum(key)" name="item.COLUMN_NAME" ng-model="childModels[key][item.COLUMN_NAME]" class="form-control {{item.COLUMN_NAME}}_{{key}} textbox" />

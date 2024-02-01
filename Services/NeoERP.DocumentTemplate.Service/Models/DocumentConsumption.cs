@@ -376,7 +376,11 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string REF_TABLE_NAME { get; set; }
         public string FORM_CODE { get; set; }
     }
-    public class ChargeOnSales
+    public class ItemRateScheduleSetUp
+    {
+        public decimal STANDARD_RATE { get; set; }
+    }
+        public class ChargeOnSales
     {
         public string CHARGE_CODE { get; set; }
         public string CHARGE_EDESC { get; set; }

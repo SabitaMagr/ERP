@@ -309,6 +309,7 @@ namespace NeoERP.DocumentTemplate.Service.Interface
         //string GetFirstQuantity(string companycode, string itemCode, string quantity);
         List<CustomerItemType> GetItemDiscountScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode);
         List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode, string ChargeCode, string CustomerCode, string ItemCode);
+        decimal GetFreezeRateScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode);
         List<Document> getDocumentByFilter(string filter);
         List<AccountSetup> getALLAccountGroupForIntrestCalc();
 

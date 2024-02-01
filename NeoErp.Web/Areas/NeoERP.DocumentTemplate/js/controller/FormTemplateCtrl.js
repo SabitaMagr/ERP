@@ -4825,7 +4825,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     var results = "";
 
     /*sashi*/
-    $scope.calculateItemChargeAmount = function (index, totalAmount, bool) {
+    $scope.calculateItemChargeAmount = function (index, totalAmount, bool) {               
         var list = $scope.lineItemChargeDetails;
         var taxableAmount = totalAmount;
         var netAmount = 0;
@@ -4835,10 +4835,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         if (checkPopUpFlag == null)
             checkPopUpFlag = "0";
         var _discount = 0;//$scope.childModels[index][UNIT_PRICE];
-
         taxableAmount = isNaN(taxableAmount) ? 0 : taxableAmount;
         totalchangeAmount = isNaN(totalchangeAmount) ? 0 : totalchangeAmount;
-
         $.each(list, function (i, valer) {
             taxableAmount = isNaN(taxableAmount) ? 0 : taxableAmount;
             totalchangeAmount = isNaN(totalchangeAmount) ? 0 : totalchangeAmount;
@@ -4846,6 +4844,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
             var vIdValue = $('#V_Id').val();
             var qIdValue = $('#Q_Id').val();
             var cCode = $('#charge_Code').val();
+           
             if (checkPopUpFlag.id == "P") {
                 if (pIdValue !== undefined) {
                     if (cCode !== undefined) {
@@ -5103,7 +5102,7 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
         $('#ED').val(ed);
         $('#BC').val(bc);
         $('#VT').val(vt);
- 
+
         var totalAddition = parseFloat(parseFloat(ed) + parseFloat(bc) + parseFloat(vt));
         var totalDeduction = parseFloat(sd);
         var netTotal = 0;
@@ -5121,10 +5120,25 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     }
     /*sashi*/
 
+    function checkUnitPrice(index) {
+        $('.clsUnitPrice').keydown(function (e) {
+            e.preventDefault;
+            if ($('.clsRateSchedulefixPrice').val() === "Y")
+            {
+                var req = "/api/TemplateApi/GetFreezeRateScheduleInfo?companycode=" + $scope.companycode + "&FormCode=" + $scope.FormCode + "&CustomerCode=" + $scope.masterModels["CUSTOMER_CODE"] + "&ItemCode=" + $scope.childModels[index]["ITEM_CODE"];
+                $http.get(req).then(function (results) {
+                    if ($scope.childModels[index].UNIT_PRICE < results.data) {
+                        $scope.childModels[index].UNIT_PRICE = results.data;
+					}
+                });
+            }           
+        });
+	}
    
 
     $scope.sum = function (index) {
         $('#item.COLUMN_NAME').trigger('click');
+        checkUnitPrice(index);
         $scope.iamFromReference = false;
         if (!$scope.iamFromReference) {
             var child_rate = $scope.childModels[index].UNIT_PRICE;
@@ -5610,6 +5624,14 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                         if ($scope.childModels[index].hasOwnProperty("ALT1_MU_CODE")) {
                             $scope.childModels[index].ALT1_MU_CODE = data.data[0].MultiItemUnit;
                         }
+                        var req = "/api/TemplateApi/GetFreezeRateScheduleInfo?companycode=" + $scope.companycode + "&FormCode=" + $scope.FormCode + "&CustomerCode=" + $scope.masterModels["CUSTOMER_CODE"] + "&ItemCode=" + $scope.childModels[index]["ITEM_CODE"];
+                        $http.get(req).then(function (results) {
+                            $scope.childModels[index][UNIT_PRICE] = results.data;
+                        });
+                        var reqItemCharge = "/api/TemplateApi/GetLineItemChargeInfo?companycode=" + $scope.companycode + "&FormCode=" + $scope.FormCode + "&CustomerCode=" + $scope.masterModels["CUSTOMER_CODE"] + "&ItemCode=" + $scope.childModels[index]["ITEM_CODE"];
+                        $http.get(reqItemCharge).then(function (resultsreqItemCharge) {
+                            $scope.lineItemChargeDetails = resultsreqItemCharge.data;
+                        });
                     }
                     $scope.ItemInfo = [];
                     $scope.ItemInfo.push(data.data[0]);

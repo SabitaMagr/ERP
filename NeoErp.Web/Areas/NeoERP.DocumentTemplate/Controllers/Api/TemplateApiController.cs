@@ -227,6 +227,10 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             ta.COLUMN_NAME = "TA";
             ta.MASTER_CHILD_FLAG = "C";
             ta.LEFT_POSITION = 1600;
+            ta.DISPLAY_RATE = response.Select(p => p.DISPLAY_RATE).FirstOrDefault();
+            ta.RATE_SCHEDULE_FIX_PRICE = response.Select(p => p.RATE_SCHEDULE_FIX_PRICE).FirstOrDefault();
+            ta.PRICE_CONTROL_FLAG = response.Select(p => p.PRICE_CONTROL_FLAG).FirstOrDefault();
+            ta.REF_FIX_PRICE = response.Select(p => p.REF_FIX_PRICE).FirstOrDefault();
             if (!response.Select(x => x.COLUMN_HEADER).Contains(ta.COLUMN_HEADER))
                 response.Add(ta);
 
@@ -239,6 +243,10 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             na.COLUMN_NAME = "NA";
             na.MASTER_CHILD_FLAG = "C";
             na.LEFT_POSITION = 4600;
+            na.DISPLAY_RATE = response.Select(p => p.DISPLAY_RATE).FirstOrDefault();
+            na.RATE_SCHEDULE_FIX_PRICE = response.Select(p => p.RATE_SCHEDULE_FIX_PRICE).FirstOrDefault();
+            na.PRICE_CONTROL_FLAG = response.Select(p => p.PRICE_CONTROL_FLAG).FirstOrDefault();
+            na.REF_FIX_PRICE = response.Select(p => p.REF_FIX_PRICE).FirstOrDefault();
             if (!response.Select(x => x.COLUMN_HEADER).Contains(na.COLUMN_HEADER))
                 response.Add(na);
 
@@ -9133,6 +9141,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             _logErp.InfoInFile("Get CompanyInfo:  For Print");
             var response = _FormTemplateRepo.GetLineItemChargeParticularInfo(companycode, FormCode,ChargeCode, CustomerCode, ItemCode);
             return response;
+        }
+
+        [HttpGet]
+        public decimal GetFreezeRateScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
+        {
+            _logErp.InfoInFile("Get FreezeRateScheduleInfo:  For Print");
+            var response = _FormTemplateRepo.GetFreezeRateScheduleInfo(companycode, FormCode, CustomerCode, ItemCode);
+            return Convert.ToDecimal(response);
         }
 
         //[HttpGet]
