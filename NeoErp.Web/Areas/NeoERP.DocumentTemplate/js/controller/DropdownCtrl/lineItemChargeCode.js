@@ -269,7 +269,9 @@ DTModule.controller('lineItemChargeCtrl', function ($scope, $rootScope, $http, $
 
 
     //show modal popup
-    $scope.BrowseLineItemCharge = function (index, columnName,customer) {
+    $scope.BrowseLineItemCharge = function (index, columnName, customer) {
+
+       
        
         if ($scope.havRefrence == 'Y' && $scope.freeze_master_ref_flag == "Y") {
             var referencenumber = $('#refrencetype').val();
@@ -282,9 +284,13 @@ DTModule.controller('lineItemChargeCtrl', function ($scope, $rootScope, $http, $
        
         if ($scope.freeze_master_ref_flag == "N") {
 
+            var manualcalcChargeValue = $scope.lineItemChargeDetails.filter(t => t.CHARGE_CODE == columnName)[0].MANUAL_CALC_CHARGE;
+            if (manualcalcChargeValue == 'Y') {
+                $('.clsManualCalCharge_N').hide(); $('.clsManualCalCharge_Y').show();
+            }
+            else {  $('.clsManualCalCharge_N').show(); $('.clsManualCalCharge_Y').hide(); }
 
             $('#lineItemChargeModal_' + index).modal('show');
-
             if ($scope.percentFlag === undefined) {
                 var req = "/api/TemplateApi/GetLineItemChargeParticularInfo?companycode=" + $scope.companycode + "&FormCode=" + $scope.FormCode + "&ChargeCode=" + columnName + "&CustomerCode=" + $scope.masterModels.CUSTOMER_CODE + "&ItemCode=" + $scope.childModels[index]["ITEM_CODE"];
                 $http.get(req).then(function (results) {
@@ -294,7 +300,9 @@ DTModule.controller('lineItemChargeCtrl', function ($scope, $rootScope, $http, $
                     $scope.ChargeCode = columnName;
                     $scope.ManualCalCharge = results.data[0].MANUAL_CALC_CHARGE;
                     $scope.lineItemParticularChargeDetails = results.data;
+                   
                     $('#lineItemChargeModal_' + index).modal('show');
+                   
                     if ($scope.percentFlag == 'P') {
                         $('#P_Id').val($scope.percentAmount);
                         $('#P').val($scope.percentFlag);
