@@ -4916,9 +4916,13 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                     if (valer.ON_ITEM == 'Y') {                        
                         if (valer.VALUE_PERCENT_AMOUNT > 0)
                             $scope.childModels[index][valer.CHARGE_CODE] = valer.VALUE_PERCENT_AMOUNT;
+                        else
+                            $scope.childModels[index][valer.CHARGE_CODE] = 0;
                         if (valer.CHARGE_TYPE_FLAG == "D") {
                             if ($scope.childModels[index][valer.CHARGE_CODE] !== "")
                                 taxableAmount = parseFloat(taxableAmount).toFixed(2) - parseFloat($scope.childModels[index][valer.CHARGE_CODE]).toFixed(2);//- chargecodeval;
+                            else
+                                $scope.childModels[index][valer.CHARGE_CODE] = 0;
                             netAmount = taxableAmount;
                             if (valer.CHARGE_CODE == "SD")
                                 $scope.childModels[index]["MCSD"] = valer.VALUE_PERCENT_AMOUNT;
@@ -5060,7 +5064,6 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
                 sum = parseFloat(sum) + (parseFloat(value[TOTAL_PRICE]));
             }
         });
-
         var totalAddition = 0;
         var totalDeduction = 0;
         $.each($scope.ChargeList, function (i, v) {
