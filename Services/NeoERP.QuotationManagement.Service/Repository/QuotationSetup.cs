@@ -281,16 +281,23 @@ namespace NeoERP.QuotationManagment.Service.Repository
         {
             try
             {
-                string Query = $@"SELECT QUOTATION_NO,TENDER_NO,PAN_NO,PARTY_NAME,ADDRESS,CONTACT_NO,EMAIL,CURRENCY,CURRENCY_RATE,DELIVERY_DATE,
-            TOTAL_AMOUNT,TOTAL_DISCOUNT,TOTAL_EXCISE,TOTAL_TAXABLE_AMOUNT,TOTAL_VAT,TOTAL_NET_AMOUNT,
-            (CASE WHEN STATUS='RQ' then 'Pending' when status='AP' then 'Approved' else 'Reject' end) AS STATUS,
-            TERM_CONDITION FROM  QUOTATION_DETAILS WHERE QUOTATION_NO='{quotationNo}'";
+                string Query = $@"SELECT SQS.ISSUE_DATE,SQS.VALID_DATE,BS_DATE(SQS.ISSUE_DATE) AS NEPALI_DATE,QD.QUOTATION_NO,QD.TENDER_NO,QD.PAN_NO,QD.PARTY_NAME,QD.ADDRESS,QD.CONTACT_NO,QD.EMAIL,QD.CURRENCY,QD.CURRENCY_RATE,QD.DELIVERY_DATE,
+            QD.TOTAL_AMOUNT,QD.TOTAL_DISCOUNT,QD.TOTAL_EXCISE,QD.TOTAL_TAXABLE_AMOUNT,QD.TOTAL_VAT,QD.TOTAL_NET_AMOUNT,
+            (CASE WHEN QD.STATUS='RQ' then 'Pending' when QD.status='AP' then 'Approved' else 'Reject' end) AS STATUS,
+            QD.TERM_CONDITION FROM  QUOTATION_DETAILS  QD,SA_QUOTATION_SETUP SQS WHERE SQS.TENDER_NO=QD.TENDER_NO AND  QD.QUOTATION_NO='{quotationNo}'";
                 List<Quotation_Details> quotations = this._dbContext.SqlQuery<Quotation_Details>(Query).ToList();
                 foreach (var quotation in quotations)
                 {
-                    string query = $@"select * from QUOTATION_DETAIL_ITEMWISE where QUOTATION_NO='{quotation.QUOTATION_NO}'  order by id";
+                    string query = $@"SELECT SQI.ITEM_CODE,SQI.SPECIFICATION, SQI.IMAGE,SQI.UNIT,SQI.QUANTITY,SQI.CATEGORY, SQI.BRAND_NAME,SQI.INTERFACE,
+                        SQI.TYPE, SQI.LAMINATION, SQI.ITEM_SIZE,SQI.THICKNESS,SQI.COLOR,SQI.GRADE,SQI.SIZE_LENGTH, SQI.SIZE_WIDTH,QDI.RATE,
+                        QDI.AMOUNT, QDI.DISCOUNT, QDI.DISCOUNT_AMOUNT,QDI.EXCISE,QDI.TAXABLE_AMOUNT, QDI.VAT_AMOUNT,QDI.NET_AMOUNT
+                        FROM   SA_QUOTATION_ITEMS SQI,QUOTATION_DETAIL_ITEMWISE QDI WHERE SQI.ITEM_CODE = QDI.ITEM_CODE AND
+                        QDI.QUOTATION_NO = '{quotationNo}' AND SQI.DELETED_FLAG='N' ORDER BY SQI.ID";
                     List<Item_details> itemData = this._dbContext.SqlQuery<Item_details>(query).ToList();
                     quotation.Item_Detail = itemData;
+                    string vquery = $@"SELECT * FROM QUOTATION_TERM_CONDITION WHERE TENDER_NO='{quotation.TENDER_NO}' AND QUOTATION_NO='{quotationNo}'";
+                    List<Term_Conditions> TermCondition = this._dbContext.SqlQuery<Term_Conditions>(vquery).ToList();
+                    quotation.TermsCondition = TermCondition;
                 }
                 return quotations;
             }
@@ -329,9 +336,10 @@ namespace NeoERP.QuotationManagment.Service.Repository
                                     List<PARTY_DETAIL> partyData = this._dbContext.SqlQuery<PARTY_DETAIL>(vquery).ToList();
                     quotation.PartDetails = partyData;
                     string vQuery = $@"SELECT SQI.*, 
-                                   IIMS.ITEM_EDESC AS ITEM_DESC
+                                   IIMS.ITEM_EDESC AS ITEM_DESC,IIR.CALC_UNIT_PRICE AS LAST_PRICE,IIR.SUPPLIER_CODE AS LAST_VENDOR
                             FROM SA_QUOTATION_ITEMS SQI
-                            INNER JOIN IP_ITEM_MASTER_SETUP IIMS ON IIMS.ITEM_CODE = SQI.ITEM_CODE
+                            LEFT JOIN IP_ITEM_MASTER_SETUP IIMS ON IIMS.ITEM_CODE = SQI.ITEM_CODE
+                            LEFT JOIN VPRINT_IP_PURCHASE_REQUEST IIR ON IIR.ITEM_CODE = SQI.ITEM_CODE
                             WHERE SQI.TENDER_NO = '{quotation.TENDER_NO}'
                             AND SQI.deleted_flag = 'N'
                             AND IIMS.COMPANY_CODE ='{quotation.COMPANY_CODE}'";

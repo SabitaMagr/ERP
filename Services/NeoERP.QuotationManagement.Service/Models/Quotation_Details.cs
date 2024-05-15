@@ -14,6 +14,9 @@ namespace NeoERP.QuotationManagement.Service.Models
         public string PARTY_NAME { get; set; }
         public string ADDRESS { get; set; }
         public string CONTACT_NO { get; set; }
+        public DateTime? ISSUE_DATE { get; set; }
+        public DateTime? VALID_DATE { get; set; }
+        public string NEPALI_DATE { get; set; }
         public string EMAIL { get; set; }
         public string CURRENCY { get; set; }
         public decimal CURRENCY_RATE { get; set; }
@@ -27,7 +30,12 @@ namespace NeoERP.QuotationManagement.Service.Models
         public string TERM_CONDITION { get; set; }
         public string STATUS { get; set; }
         public List<Item_details> Item_Detail { get; set; }
+        public List<Term_Conditions> TermsCondition { get; set; }
 
+    }
+    public class Term_Conditions
+    {
+        public string TERM_CONDITION { get; set; }
     }
     public class Item_details
     {
@@ -42,5 +50,21 @@ namespace NeoERP.QuotationManagement.Service.Models
         public decimal TAXABLE_AMOUNT { get; set; }
         public decimal VAT_AMOUNT { get; set; }
         public decimal NET_AMOUNT { get; set; }
+        public string SPECIFICATION { get; set; }
+        public string IMAGE { get; set; }
+        public string IMAGE_NAME { get; set; }
+        public string UNIT { get; set; }
+        public int QUANTITY { get; set; }
+        public string CATEGORY { get; set; }
+        public string BRAND_NAME { get; set; }
+        public string INTERFACE { get; set; }
+        public string TYPE { get; set; }
+        public string LAMINATION { get; set; }
+        public string ITEM_SIZE { get; set; }
+        public string THICKNESS { get; set; }
+        public string COLOR { get; set; }
+        public string GRADE { get; set; }
+        public int SIZE_LENGTH { get; set; }
+        public int SIZE_WIDTH { get; set; }
     }
 }

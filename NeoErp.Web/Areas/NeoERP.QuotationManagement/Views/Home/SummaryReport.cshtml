@@ -55,7 +55,7 @@
 
                 <div id="viewGrid"></div>
             </div>
-            <!--<div class="portlet light form-fit bordered bottomspance" ng-show="quotationDetails">
+            <div class="portlet light form-fit bordered bottomspance" ng-show="quotationDetails">
         <div class="portlet box green-box main">
             <div class="portlet-body">
                 <div class="row boxbg">
@@ -66,42 +66,37 @@
 
                                 <div class="form-group">
                                     <label for="element">Pan No</label>
-                                    <input type="text" id="panNo" placeholder="Enter Pan No" ng-model="PAN_NO" name="panNo" ng-change="fetchEmployeeDetails()" class="form-control" />
+                                    <input type="text" id="panNo" placeholder="Enter Pan No" ng-model="PAN_NO" name="panNo" readonly class="form-control" />
                                 </div>
                                 <div class="form-group">
                                     <label for="customerName">Party Name</label>
-                                    <input type="text" id="customerName" placeholder="" ng-model="PARTY_NAME" name="customerName" class="form-control" />
+                                    <input type="text" id="customerName" placeholder="" ng-model="PARTY_NAME" name="customerName" readonly class="form-control" />
                                 </div>
                                 <div class="form-group">
                                     <label for="address">Address</label>
-                                    <input type="text" id="address" placeholder="" ng-model="ADDRESS" name="address" class="form-control" />
+                                    <input type="text" id="address" placeholder="" ng-model="ADDRESS" name="address" readonly class="form-control" />
                                 </div>
                                 <div class="form-group">
                                     <label for="contactNo">Contact No.</label>
-                                    <input type="tel" id="contactNo" placeholder="" ng-model="CONTACT_NO" name="contactNo" class="form-control" pattern="[0-9]{10}" title="Please enter a 10-digit phone number" />
+                                    <input type="text" id="contactNo" placeholder="" ng-model="CONTACT_NO" readonly name="contactNo" class="form-control" pattern="[0-9]{10}" title="Please enter a 10-digit phone number" />
                                 </div>
                             </div>
                             <div style="display:flex;">
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" id="email" placeholder="" ng-model="EMAIL" name="email" class="form-control" />
+                                    <input type="email" id="email" placeholder="" ng-model="EMAIL" name="email" class="form-control" readonly />
                                 </div>
                                 <div class="form-group" style="width: 27rem;">
                                     <label for="currency">Currency</label><br />
-                                    <select id="currency" name="currency" kendo-drop-down-list
-                                            k-options="currencyOptions"
-                                            slim-scroll
-                                            ng-model="selectedCurrency"
-                                            style="width: 25rem;">
-                                    </select>
+                                    <input type="text" id="currency" placeholder="" ng-model="CURRENCY" name="email" class="form-control" readonly />
                                 </div>
                                 <div class="form-group">
                                     <label for="currency">Currency Rate</label>
-                                    <input type="text" id="currencyRate" placeholder="" ng-model="CURRENCY_RATE" name="currencyRate" class="form-control" />
+                                    <input type="number" id="currencyRate" placeholder="" ng-model="CURRENCY_RATE" name="currencyRate" class="form-control" readonly />
                                 </div>
                                 <div class="form-group">
                                     <label for="deliveryDt">Delivery Date</label> <br />
-                                    <input id="deliveryDt" data-my-attribute="date" ng-model="DELIVERY_DATE" ng-change="formatDeliveryDt()" style="width: 27rem!important; font-size: 11px;" />
+                                    <input id="deliveryDt" type="text" ng-model="DELIVERY_DATE" class="form-control" readonly />
                                 </div>
                             </div>
                         </div>
@@ -113,18 +108,22 @@
                             <div class="form-group">
                                 <label>Date/Miti</label>
                                 <div style="display:flex;">
-                                    <input type="text" ng-model="ISSUE_DATE" class="form-control" readonly />
+                                    <input type="text" class="form-control" readonly ng-model="ISSUE_DATE" style="width: 13rem;" />
+                                    <input type="text" id="nepaliDate" data-checkfor="englishdatedocument" ng-model="NEPALI_DATE" style="width: 14rem;" class="nepali-calendar form-control" readonly />
                                 </div>
 
                             </div>
-
                             <div class="form-group">
                                 <label for="validDt">To be Delivery Date</label><br />
                                 <input type="text" ng-model="VALID_DATE" class="form-control" id="validDt" readonly />
                             </div>
+                            <div class="form-group">
+                                <label for="validDt">Status</label><br />
+                                <input type="text" ng-model="STATUS" class="form-control" id="status" readonly />
+                            </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="table-container" ng-init="setInitialWidth()">
+                        <div class="col-md-12" style="margin-bottom:2rem">
+                            <div class="tablecontainer" ng-init="setInitialWidth()">
                                 <div class="table-responsive">
                                     <table class="table-bordered table-striped modal-table">
                                         <tr>
@@ -155,38 +154,24 @@
                                             <td class="table-head">Quantity</td>
                                             <td class="table-head">Rate</td>
                                             <td class="table-head">Amount</td>
-                                            <td class="table-head">
-                                                Discount
-                                                <span title="Discount Type">
-                                                    <span>
-                                                        <i class="fa fa-arrow-circle-down" ng-click="showDiscountType = !showDiscountType" ng-show="!showDiscountType" aria-hidden="true"></i>
-                                                        <i class="fa fa-arrow-circle-up" ng-click="showDiscountType = !showDiscountType" ng-show="showDiscountType" aria-hidden="true"></i>
-                                                    </span>
-                                                </span>-->
-            @*Display Selected Discount Type*@
-            <!--<span ng-show="selectedDiscountType">({{ selectedDiscountType }})</span>-->
-            @*Discount Type Options Dropdown*@
-            <!--<div ng-show="showDiscountType" style="position: relative;">
-                                                    <select class="form-control" ng-model="discountType" style="width: 12rem;" ng-change="updateSelectedDiscountType()">
-                                                        <option value="Percentage">Percentage</option>
-                                                        <option value="Flat">Flat</option>
-                                                        <option value="Quantity">Quantity</option>
-                                                    </select>
-                                                </div>
-                                            </td>
-
+                                            <td class="table-head"> Discount</td>
                                             <td class="table-head">Discount Amount</td>
                                             <td class="table-head">Excise</td>
                                             <td class="table-head">Taxable Amount</td>
                                             <td class="table-head">Vat Amount(13%)</td>
                                             <td class="table-head">Net Amount</td>
                                         </tr>
-                                        <tr ng-repeat="product in productFormList" ng-init="updateSums(product)">
+                                        <tr ng-repeat="product in productFormList">
                                             <td>
                                                 <input style="width:49px;" type="text" name="unit_{{product.ID}}" id="unit_{{product.ID}}" ng-model="product.ID" value="" readonly class="form-control">
                                             </td>
                                             <td>
-                                                <input type="text" name="unit_{{product.ID}}" id="unit_{{product.ID}}" ng-model="product.ITEM_CODE" value="" readonly class="form-control">
+                                                <select id="itemSelected" name="item_{{product.ID}}" kendo-drop-down-list
+                                                        k-options="{dataSource: ItemSelect.dataSource,dataTextField: 'ItemDescription', dataValueField: 'ItemCode',filter: 'contains', autoClose: true }"
+                                                        slim-scroll ng-change="updateUnit(product)"
+                                                        ng-model="product.ItemDescription" readonly
+                                                        style="width:38rem;">
+                                                </select>
                                             </td>
                                             <td>
                                                 <input type="text" name="specification_{{product.ID}}" id="specification_{{product.ID}}" ng-model="product.SPECIFICATION" readonly class="form-control" value="">
@@ -234,28 +219,28 @@
                                                 <input type="number" name="quantity_{{product.ID}}" min="0" id="quantity_{{product.ID}}" ng-model="product.QUANTITY" readonly class="form-control small-width right-align" value="">
                                             </td>
                                             <td>
-                                                <input type="number" name="rate_{{product.ID}}" min="0" id="rate_{{product.ID}}" ng-model="product.RATE" ng-change="updateAmount(product);" class="form-control small-width right-align" value="">
+                                                <input type="number" name="rate_{{product.ID}}" min="0" id="rate_{{product.ID}}" ng-model="product.RATE" class="form-control small-width right-align" readonly value="">
                                             </td>
                                             <td>
                                                 <input type="number" name="amount_{{product.ID}}" id="amount_{{product.ID}}" ng-model="product.AMOUNT" class="form-control large-width right-align" value="" readonly>
                                             </td>
                                             <td>
-                                                <input type="number" name="discount_{{product.ID}}" id="discount_{{product.ID}}" ng-model="product.DISCOUNT" ng-change="updateDiscountAmt(product);updateTaxableAmt(product);" class="form-control large-width right-align" value="">
+                                                <input type="number" name="discount_{{product.ID}}" id="discount_{{product.ID}}" ng-model="product.DISCOUNT" class="form-control large-width right-align" readonly value="">
                                             </td>
                                             <td>
                                                 <input type="number" name="discountAmt_{{product.ID}}" id="discountAmt_{{product.ID}}" ng-model="product.DISCOUNT_AMOUNT" class="form-control large-width right-align" readonly>
                                             </td>
                                             <td>
-                                                <input type="number" name="excise_{{product.ID}}" id="excise_{{product.ID}}" ng-model="product.EXCISE" ng-change="updateTaxableAmt(product);" class="form-control large-width right-align" value="">
+                                                <input type="number" name="excise_{{product.ID}}" id="excise_{{product.ID}}" ng-model="product.EXCISE" class="form-control large-width right-align" readonly value="">
                                             </td>
                                             <td>
                                                 <input type="number" name="taxableAmt_{{product.ID}}" id="taxableAmt_{{product.ID}}" ng-model="product.TAXABLE_AMOUNT" class="form-control large-width right-align" readonly>
                                             </td>
                                             <td>
-                                                <input type="number" name="vatAmt_{{product.ID}}" id="vatAmt_{{product.ID}}" ng-model="product.VAT_AMOUNT" class="form-control large-width right-align" value="">
+                                                <input type="number" name="vatAmt_{{product.ID}}" id="vatAmt_{{product.ID}}" ng-model="product.VAT_AMOUNT" class="form-control large-width right-align" readonly value="">
                                             </td>
                                             <td>
-                                                <input type="number" name="netAmt_{{product.ID}}" id="netAmt_{{product.ID}}" ng-model="product.NET_AMOUNT" class="form-control large-width right-align" value="">
+                                                <input type="number" name="netAmt_{{product.ID}}" id="netAmt_{{product.ID}}" ng-model="product.NET_AMOUNT" class="form-control large-width right-align" readonly value="">
                                             </td>
                                         </tr>
                                     </table>
@@ -263,11 +248,11 @@
                             </div>
                         </div>
                         <div class="summary-table">
-                            <div class="col-xs-5 col-sm-3 col-md-3 customerDetailsSection">
+                            <div class="col-xs-3 col-sm-2 col-md-3 customerDetailsSection">
                                 <table class="table table-bordered">
                                     <thead class="font-green">
                                         <tr>
-                                            <th colspan="2">Summary <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="Amount Summary"></i></th>
+                                            <th colspan="2">Summary @*<i class="fa fa-info-circle font-green" data-toggle="tooltip" title="Amount Summary"></i>*@</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -298,11 +283,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-xs-5 col-sm-3 col-md-3 customerDetailsSection">
+                            <div class="col-xs-3 col-sm-1 col-md-2 customerDetailsSection">
                                 <table class="table table-bordered">
                                     <thead class="font-green">
                                         <tr>
-                                            <th colspan="2">Summary Quantity <i class="fa fa-info-circle font-green" data-toggle="tooltip" title="Unit Total"></i></th>
+                                            <th colspan="2">Summary Quantity @*<i class="fa fa-info-circle font-green" data-toggle="tooltip" title="Unit Total"></i>*@</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -313,21 +298,39 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-xs-6 col-sm-3 col-md-3">
+                            <div class="col-xs-3 col-sm-2 col-md-2">
                                 <div>
                                     <label class="control-label">Remarks</label>
                                     <textarea id="remarks" ng-model="TXT_REMARKS" readonly class="form-control salestype" type="textarea" style="width:90%; height:29px;"></textarea>
                                 </div>
                             </div>
-                            <div class="col-xs-6 col-sm-3 col-md-3">
-                                <div>
-                                    <label class="control-label">Terms and Condition</label>
-                                    <textarea id="termCondition" ng-model="TERM_CONDITION" class="form-control salestype" type="textarea" style="width:90%; height: 29px;"></textarea>
+                            <div class="col-xs-6 col-sm-4 col-md-5">
+                                <div class="tablecontainer" ng-init="setInitialWidth()">
+                                    <div class="table-responsive">
+                                        <table class="table-bordered table-striped modal-table">
+                                            <thead>
+                                                <tr>
+                                                    <td style="width: 44px;" class="table-head">S.N</td>
+                                                    <td class="table-head">Terms and Condition</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="term in termList">
+                                                    <td>
+                                                        <input style="width:44px;" type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.ID" value="" readonly class="form-control">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.TERM_CONDITION" class="form-control" style="width:47.8rem;">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="margin-top: 1.5rem;" ng-hide="STATUS === 'Approved'">
                             <div class="col-md-10 text-right">
                             </div>
                             <div class="col-md-1 text-right">
@@ -337,11 +340,12 @@
                                 <button type="submit" class="btn btn-danger">Reject</button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
         </div>
-    </div>-->
+    </div>
         </div>
     </div>
 </div>

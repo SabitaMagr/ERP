@@ -53,5 +53,8 @@ namespace NeoERP.QuotationManagement.Service.Models
         public string GRADE { get; set; }
         public int SIZE_LENGTH { get; set; }
         public int SIZE_WIDTH { get; set; }
+        public decimal? LAST_PRICE { get; set; }
+        public string LAST_VENDOR { get; set; }
+
     }
 }
