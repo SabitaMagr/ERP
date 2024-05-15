@@ -105,6 +105,7 @@ namespace NeoErp.Infrastructure
             //builder.RegisterType<Core.MongoDBRepository.Repository.MongoRepository>().As<Core.Data.IRepository>().WithParameter(new ).InstancePerLifetimeScope();
             //builder.RegisterType<EmailJob>().As<IJob>();
             //GlobalConfiguration
+            builder.RegisterType<QuotationServices>().As<IQuotation>().InstancePerLifetimeScope();
 
 
             //Register Log Viewer on Home Controller constructor

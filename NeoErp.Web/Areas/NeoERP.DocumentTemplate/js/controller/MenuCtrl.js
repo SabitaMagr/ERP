@@ -226,6 +226,7 @@ DTModule.controller('MenuCtrl', function ($scope, $http, $routeParams, $window, 
                 urlForSetup: null
             };
             $.each($scope.menuList, function (id, val) {
+                debugger;
                 if (val.formName === "Financial Accounting") {
                     val.iconPath = generatRandomIcon();
                     $.each(val.Items, function (id1, val1) {

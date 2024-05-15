@@ -65,6 +65,7 @@ namespace NeoErp.Controllers
                 return View();
             }
         }
+
         public ActionResult LogInNew()
         {
             ViewBag.error = false;
@@ -882,7 +883,11 @@ namespace NeoErp.Controllers
         {
             return View();
         }
-
+        public ActionResult Quotation(string qo)
+        {
+            string quotationId = qo;
+            return View();
+        }
     }
 
     public enum ProjectModule

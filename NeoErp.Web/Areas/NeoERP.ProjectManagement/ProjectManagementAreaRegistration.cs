@@ -26,7 +26,7 @@ namespace NeoERP.ProjectManagement
                 new string[] { "NeoErp.ProjectManagement.Controllers" }
             );
 
-            context.MapRoute("ProjectManagement", "ProjectManagement/Home/Dashboard");
+            context.MapRoute("ProjectManagement", "ProjectManagement/Home/ProjectDashboard");
         }
     }
 }

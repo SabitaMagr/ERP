@@ -40,6 +40,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string SERIAL_TRACKING_VALUE { get; set; }
         public string MODULE_CODE { get; set; }
         public string BATCH_TRACKING_VALUE { get; set; }
+        public int SUB_PROJECT_CODE { get; set; }
     }
 
     public class REF_MODEL_DEFAULT {
@@ -53,12 +54,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public decimal cal_unit_price { get; set; }
         public decimal cal_total_price { get; set; }
         public decimal Total_price { get; set; }
-        public decimal EXCISE_AMOUNT { get; set; }
-        public decimal DISCOUNT_AMOUNT { get; set; }
-        public decimal VAT_AMOUNT { get; set; }
-
-        public decimal TAXABLE_AMOUNT { get; set; }
-        public decimal NET_AMOUNT { get; set; }
+        public int SUB_PROJECT_CODE { get; set; } = 0;
 
     }
     public class FORM_TEMPLATE_DRAFT

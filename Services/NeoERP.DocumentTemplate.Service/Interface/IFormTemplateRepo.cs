@@ -6,12 +6,12 @@ namespace NeoERP.DocumentTemplate.Service.Interface
 {
     public interface IFormTemplateRepo
     {
-        List<FormDetailSetup> GetFormDetailSetup(string formCode, string orderno);
+        List<FormDetailSetup> GetFormDetailSetup(string formCode);
         List<DraftFormModel> GetDraftFormDetailSetup(string formCode);
         List<Customers> GetAllCustomerSetup(string filter);
         List<Suppliers> getALLSupplierListByFlter(string filter);
         List<IssueType> getAllIssueTypeListByFilter(string filter);
-
+        List<Employee> GetAllEmployees();
         List<Department> GetAllDepartmentSetup(string filter);
         List<Employee> GetAllEmployeeSetup(string filter);
         List<Location> GetAllLocationSetup(string filter);
@@ -305,14 +305,13 @@ namespace NeoERP.DocumentTemplate.Service.Interface
 
         bool CheckVoucherNoPosted(string voucherno);
         List<CompanyInfo> GetCompanyList();
-        List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode, string CustomerCode, string ItemCode);
-        //string GetFirstQuantity(string companycode, string itemCode, string quantity);
-        List<CustomerItemType> GetItemDiscountScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode);
-        List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode, string ChargeCode, string CustomerCode, string ItemCode);
-        decimal GetFreezeRateScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode);
+
         List<Document> getDocumentByFilter(string filter);
         List<AccountSetup> getALLAccountGroupForIntrestCalc();
 
         List<CustomerModels> getAllInterestCalcCustomers(string codes);
+
+        List<FormDetailSetup> GetFormDetailSetup(string formCode, string orderno);
+
     }
 }

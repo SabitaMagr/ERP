@@ -4825,7 +4825,8 @@ DTModule.controller('FormTemplateCtrl', function ($scope, $rootScope, $http, $ro
     var results = "";
 
     /*sashi*/
-    $scope.calculateItemChargeAmount = function (index, totalAmount, bool) {               
+    $scope.calculateItemChargeAmount = function (index, totalAmount, bool) {
+        alert(1);
         var list = $scope.lineItemChargeDetails;
         var taxableAmount = totalAmount;
         var netAmount = 0;

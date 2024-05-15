@@ -73,190 +73,28 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             return this._TestTemplateRepo.GetAllFORMDETAILSETUP();
         }
         [HttpGet]
-        public List<FormDetailSetup> GetFormDetailSetup(string formCode, string orderno)
+        public List<FormDetailSetup> GetFormDetailSetup(string formCode)
         {
-            orderno = orderno.Remove(orderno.Length - formCode.Length, formCode.Length);
             _logErp.InfoInFile("Get Form Details Setup for : " + formCode + " formcode");
             var userid = _workContext.CurrentUserinformation.User_id;
             var company_code = _workContext.CurrentUserinformation.company_code;
             var branch_code = _workContext.CurrentUserinformation.branch_code;
 
             var response = new List<FormDetailSetup>();
-            var addedFormDetailSetup = new List<FormDetailSetup>();
-            var data = new List<FormDetailSetup>();
-            var thrdQty = 0;
-            var sndQty = 0;
-
             if (this._cacheManager.IsSet($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}"))
             {
-                //_cacheManager.Clear();
-                 data = _cacheManager.Get<List<FormDetailSetup>>($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}");
-                var checkchargelist = $@"select * from charge_setup where form_code = '{formCode}' and company_code ='{company_code}'";
-                List<ChargeSetup> checkchargelistentity = this._dbContext.SqlQuery<ChargeSetup>(checkchargelist).ToList();
-                if (data.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").Count() > 0)
-                    thrdQty = data.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").FirstOrDefault().SERIAL_NO = data.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
-                if (data.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").Count() > 0)
-                    sndQty = data.Where(x => x.COLUMN_NAME == "SECOND_QUANTITY").FirstOrDefault().SERIAL_NO = data.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();               
-                data.RemoveAll(x => checkchargelistentity.Any(t => t.CHARGE_CODE == x.COLUMN_NAME));
-                string columname = "";
-                if (orderno.Contains("undefined"))
-                {
-                    columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
-                                INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
-                }
-                else
-                {
-                    columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
-                                LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
-                                LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}' order by CH.priority_index_no";
-                }                            
-                List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();               
-                for (int i = 0; i < columnameentity.Count; i++)
-                {
-                    var columncharge = new FormDetailSetup();
-                    columncharge.SERIAL_NO = columnameentity[i].CHARGE_CODE == "VT" ? 27 : 23 ;
-                    columncharge.DISPLAY_FLAG = "Y";
-                    columncharge.FORM_CODE= formCode;
-                    columncharge.DELETED_FLAG = "N";
-                    columncharge.COLUMN_HEADER = columnameentity[i].CHARGE_EDESC;
-                    columncharge.COLUMN_NAME = columnameentity[i].CHARGE_CODE;
-                    columncharge.MASTER_CHILD_FLAG = "C";
-                    columncharge.LEFT_POSITION = 1600;
-                    columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
-                    columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
-                    columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
-                    columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
-                    columncharge.MANUAL_CALC_CHARGE = columnameentity[i].MANUAL_CALC_CHARGE;
-                    if (!data.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
-                        data.Add(columncharge);
-                    //if (columnameentity[i].CHARGE_CODE != "VT")
-                    //{
-                    //    var manualCalculation = new FormDetailSetup();
-                    //    manualCalculation.SERIAL_NO = 25;
-                    //    manualCalculation.DISPLAY_FLAG = "Y";
-                    //    manualCalculation.FORM_CODE = formCode;
-                    //    manualCalculation.DELETED_FLAG = "N";
-                    //    manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
-                    //    manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
-                    //    manualCalculation.MASTER_CHILD_FLAG = "C";
-                    //    manualCalculation.LEFT_POSITION = 1600;
-                    //    if (!data.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
-                    //        data.Add(manualCalculation);
-                    //}                 
-                }
+
+                var data = _cacheManager.Get<List<FormDetailSetup>>($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}");
                 _logErp.InfoInFile(data.Count() + " Form Details setup has been fetched from cached for " + formCode + " formcode");
-                //response = data;
-                response = data.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE") && !x.COLUMN_NAME.Contains("COMPLETED_QUANTITY")).ToList();
+                response = data;
             }
             else
             {
-                var formDetailList = this._FormTemplateRepo.GetFormDetailSetup(formCode, orderno);
-
-                var checkchargelist = $@"select * from charge_setup where form_code = '{formCode}' and company_code ='{company_code}'";
-                List<ChargeSetup> checkchargelistentity = this._dbContext.SqlQuery<ChargeSetup>(checkchargelist).ToList();
-                
-                if(formDetailList.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").Count() > 0)               
-                    thrdQty = formDetailList.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").FirstOrDefault().SERIAL_NO = formDetailList.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
-                if (formDetailList.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").Count() > 0)
-                    sndQty = formDetailList.Where(x => x.COLUMN_NAME == "SECOND_QUANTITY").FirstOrDefault().SERIAL_NO = formDetailList.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
-                formDetailList.RemoveAll(x => checkchargelistentity.Any(t => t.CHARGE_CODE == x.COLUMN_NAME));
-                string columname = "";
-
-                if (orderno.Contains("undefined"))
-                {
-                    columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM, CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
-                                INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
-                }
-                else
-                {
-                    columname = $@"select distinct  ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
-                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
-                                LEFT JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code 
-                                LEFT JOIN charge_transaction CT ON CT.CHARGE_CODE = CH.charge_code
-                                where CH.form_code = '{formCode}' and CH.company_code ='{company_code}' AND CT.reference_no ='{orderno}' order by CH.priority_index_no";
-                }
-
-                List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();
-
-                for (int i = 0; i < columnameentity.Count; i++)
-                {
-                    var columncharge = new FormDetailSetup();
-                    columncharge.SERIAL_NO = columnameentity[i].CHARGE_CODE == "VT" ? 27 : 23;
-                    columncharge.DISPLAY_FLAG = "Y";
-                    columncharge.FORM_CODE = formCode;
-                    columncharge.DELETED_FLAG = "N";
-                    columncharge.COLUMN_HEADER = columnameentity[i].CHARGE_EDESC;
-                    columncharge.COLUMN_NAME = columnameentity[i].CHARGE_CODE;
-                    columncharge.MASTER_CHILD_FLAG = "C";
-                    columncharge.LEFT_POSITION = 1600;
-                    columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
-                    columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
-                    columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
-                    columncharge.MANUAL_CALC_CHARGE = columnameentity[i].MANUAL_CALC_CHARGE;
-                    columncharge.ON_ITEM = columnameentity[i].ON_ITEM;                  
-                    if (!formDetailList.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
-                        formDetailList.Add(columncharge);
-                    //if (columnameentity[i].CHARGE_CODE != "VT")
-                    //{
-                    //    var manualCalculation = new FormDetailSetup();
-                    //    manualCalculation.SERIAL_NO = 25;
-                    //    manualCalculation.DISPLAY_FLAG = "Y";
-                    //    manualCalculation.FORM_CODE = formCode;
-                    //    manualCalculation.DELETED_FLAG = "N";
-                    //    //manualCalculation.COLUMN_HEADER = "MC." + columncharge.COLUMN_NAME;
-                    //    //manualCalculation.COLUMN_NAME = "MC" + columncharge.COLUMN_NAME;
-                    //    manualCalculation.MASTER_CHILD_FLAG = "C";
-                    //    manualCalculation.LEFT_POSITION = 1600;
-                    //    if (!formDetailList.Select(x => x.COLUMN_NAME).Contains(manualCalculation.COLUMN_NAME))
-                    //        formDetailList.Add(manualCalculation);
-                    //}
-                }
-              
+                var formDetailList = this._FormTemplateRepo.GetFormDetailSetup(formCode);
                 this._cacheManager.Set($"fromdetailsetup_{_workContext.CurrentUserinformation.User_id}_{company_code}_{branch_code}_{formCode}", formDetailList, 20);
                 _logErp.InfoInFile(formDetailList.Count() + " form details setup has beed fetched for " + formCode + " formcode");
-                //response = formDetailList;
-                response = formDetailList.Where(x => !x.COLUMN_NAME.Contains("CALC_QUANTITY") && !x.COLUMN_NAME.Contains("CALC_UNIT_PRICE") && !x.COLUMN_NAME.Contains("CALC_TOTAL_PRICE") && !x.COLUMN_NAME.Contains("COMPLETED_QUANTITY")).ToList();
+                response = formDetailList;
             }
-           
-
-            var ta = new FormDetailSetup();
-            ta.SERIAL_NO = 26;
-            ta.DISPLAY_FLAG = "Y";
-            ta.FORM_CODE = formCode;
-            ta.DELETED_FLAG = "N";
-            ta.COLUMN_HEADER = "TAXABLE AMOUNT";
-            ta.COLUMN_NAME = "TA";
-            ta.MASTER_CHILD_FLAG = "C";
-            ta.LEFT_POSITION = 1600;
-            ta.DISPLAY_RATE = response.Select(p => p.DISPLAY_RATE).FirstOrDefault();
-            ta.RATE_SCHEDULE_FIX_PRICE = response.Select(p => p.RATE_SCHEDULE_FIX_PRICE).FirstOrDefault();
-            ta.PRICE_CONTROL_FLAG = response.Select(p => p.PRICE_CONTROL_FLAG).FirstOrDefault();
-            ta.REF_FIX_PRICE = response.Select(p => p.REF_FIX_PRICE).FirstOrDefault();
-            if (!response.Select(x => x.COLUMN_HEADER).Contains(ta.COLUMN_HEADER))
-                response.Add(ta);
-
-            var na = new FormDetailSetup();
-            na.SERIAL_NO = 28;
-            na.DISPLAY_FLAG = "Y";
-            na.FORM_CODE = formCode;
-            na.DELETED_FLAG = "N";
-            na.COLUMN_HEADER = "NET AMOUNT";
-            na.COLUMN_NAME = "NA";
-            na.MASTER_CHILD_FLAG = "C";
-            na.LEFT_POSITION = 4600;
-            na.DISPLAY_RATE = response.Select(p => p.DISPLAY_RATE).FirstOrDefault();
-            na.RATE_SCHEDULE_FIX_PRICE = response.Select(p => p.RATE_SCHEDULE_FIX_PRICE).FirstOrDefault();
-            na.PRICE_CONTROL_FLAG = response.Select(p => p.PRICE_CONTROL_FLAG).FirstOrDefault();
-            na.REF_FIX_PRICE = response.Select(p => p.REF_FIX_PRICE).FirstOrDefault();
-            if (!response.Select(x => x.COLUMN_HEADER).Contains(na.COLUMN_HEADER))
-                response.Add(na);
-
             return response;
         }
         [HttpGet]
@@ -5469,8 +5307,6 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                     var batchTransaction = _saveDocTemplate.MapBatchTransactionValue(model.SERIAL_TRACKING_VALUE);
                     _logErp.WarnInDB("Batch Transaction details for sales order : " + batchTransaction);
 
-                    
-
                     var masterColumn = _saveDocTemplate.MapSalesOrderMasterColumnWithValue(model.Master_COLUMN_VALUE, primaryDateColumn, primaryColumn);
                     //var validation = checkValidation(model, masterColumn.VOUCHER_DATE.ToString());
                     //if (validation != "Valid")
@@ -5503,14 +5339,6 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                             _logErp.WarnInDB("Master column value for sales order:" + masterColumn);
                             var childColVal = _saveDocTemplate.MapOrderChildColumnWithValue(model.Child_COLUMN_VALUE);
                             _logErp.WarnInDB("Child Column Values sales order: " + childColVal);
-
-
-
-
-                            var childLineItemColVal = _saveDocTemplate.MapOrderChildLineItemColumnWithValue(model.Child_COLUMN_VALUE);
-                            _logErp.WarnInDB("Child Column Values sales order: " + childLineItemColVal);
-
-
 
                             var validation = checkValidation(model, masterColumn1.ORDER_DATE.ToString());
                             if (validation != "Valid")
@@ -5558,25 +5386,9 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                         }
                         else if (model.Table_Name.ToLower() == "sa_sales_invoice")
                         {
-                            if (model.Child_COLUMN_VALUE != null)
-                            {
-                                //var lineitemcharges = _saveDocTemplate.MapLineItemChargesColumnWithValue(model.Child_COLUMN_VALUE);
-                                //string[] lineitemcharges = model.Child_COLUMN_VALUE.Split(',');
-                                string[] lineitemcharges = model.Child_COLUMN_VALUE.Split('}');
-                                _logErp.WarnInDB("Charges for sales Order ================ : " + lineitemcharges);
-                            }
-
                             var masterInvoiceColumn = _saveDocTemplate.MapSalesInvoiceMasterColumnWithValue(model.Master_COLUMN_VALUE, primaryDateColumn, primaryColumn);
-
-                            masterInvoiceColumn.ChargeList = _saveDocTemplate.MapLineItemChargesColumnWithValue(model.Child_COLUMN_VALUE).ToList();
-
                             _logErp.WarnInDB("Master column value sales invoice:" + masterColumn);
                             var childColVal = _saveDocTemplate.MapInvoiceChildColumnWithValue(model.Child_COLUMN_VALUE);
-
-
-                            var childLineItemColVal = _saveDocTemplate.MapInvoiceChildLineItemColumnWithValue(model.Child_COLUMN_VALUE);
-
-
                             var validation = checkValidation(model, masterInvoiceColumn.SALES_DATE.ToString());
                             if (validation != "Valid")
                             {
@@ -5591,11 +5403,10 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                                 ShippingTransaction = shippingDetailValues,
                                CustomOrderTransaction = customColList,
                                 RefenceModel = model.REF_MODEL,
-                                BatchTransaction = batchTransaction,
-                                
+                                BatchTransaction = batchTransaction
                             };
                             commonSaveFieldForSales.ManualNumber = salesInvoiceData.MasterInvoiceTransaction.MANUAL_NO;
-                            orderSaveResponse = _saveDocTemplateSalesModule.SaveSalesInvoiceFormData(salesInvoiceData,commonSaveFieldForSales, _objectEntity);
+                            orderSaveResponse = _saveDocTemplateSalesModule.SaveSalesInvoiceFormData(salesInvoiceData,commonSaveFieldForSales,_objectEntity);
                           
                             _logErp.WarnInDB("Sales Invoice Saved successfullly :" + orderSaveResponse);
 
@@ -6486,7 +6297,6 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
         public string checkValidation(FormDetails model, string voucherDate)
         {
             var resultVal = "Valid";
-            voucherDate = DateTime.Now.ToString();
             if (Convert.ToDateTime(voucherDate) > DateTime.Now)
             {
                 return resultVal = "Voucher Date exceed today date.";
@@ -6652,7 +6462,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             var company_code = _workContext.CurrentUserinformation.company_code;
             var branch_code = _workContext.CurrentUserinformation.branch_code;
             var response = new List<COMMON_COLUMN>();
-            //if (this._cacheManager.IsSet($"CALC_TOTAL_PRICE CALC_TOTAL_PRICE-child{userid}_{company_code}_{branch_code}_{formCode}_{orderno}"))
+            //if (this._cacheManager.IsSet($"GetSalesOrderDetailFormDetailByFormCodeAndOrderNo_{userid}_{company_code}_{branch_code}_{formCode}_{orderno}"))
             //{
             //    var data = _cacheManager.Get<List<COMMON_COLUMN>>($"GetSalesOrderDetailFormDetailByFormCodeAndOrderNo_{userid}_{company_code}_{branch_code}_{formCode}_{orderno}");
             //    response = data;
@@ -6771,7 +6581,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             //var userid = _workContext.CurrentUserinformation.User_id;
             //var company_code = _workContext.CurrentUserinformation.company_code;
             //var branch_code = _workContext.CurrentUserinformation.branch_code;
-            var response = new List<DocumentSubMenu>();
+                var response = new List<DocumentSubMenu>();
             //if (this._cacheManager.IsSet($"GetSubMenuDetailList_{userid}_{company_code}_{branch_code}_{formCode}"))
             //{
             //    var data = _cacheManager.Get<List<DocumentSubMenu>>($"GetSubMenuDetailList_{userid}_{company_code}_{branch_code}_{formCode}");
@@ -8579,7 +8389,16 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             
             return guestInfos;
         }
-        [HttpGet]
+
+        //public GuestInfoFromMaterTransaction GetCrystalReportTransaction(string formCode, string orderno)
+        //{
+        //    ReportDocument rprt = new ReportDocument();
+        //    GuestInfoFromMaterTransaction guestInfos = new GuestInfoFromMaterTransaction();
+        //    rprt.Load(Server.MapPath("~/CrystalReport.rpt"));
+        //    return guestInfos;
+        //}
+
+            [HttpGet]
         public bool getItemCountResult(string code)
         {
             var result = this._FormTemplateRepo.ItemNoExistsOrNot(code);
@@ -9072,98 +8891,6 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             return response;
         }
 
-        [HttpGet]
-        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
-        {
-            _logErp.InfoInFile("Get LineItemChargeInfo:  For Calculation");
-            var response = _FormTemplateRepo.GetLineItemChargeInfo(companycode,FormCode, CustomerCode, ItemCode);
-            return response;
-        }
-
-        [HttpGet]
-        public List<CustomerItemType> GetItemDiscountScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
-        {
-            _logErp.InfoInFile("Get ItemDiscountScheduleInfo:  For Calculation");
-            var response = _FormTemplateRepo.GetItemDiscountScheduleInfo(companycode, FormCode, CustomerCode, ItemCode);
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetSecondQuantity(string companycode, string itemCode, string quantity)
-        {
-            _logErp.InfoInFile("Get SecondQuantityInfo:  For Print");
-            var templateInsertQry = $@"select FN_SECONDUNIT('{itemCode}',{quantity},'{companycode}') as value1 from dual";
-            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetThirdQuantity(string companycode, string itemCode, string quantity)
-        {
-            _logErp.InfoInFile("Get ThirdQuantityInfo:  For Print");
-            var templateInsertQry = $@"select FN_THIRDUNIT('{itemCode}',{quantity},'{companycode}') as value1 from dual";
-            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetSecondFirstQuantity(string companycode, string itemCode, string quantity)
-        {
-            _logErp.InfoInFile("Get SecondFirstQuantityInfo:  For Print");
-            var templateInsertQry = $@"select FN_SECONDFIRST('{itemCode}',{quantity},'{companycode}') as value1 from dual";
-            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetThirdFirstQuantity(string companycode, string itemCode, string quantity)
-        {
-            _logErp.InfoInFile("Get ThirdFirstQuantityInfo:  For Print");
-            var templateInsertQry = $@"select FN_THIRDFIRST('{itemCode}',{quantity},'{companycode}') as value1 from dual";
-            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetSecondThirdQuantity(string companycode, string itemCode, string quantity)
-        {
-            _logErp.InfoInFile("Get ThirdFirstQuantityInfo:  For Print");
-            var templateInsertQry = $@"select FN_SECONDTHIRD('{itemCode}',{quantity},'{companycode}') as value1 from dual";
-            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetThirdSecondQuantity(string companycode, string itemCode, string quantity)
-        {
-            _logErp.InfoInFile("Get ThirdFirstQuantityInfo:  For Print");
-            var templateInsertQry = $@"select FN_THIRDSECOND('{itemCode}',{quantity},'{companycode}') as value1 from dual";
-            var response = this._dbContext.SqlQuery<decimal>(templateInsertQry).FirstOrDefault();
-            return response;
-        }
-
-        [HttpGet]
-        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode, string CustomerCode, string ItemCode)
-        {
-            _logErp.InfoInFile("Get CompanyInfo:  For Print");
-            var response = _FormTemplateRepo.GetLineItemChargeParticularInfo(companycode, FormCode,ChargeCode, CustomerCode, ItemCode);
-            return response;
-        }
-
-        [HttpGet]
-        public decimal GetFreezeRateScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
-        {
-            _logErp.InfoInFile("Get FreezeRateScheduleInfo:  For Print");
-            var response = _FormTemplateRepo.GetFreezeRateScheduleInfo(companycode, FormCode, CustomerCode, ItemCode);
-            return Convert.ToDecimal(response);
-        }
-
-        //[HttpGet]
-        //public bool CheckVoucherNoReferencedOrNot(string voucherno)
-        //{
-        //    var result = this._FormTemplateRepo.CheckVoucherNoReferenced(voucherno);
-        //    return result;
-        //}
 
     }
     public class SalesOrderMasterModel

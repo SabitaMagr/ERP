@@ -1145,6 +1145,7 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
     var formDetail = inventoryservice.getFormDetail_ByFormCode($scope.formcode, d1);
     $.when(d1).done(function (result) {
         $scope.formDetail = result.data;
+        console.log($scope.formDetail);
         if ($scope.formDetail.length > 0) {
             debugger;
             $scope.DocumentName = $scope.formDetail[0].TABLE_NAME;
@@ -2216,7 +2217,6 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
             //});
         }
     }
-
     var formSetup = inventoryservice.getFormSetup_ByFormCode($scope.formcode, d2);
 
     $.when(d2).done(function (result) {

@@ -289,11 +289,11 @@ namespace NeoERP.DocumentTemplate.Service.Services
                         model.cal_unit_price = childData.CALC_UNIT_PRICE;
                         model.cal_total_price = childData.CALC_TOTAL_PRICE;
                         model.Total_price = childData.TOTAL_PRICE;
-                        model.EXCISE_AMOUNT = childData.ED;
-                        model.DISCOUNT_AMOUNT = childData.SD;
-                        model.VAT_AMOUNT = childData.VT;
-                        model.TAXABLE_AMOUNT = childData.TA;
-                        model.NET_AMOUNT = childData.NA;
+                        //model.EXCISE_AMOUNT = childData.ED;
+                        //model.DISCOUNT_AMOUNT = childData.SD;
+                        //model.VAT_AMOUNT = childData.VT;
+                        //model.TAXABLE_AMOUNT = childData.TA;
+                        //model.NET_AMOUNT = childData.NA;
                     }
                     salesOrderDetailModel.RefenceModel = salesInvoiceDetailModel.RefenceModel;
                     salesOrderDetailModel.TotalChild = salesInvoiceDetailModel.ChildInvoiceTransaction.Count;

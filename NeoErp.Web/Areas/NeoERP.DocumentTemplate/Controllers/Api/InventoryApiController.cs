@@ -1156,15 +1156,23 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                                 refa.cal_unit_price = childData.CALC_UNIT_PRICE;
                                 refa.cal_total_price = childData.CALC_TOTAL_PRICE;
                                 refa.Total_price = childData.TOTAL_PRICE??0;
+                                refa.SUB_PROJECT_CODE = childData.SUB_PROJECT_CODE;
                             }
-                          
+
                             //_inventoryvoucher.GetFormReference(childColumn, masterColumn, commonValue, model, primarydatecolumn, primarycolname, _objectEntity);
                             _inventoryvoucher.GetFormReference(commonValue,model.REF_MODEL, _objectEntity);
                         }
                         if (budgetTransaction != null)
                         {
-                            _inventoryvoucher.SaveBudgetTransactionColumnValue(budgetTransaction, commonValue,_objectEntity);
+                            for (int i = 0; i < budgetTransaction.Count ; i++)
+                            {
+                                budgetTransaction[i].SUB_PROJECT_CODE = childColumn[i].SUB_PROJECT_CODE;
+                            }
+
+                            _inventoryvoucher.SaveBudgetTransactionColumnValue(budgetTransaction, commonValue, _objectEntity);
+                            //_inventoryvoucher.SaveBudgetTransactionColumnValue(budgetTransaction, commonValue, _objectEntity);
                         }
+
                         if (batchTransaction != null)
                         {
                             _inventoryvoucher.SaveBatchTransactionValues(masterColumn,batchTransaction, commonValue, _objectEntity);
@@ -1222,8 +1230,9 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                         var defaultData = _inventoryvoucher.GetMasterTransactionByVoucherNo(voucherno);
                         foreach (var def in defaultData)
                         {
-                            voucherNoForEdit = def.VOUCHER_NO.ToString(); 
-                            createdDateForEdit = "TO_DATE('" + def.CREATED_DATE.ToString() + "', 'DD-MON-YY hh12:mi:ss PM')";
+                            voucherNoForEdit = def.VOUCHER_NO.ToString();
+                            createdDateForEdit = "TO_DATE('" + def.CREATED_DATE.ToString() + "', 'DD-MON-YY')";
+                            //createdDateForEdit = "TO_DATE('" + def.CREATED_DATE.ToString() + "', 'DD-MON-YY')";
                             createdByForEdit = def.CREATED_BY.ToString().ToUpper();
                             //sessionRowIDForedit = Convert.ToInt32(def.SESSION_ROWID);
                         }
@@ -1394,7 +1403,7 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 else
                 {
                     var primarycolumn = string.Empty;
-                    var fomdetails = _FormTemplateRepo.GetFormDetailSetup(formcode,voucherno);
+                    var fomdetails = _FormTemplateRepo.GetFormDetailSetup(formcode);
                     if (fomdetails.Count > 0)
                     {
                         primarycolumn = _FormTemplateRepo.GetPrimaryColumnByTableName(fomdetails[0].TABLE_NAME);
@@ -1412,5 +1421,21 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new { MESSAGE = ex.Message, STATUS_CODE = (int)HttpStatusCode.InternalServerError });
             }
         }
+
+        public List<Employee> GetAllEmployees()
+        {
+            List<Employee> response = new List<Employee>();
+            try
+            {
+                response = _FormTemplateRepo.GetAllEmployees();
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.StackTrace);
+            }
+        }
+
     }
 }

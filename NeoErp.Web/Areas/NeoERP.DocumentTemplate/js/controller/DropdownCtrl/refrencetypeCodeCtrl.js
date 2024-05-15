@@ -1,5 +1,5 @@
 ﻿
-.controller('refrenceCodeCtrl', function ($scope, $rootScope, $http, $routeParams, $window, $filter, formtemplateservice) {
+DTModule.controller('refrenceCodeCtrl', function ($scope, $rootScope, $http, $routeParams, $window, $filter, formtemplateservice) {
 
     var a = document.docname;
     

@@ -147,51 +147,42 @@
 									<tbody>
 
 										<tr class="P_checkRadio">
-											<td class="P_checkRadio ng-scope" ng-if="percentFlag === 'P'">
+											<td>
 												<input type="hidden" id="charge_Code" value={{ChargeCode}} />
 												<input class="P_checkRadio" type="radio" name="checkRadio" id="P" ng-init="bool=true" ng-model="bool" ng-checked="true">
 											</td>
-											<td class="P_checkRadio ng-scope" ng-if="percentFlag != 'P'">
-												<input class="P_checkRadio" type="radio" name="checkRadio" id="P" ng-init="bool=false" ng-model="bool" ng-checked="false">
-											</td>
 											<td>Percentage</td>
 											<td class="P_checkRadio ng-scope" ng-if="percentFlag === 'P'">
-												<input type="number" string-to-number placeholder="0" id="P_Id" class="clsPID form-control textbox P_checkRadio" ng-model="P" value={{percentAmount}} style="background-color:#ddd;" />
+												<input type="number" string-to-number placeholder="0" id="P_Id" class="{{ChargeCode}} clsPID form-control textbox P_checkRadio" ng-model="P" style="background-color:#ddd;" />
 											</td>
 											<td class="P_checkRadio ng-scope" ng-if="percentFlag != 'P'">
-												<input type="number" string-to-number placeholder="0" id="P_Id" class="clsPID form-control textbox P_checkRadio" ng-model="P" value="0" style="background-color:#ddd;" />
+												<input type="number" string-to-number placeholder="0" id="P_Id" class="{{ChargeCode}} clsPID form-control textbox P_checkRadio" ng-model="P" value="0" style="background-color:#ddd;" />
 											</td>
 										</tr>
 										<tr class="V_checkRadio">
-											<td class="V_checkRadio ng-scope" ng-if="percentFlag === 'V'">
+											<td>
 												<input type="hidden" id="charge_Code" value={{ChargeCode}} />
 												<input class="V_checkRadio" type="radio" name="checkRadio" id="V" ng-init="bool=true" ng-model="bool" ng-checked="true">
 											</td>
-											<td class="V_checkRadio ng-scope" ng-if="percentFlag != 'V'">
-												<input class="V_checkRadio" type="radio" name="checkRadio" id="V" ng-init="bool=false" ng-model="bool" ng-checked="false">
-											</td>
 											<td>Value</td>
 											<td class="V_checkRadio ng-scope" ng-if="percentFlag === 'V'">
-												<input type="number" string-to-number id="V_Id" placeholder="0" ng-model="V_Id" value={{percentAmount}} class="form-control textbox V_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="V_Id" placeholder="0" ng-model="V_Id" class="{{ChargeCode}} form-control textbox V_checkRadio" style="background-color:#ddd;" />
 											</td>
 											<td class="V_checkRadio ng-scope" ng-if="percentFlag != 'V'">
-												<input type="number" string-to-number id="V_Id" placeholder="0" ng-model="V_Id" class="form-control textbox V_checkRadio" value="0" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="V_Id" placeholder="0" ng-model="V_Id" class="{{ChargeCode}} form-control textbox V_checkRadio" value="0" style="background-color:#ddd;" />
 											</td>
 										</tr>
 										<tr class="Q_checkRadio">
-											<td class="Q_checkRadio ng-scope" ng-if="percentFlag != 'Q'">
-												<input class="Q_checkRadio" type="radio" name="checkRadio" id="Q" ng-init="bool=false" ng-model="bool" ng-checked="false">
-											</td>
-											<td class="Q_checkRadio ng-scope" ng-if="percentFlag == 'Q'">
+											<td>
 												<input type="hidden" id="charge_Code" value={{ChargeCode}} />
 												<input class="Q_checkRadio" type="radio" name="checkRadio" id="Q" ng-init="bool=true" ng-model="bool" ng-checked="true">
 											</td>
 											<td>Quantity</td>
 											<td class="Q_checkRadio ng-scope" ng-if="percentFlag != 'Q'">
-												<input type="number" string-to-number id="Q_Id" placeholder="0" ng-model="Q_Id" value="0" class="form-control textbox Q_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="Q_Id" placeholder="0" ng-model="Q_Id" value="0" class="{{ChargeCode}} form-control textbox Q_checkRadio" style="background-color:#ddd;" />
 											</td>
 											<td class="Q_checkRadio ng-scope" ng-if="percentFlag == 'Q'">
-												<input type="number" string-to-number id="Q_Id" placeholder="0" ng-model="Q_Id" value={{percentAmount}} class="form-control textbox Q_checkRadio" style="background-color:#ddd;" />
+												<input type="number" string-to-number id="Q_Id" placeholder="0" ng-model="Q_Id" class="{{ChargeCode}} form-control textbox Q_checkRadio" style="background-color:#ddd;" />
 											</td>
 										</tr>
 									</tbody>
@@ -220,28 +211,6 @@
                 //height: '350',
             });
 		}, 100)
-
-		$('.P_checkRadio').change(function (e) {
-			e.preventDefault;
-			$('.V_checkRadio').prop('checked', false);
-			$('.Q_checkRadio').prop('checked', false);
-			$('#V_Id').val('0');
-			$('#Q_Id').val('0');
-		});
-		$('.V_checkRadio').change(function (e) {
-			e.preventDefault;
-			$('.P_checkRadio').prop('checked', false);
-			$('.Q_checkRadio').prop('checked', false);
-			$('#P_Id').val(0);
-			$('#Q_Id').val(0);
-		});
-		$('.Q_checkRadio').change(function (e) {
-			e.preventDefault;
-			$('.P_checkRadio').prop('checked', false);
-			$('.V_checkRadio').prop('checked', false);
-			$('#P_Id').val(0);
-			$('#V_Id').val(0);
-		});
 	});
 
 	$('.close').click(function (e) {
@@ -252,27 +221,6 @@
 	$('.btnOk').click(function (e) {
 		e.preventDefault;
 		$('#item.COLUMN_NAME').trigger('click');
-
-		//console.log("this is e", $('#item.COLUMN_NAME'));
-		//console.log("this is e", $('#item.COLUMN_NAME').prevObject);
-		//console.log("this is e", $('#item.COLUMN_NAME').prevObject[0]);
-		//console.log("this is e", $('#item.COLUMN_NAME').prevObject[0]["VALUE_PERCENT_AMOUNT"]);
-
-		//var p = document.getElementsByClassName('P_checkRadio');
-		//var v = document.getElementsByClassName('V_checkRadio');
-		//var q = document.getElementsByClassName('Q_checkRadio');
-
-		//console.log("i am checked_P1", p.checked);
-		//console.log("i am checked_V1", v.checked);
-		//console.log("i am checked_Q1", q.checked);
-		//$('#lineItemChargeCtrl #products_0 .k-input').trigger('click');
-
-		//$('#lineItemChargeCtrl #products_0 .k-input').val(30);
-		//$('#lineItemChargeCtrl #products_0 .k-input').text(30);
-
-		//console.log($("#lineItemChargeCtrl #products_0").val());
-		//$scope.childModels[0]["BC"] = 30;
-		//$("#products_" + $scope.childRowIndex).data('kendoComboBox').dataSource.data([{ ItemCode: productcode, ItemDescription: productName, Type: "code" }]);
 	});
    
 </script>

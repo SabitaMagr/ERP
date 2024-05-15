@@ -3416,9 +3416,11 @@ namespace NeoErp.Distribution.Service.Service.Mobile
             //                (SELECT EMAIL FROM DIST_LOGIN_USER WHERE USERID IN (SELECT PARENT_USERID FROM DIST_LOGIN_USER WHERE SP_CODE='{SpCode}'))";
 
 
-            var emailQuery = $@"SELECT EMAIL  FROM DIST_LOGIN_USER START WITH SP_CODE = '{SpCode}' CONNECT BY PRIOR  PARENT_USERID = USERID 
-                                         UNION  
-                                        SELECT EMAIL FROM DIST_LOGIN_USER WHERE SUPER_USER='Y'";
+            //var emailQuery = $@"SELECT EMAIL  FROM DIST_LOGIN_USER START WITH SP_CODE = '{SpCode}' CONNECT BY PRIOR  PARENT_USERID = USERID 
+            //                             UNION  
+            //                            SELECT EMAIL FROM DIST_LOGIN_USER WHERE SUPER_USER='Y'";
+
+            var emailQuery = $@"SELECT EMAIL  FROM DIST_LOGIN_USER where SP_CODE = '{SpCode}' ";
 
             var parentEmail = dbContext.SqlQuery<string>(emailQuery).ToList();
             //List<string> parentEmail = new List<string>();
@@ -3619,7 +3621,6 @@ WHERE 1=1
                 }
                 else
                 {
-
                      ResPOQuery = $@"SELECT  PO.EMPLOYEE_EDESC,  PO.BRAND_NAME,
                                     SUM(PO.TOTAL_QUANTITY) TOTAL_QUANTITY, SUM(PO.TOTAL_AMOUNT) TOTAL_AMOUNT,PO.MU_CODE FROM (SELECT DPO.CREATED_BY, DLU.SP_CODE, TRIM(HES.EMPLOYEE_EDESC) EMPLOYEE_EDESC, DPO.COMPANY_CODE, TRIM(ISS.BRAND_NAME) BRAND_NAME,
                                     SUM(DPO.QUANTITY) TOTAL_QUANTITY, SUM(DPO.TOTAL_PRICE) TOTAL_AMOUNT,DPO.MU_CODE
@@ -4090,14 +4091,14 @@ SELECT DRD.EMP_CODE
 			AND TRUNC(DRM.CREATED_DATE) = DRD.ASSIGN_DATE
 		) OUTLET_ADDED
 FROM DIST_ROUTE_DETAIL DRD
-WHERE COMPANY_CODE = '01'";
+WHERE COMPANY_CODE ='{Company}' ";
 
                     var eodInOut = $@"--ATTENDANCE IN AND OUT TIME IN REFERENCE WITH ALL TRACK_TYPE, EMP CODE IS TAKEN REFERENCE FROM ABOVE QUERY RESULT
 SELECT MIN(LLT.SUBMIT_DATE) ATN_DATE
 	,MAX(LLT.SUBMIT_DATE) EOD_DATE
 FROM DIST_LM_LOCATION_TRACKING LLT
-WHERE TRUNC(LLT.SUBMIT_DATE) = sysdate
-	AND LLT.SP_CODE = '10001'";
+WHERE TRUNC(LLT.SUBMIT_DATE) = TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
+	AND LLT.SP_CODE ='{SpCode}'";
 
 
 
@@ -4105,8 +4106,8 @@ WHERE TRUNC(LLT.SUBMIT_DATE) = sysdate
   FROM DIST_ROUTE_DETAIL DRD, DIST_ROUTE_MASTER DRM
   WHERE DRD.ROUTE_CODE = DRM.ROUTE_CODE
   AND DRD.COMPANY_CODE = DRM.COMPANY_CODE
-  AND TRUNC(DRD.ASSIGN_DATE) = '16-JUN-20'
-  AND DRD.EMP_CODE = '1001'";
+  AND TRUNC(DRD.ASSIGN_DATE) =TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
+  AND DRD.EMP_CODE = '{SpCode}'";
 
                     var tomRout = $@"  --TOMORROW ROUTE, DATE AND EMP CODE IS TAKEN FROM ABOVE
 SELECT DRM.ROUTE_CODE
@@ -4115,15 +4116,15 @@ FROM DIST_ROUTE_DETAIL DRD
 	,DIST_ROUTE_MASTER DRM
 WHERE DRD.ROUTE_CODE = DRM.ROUTE_CODE
 	AND DRD.COMPANY_CODE = DRM.COMPANY_CODE
-	AND DRD.ASSIGN_DATE = sysdate
-	AND DRD.EMP_CODE = '1001'";
+	AND TRUNC(DRD.ASSIGN_DATE) =TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
+	AND DRD.EMP_CODE ='{SpCode}'";
 
 
                     var eodTime = $@" -- IF DATA, EOD IS DONE ELSE NOT DONE, REPLACE OUT TIME BY EOD TIME IF DATA EXISTS, EMP CODE IS TAKEN REFERENCE FROM ABOVE QUERY RESULT
 SELECT MAX(SUBMIT_DATE) EOD_TIME
 FROM DIST_LM_LOCATION_TRACKING
-WHERE TRUNC(SUBMIT_DATE) = sysdate
-	AND SP_CODE = '1001'
+WHERE TRUNC(SUBMIT_DATE) = TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
+	AND SP_CODE ='{SpCode}'
 	AND TRACK_TYPE = 'EOD'";
 
 
@@ -4171,8 +4172,8 @@ FROM (
 		) ODATA
 		,DIST_LOGIN_USER DLU
 	WHERE ODATA.CREATED_BY = DLU.USERID(+)
-		AND DLU.SP_CODE = '10001'
-		AND ODATA.ORDER_DATE = NVL(sysdate, TRUNC(SYSDATE))
+		AND DLU.SP_CODE = '{SpCode}'
+		AND TRUNC(ODATA.ORDER_DATE) =TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
 	)
 GROUP BY BRAND_NAME
 	,MU_CODE";
@@ -4190,8 +4191,8 @@ SELECT PAYMENT_MODE
 		) COLLECTED_FROM
 	,SUM(AMOUNT)
 FROM DIST_COLLECTION
-WHERE SP_CODE = '10001'
-	AND TRUNC(CREATED_DATE) = sysdate
+WHERE SP_CODE = '{SpCode}'
+	AND TRUNC(CREATED_DATE) = TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
 GROUP BY PAYMENT_MODE
 	,(
 		CASE 
@@ -4217,7 +4218,7 @@ WHERE 1 = 1
 	AND DPO.COMPANY_CODE = ISS.COMPANY_CODE
 	AND DPO.CREATED_BY = DLU.USERID(+)
 	AND DPO.COMPANY_CODE = DLU.COMPANY_CODE(+)
-	AND DLU.SP_CODE = '1001'
+	AND DLU.SP_CODE ='{SpCode}'
 	AND TRUNC(DPO.CREATED_DATE) = NVL(sysdate, TRUNC(SYSDATE))
 GROUP BY DPO.MU_CODE
 	,NVL(ISS.BRAND_NAME, 'NA')
@@ -4285,7 +4286,7 @@ FROM DIST_ROUTE_DETAIL DRD
 	,DIST_ROUTE_MASTER DRM
 WHERE DRD.ROUTE_CODE = DRM.ROUTE_CODE
 	AND DRD.COMPANY_CODE = DRM.COMPANY_CODE
-	AND DRD.ASSIGN_DATE = TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
+	AND TRUNC(DRD.ASSIGN_DATE) = TRUNC(TO_DATE('{DateTime.Now.ToString("dd-MMM-yyyy")}', 'DD-MON-RRRR'))
 	AND DRD.EMP_CODE = '{SpCode}'
   ) TOM_ROUTE_NAME
 FROM DIST_ROUTE_DETAIL DRD
@@ -4294,7 +4295,7 @@ WHERE COMPANY_CODE = '{Company}'";
                     var data1 = dbContext.SqlQuery<EODUpdate>(EodData).FirstOrDefault();
                     var orderData = dbContext.SqlQuery(order);
                     var returnData = dbContext.SqlQuery(sReturn);
-                    var message1 = $@"<b>PJP Call</b><br>Today's:{data1.TOD_ROUTE_NAME}<br>Target Calls:{data1.TARGET}<br> Actual Calls (TC): {data1.VISITED}
+                    var message1 = $@"<b>PJP Call</b><br>Today's:{data1.TOD_ROUTE_NAME}<br>Target Calls:{data1.TARGET}<br> Total Calls (TC): {data1.VISITED}
                                  <br>Productive Calls (PC): {data1.PJP_PRODUCTIVE}<br>Total NPJP (NPJP): N/A<br>NPJP Productive Calls (NPC): {data1.NPJP_PRODUCTIVE}
                                  <br>Added Outlet (AO): {data1.OUTLET_ADDED}
                                  <br>Total Not Visited:{data1.NOT_VISITED}<br><br><b>Attendance Time: {data1.ATN_DATE}</b><br>EOD Time:{data1.EOD_DATE}
@@ -4348,14 +4349,14 @@ WHERE COMPANY_CODE = '{Company}'";
                 int? total_npjp = dbContext.SqlQuery<int>(totalNPJPQuery).FirstOrDefault();
                 string message = string.Empty;
                 if (data != null)
-                    message = $@"<b>PJP Call</b><br>Today's:{data.TOD_ROUTE_NAME}<br>Target Calls:{data.TARGET}<br> Actual Calls (TC): {data.VISITED}
+                    message = $@"<b>PJP Call</b><br>Today's:{data.TOD_ROUTE_NAME}<br>Target Calls:{data.TARGET}<br> Total Calls (TC): {data.VISITED}
                                  <br>Productive Calls (PC): {data.PJP_PRODUCTIVE}<br>Total NPJP (NPJP): {total_npjp}<br>NPJP Productive Calls (NPC): {data.NPJP_PRODUCTIVE}
                                  <br>Added Outlet (AO): {data.OUTLET_ADDED}
                                  <br>Total Not Visited:{data.NOT_VISITED}<br><br><b>Attendance Time: {data.ATN_DATE}</b><br>EOD Time:{data.EOD_DATE}
                                  <br>Tomorrow Route: {data.TOM_ROUTE_NAME} <br> Remarks: {model[0].Remarks}";
 
                 else
-                    message = $@"<b>PJP Call</b><br>Today's: ---<br>Target Calls: 0<br>Actual Calls (TC): 0
+                    message = $@"<b>PJP Call</b><br>Today's: ---<br>Target Calls: 0<br>Total Calls (TC): 0
                                  <br>Productive Calls (PC): 0<br>Total NPJP (NPJP): 0<br>NPJP Productive Calls (NPC):0<br>Addition Outlet (AO): 0
                                  <br>Total Not Visisted: 0<br><br><b>Attendance Time: ---</b><br>EOD Time: ---
                                  <br>Tomorrow Route: ---<br> Remarks: { model[0].Remarks}";

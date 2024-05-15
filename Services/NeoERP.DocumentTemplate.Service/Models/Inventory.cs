@@ -141,6 +141,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string MODIFY_BY { get; set; }
         public List<REF_MODEL_DEFAULT> RefenceModel { get; set; }
         public int TotalChild { get; set; } = 0;
+        public int SUB_PROJECT_CODE { get; set; } = 0;
 
     }
     public class CustomTransaction
@@ -182,8 +183,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public string Grand_Total { get; set; }
         public bool FormRef { get; set; }
         public string MODULE_CODE { get; set; }
-
-
+        public int SUB_PROJECT_CODE { get; set; } = 0;
 
     }
     public class SalesInvoiceExcel

@@ -30,7 +30,7 @@ namespace NeoERP.DocumentTemplate.Service.Repository
             this._defaultValueForLog = new DefaultValueForLog(this._workContext);
             this._logErp = new LogErp(this, _defaultValueForLog.LogUser, _defaultValueForLog.LogCompany, _defaultValueForLog.LogBranch, _defaultValueForLog.LogTypeCode, _defaultValueForLog.LogModule, _defaultValueForLog.FormCode);
         }
-        public List<FormDetailSetup> GetFormDetailSetup(string formCode,string voucherno)
+        public List<FormDetailSetup> GetFormDetailSetup(string formCode, string voucherno)
         {
             string Query = $@"SELECT FDS.SERIAL_NO,
                             FS.FORM_EDESC,
@@ -68,6 +68,52 @@ namespace NeoERP.DocumentTemplate.Service.Repository
                            FS.DISPLAY_RATE,
                            FS.RATE_SCHEDULE_FIX_PRICE,
                            FS.PRICE_CONTROL_FLAG
+                      FROM    FORM_DETAIL_SETUP FDS
+                           LEFT JOIN
+                              COMPANY_SETUP CS ON FDS.COMPANY_CODE = CS.COMPANY_CODE
+                              LEFT JOIN FORM_SETUP FS
+                               ON FDS.FORM_CODE = FS.FORM_CODE AND FDS.COMPANY_CODE = FS.COMPANY_CODE
+                     WHERE FDS.FORM_CODE = '{formCode}'  AND CS.COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'";
+            _logErp.InfoInFile(Query + " is a query for fetching form details setup for " + formCode + " formcode");
+            List<FormDetailSetup> entity = this._dbContext.SqlQuery<FormDetailSetup>(Query).ToList();
+            return entity;
+        }
+
+        public List<FormDetailSetup> GetFormDetailSetup(string formCode)
+        {
+            string Query = $@"SELECT FDS.SERIAL_NO,
+                            FS.FORM_EDESC,
+                            FS.FORM_TYPE,
+                            FS.NEGATIVE_STOCK_FLAG,
+                           FDS.FORM_CODE,
+                           FDS.TABLE_NAME,
+                           FDS.COLUMN_NAME,
+                           FDS.COLUMN_WIDTH,
+                           FDS.COLUMN_HEADER,
+                           FDS.TOP_POSITION,
+                           FDS.LEFT_POSITION,
+                           FDS.DISPLAY_FLAG,
+                           FDS.DEFA_VALUE,
+                           FDS.IS_DESC_FLAG,
+                           FDS.MASTER_CHILD_FLAG,
+                           FDS.FORM_CODE,
+                           FDS.COMPANY_CODE,
+                           CS.COMPANY_EDESC,
+                            CS.TELEPHONE,
+                            CS.EMAIL,
+                            CS.TPIN_VAT_NO,
+                            CS.ADDRESS,
+                           FDS.CREATED_BY,
+                           FDS.CREATED_DATE,
+                           FDS.DELETED_FLAG,
+                           FDS.FILTER_VALUE,
+                           FDS.SYN_ROWID,
+                           FDS.MODIFY_DATE,
+                           FDS.MODIFY_BY,
+                           FS.REFERENCE_FLAG,
+                           FS.FREEZE_MASTER_REF_FLAG,
+                           FS.REF_FIX_QUANTITY,
+                           FS.REF_FIX_PRICE                          
                       FROM    FORM_DETAIL_SETUP FDS
                            LEFT JOIN
                               COMPANY_SETUP CS ON FDS.COMPANY_CODE = CS.COMPANY_CODE
@@ -177,7 +223,7 @@ namespace NeoERP.DocumentTemplate.Service.Repository
                     string ACCQuery = $@"SELECT PARTY_TYPE_EDESC FROM ip_party_type_code WHERE PARTY_TYPE_CODE='{code}' AND  COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'  AND DELETED_FLAG='N'";
                     var ACCdata = this._dbContext.SqlQuery<string>(ACCQuery).FirstOrDefault().ToString();
                     return string.IsNullOrEmpty(ACCdata) ? "" : ACCdata;
-                    
+
                 }
                 else
                 {
@@ -191,7 +237,7 @@ namespace NeoERP.DocumentTemplate.Service.Repository
 
 
         }
-       
+
         public string GetBudgetNameByCode(string code)
         {
             try
@@ -946,7 +992,6 @@ select
         //AA
         public List<COMMON_COLUMN> GetSalesOrderFormDetail(string formCode, string orderno)
         {
-      
             string columname = $@"SELECT COLUMN_NAME, TABLE_NAME FROM FORM_DETAIL_SETUP WHERE FORM_CODE='{formCode}' and company_code='{_workContext.CurrentUserinformation.company_code}' and display_flag='Y' ORDER BY SERIAL_NO ASC";
             List<FORM_DETAIL_SETUP_COLUMN> columnameentity = this._dbContext.SqlQuery<FORM_DETAIL_SETUP_COLUMN>(columname).ToList();
             var tableName = "";
@@ -971,7 +1016,7 @@ select
 
                 Query.Replace("SO.AREA_CODE", "COALESCE(TO_CHAR(SO.AREA_CODE),' ') as SO.AREA_CODE");
             }
-            columns = columns + ",SO.EXCISE_ITEM_AMOUNT AS ED,SO.BANKCHARGE_ITEM_AMOUNT AS BC,SO.DISCOUNT_ITEM_AMOUNT AS SD,SO.VAT_ITEM_AMOUNT AS VT,SO.TAXABLE_AMOUNT AS TA,SO.NET_AMOUNT AS NA";
+
             if (Query.Contains("SO.CUSTOMER_CODE"))
             {
                 columns = columns + ",CS.CUSTOMER_EDESC,CS.REGD_OFFICE_EADDRESS,CS.TPIN_VAT_NO,CS.TEL_MOBILE_NO1,CS.CUSTOMER_NDESC";
@@ -993,6 +1038,7 @@ select
                 condition.Append("AND SO.PARTY_TYPE_CODE=IPC.PARTY_TYPE_CODE(+) AND SO.COMPANY_CODE=IPC.COMPANY_CODE(+)");
                 Query = $@"SELECT {columns} FROM {tableName} WHERE SO.FORM_CODE ='{formCode}' and SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{orderno}' {condition.ToString()}";
             }
+
             //if (Query.Contains("SO.FROM_LOCATION_CODE"))
             //{
             //    columns = columns + ",ILS.FROM_LOCATION_EDESC";
@@ -1084,7 +1130,7 @@ select
         }
         public List<AccountSetup> getALLAccountGroupForIntrestCalc()
         {
-           
+
             List<AccountSetup> result = new List<AccountSetup>();
             string query = string.Format($@"SELECT ACC_CODE,ACC_EDESC FROM FA_CHART_OF_ACCOUNTS_SETUP 
                                            WHERE ACC_NATURE='AE' AND COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' AND ACC_TYPE_FLAG='T'");
@@ -1095,7 +1141,7 @@ select
         }
         public List<AccountSetup> getALLAccountForInvBudgetTrans()
         {
-        
+
             List<AccountSetup> result = new List<AccountSetup>();
             //string query = string.Format(@"Select
             //            COALESCE(ACC_CODE,' ') as ACC_CODE, 
@@ -1198,7 +1244,8 @@ select
                         FROM FA_SUB_LEDGER_DEALER_MAP
                         where DELETED_FLAG='N' AND COMPANY_CODE ='{_workContext.CurrentUserinformation.company_code}' AND BRANCH_CODE = '{_workContext.CurrentUserinformation.branch_code}' AND  PARTY_TYPE_CODE = '{partyTypeCode}')";
             }
-            else {
+            else
+            {
                 condition = $@" AND SUB_CODE IN (SELECT
                         COALESCE(SUB_CODE,' ') as SUB_CODE
                         FROM FA_SUB_LEDGER_DEALER_MAP
@@ -1332,7 +1379,7 @@ select
             dealer_system_flag = this._dbContext.SqlQuery<string>(dealer_system_flag_query).FirstOrDefault();
             if (dealer_system_flag == "Y")
             {
-               
+
                 List<PartyType> result = new List<PartyType>();
                 string query = $@"SELECT SA.CUSTOMER_CODE AS PARTY_TYPE_CODE, 
        FA.SUB_CODE,
@@ -1358,7 +1405,7 @@ select
             }
             else
             {
-                
+
                 List<PartyType> result = new List<PartyType>();
                 string query = $@"SELECT SA.CUSTOMER_CODE AS PARTY_TYPE_CODE, 
        FA.SUB_CODE,
@@ -1515,13 +1562,13 @@ select
                     sb.Append("SO.").Append(item.COLUMN_NAME).Append(",");
                 }
                 sb.Append("SO.FORM_CODE");
-             
+
                 //var columns = sb.ToString().TrimEnd(',');
                 var columnsMain = sb.ToString();
                 string Query = string.Empty;
                 StringBuilder condition;
                 tableNameMain = model.TableName + " SO";
-                
+
                 if (model.checkList.Count() > 0)
                 {
                     var voucherCount = model.checkList.Count();
@@ -1636,7 +1683,6 @@ select
        SA.AGENT_CODE,
        SA.AREA_CODE,
        SA.SECOND_QUANTITY,
-       SA.THIRD_QUANTITY,
        SA.ORDER_NO
   FROM SA_LOADING_SLIP_DETAIL SO, SA_CUSTOMER_SETUP CS, IP_ITEM_MASTER_SETUP IMS,SA_SALES_ORDER SA
  WHERE     SO.COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'
@@ -1681,7 +1727,7 @@ select
                         {
                             entity[i].QUANTITY = Convert.ToDecimal(entity[i].QUANTITY) - Convert.ToDecimal(incRefResult.REFERENCE_QUANTITY);
                             entity[i].UNIT_PRICE = Convert.ToDecimal(entity[i].UNIT_PRICE);
-                            entity[i].TOTAL_PRICE = entity[i].QUANTITY*entity[i].UNIT_PRICE;
+                            entity[i].TOTAL_PRICE = entity[i].QUANTITY * entity[i].UNIT_PRICE;
                             entity[i].CALC_QUANTITY = Convert.ToDecimal(entity[i].CALC_QUANTITY) - Convert.ToDecimal(incRefResult.REFERENCE_QUANTITY);
                             entity[i].CALC_UNIT_PRICE = entity[i].UNIT_PRICE;
                             entity[i].CALC_TOTAL_PRICE = entity[i].CALC_UNIT_PRICE * entity[i].CALC_QUANTITY;
@@ -1692,12 +1738,13 @@ select
             if (model.TableName == "FA_PAY_ORDER" || model.TableName == "FA_JOB_ORDER" || model.TableName == "FA_ADVICE_VOUCHER")
             {
                 entity = entity.ToList();
-               
+
             }
-            else {
+            else
+            {
                 entity = entity.Where(x => x.QUANTITY > 0).ToList();
             }
-                
+
             List<DocumentTransaction> imagelist = new List<DocumentTransaction>();
             if (entity.Count > 0)
             {
@@ -1733,7 +1780,8 @@ select
                     }
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
 
             }
 
@@ -1771,9 +1819,9 @@ select
             }
             else
             {
-                result = result.Where(x => x.QUANTITY > 0).ToList(); 
+                result = result.Where(x => x.QUANTITY > 0).ToList();
             }
-         
+
             return result;
         }
         public string getColName(REFERENCE_MODEL model)
@@ -3507,7 +3555,7 @@ ORDER BY CS.SERIAL_NO ASC";
                 throw new Exception("Error while getting all customer : " + ex.StackTrace);
             }
         }
-       
+
 
         public List<SupplierModels> getAllSupplier()
         {
@@ -3978,26 +4026,26 @@ ORDER BY CS.SERIAL_NO ASC";
                 //}
                 //else
                 //{
-                    if (String.IsNullOrEmpty(searchText))
+                if (String.IsNullOrEmpty(searchText))
+                {
+                    if (locationCode == "undefined")
                     {
-                        if (locationCode == "undefined")
-                        {
-                            locationCode = "";
-                        }
-                        string query = $@"SELECT LOCATION_CODE,LOCATION_EDESC,EMAIL,TELEPHONE_MOBILE_NO,ADDRESS,CREATED_DATE,CREATED_BY FROM IP_location_setup  WHERE 
+                        locationCode = "";
+                    }
+                    string query = $@"SELECT LOCATION_CODE,LOCATION_EDESC,EMAIL,TELEPHONE_MOBILE_NO,ADDRESS,CREATED_DATE,CREATED_BY FROM IP_location_setup  WHERE 
                             COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'  AND LOCATION_CODE LIKE '{locationCode}%' AND GROUP_SKU_FLAG = 'I' AND DELETED_FLAG='N' ORDER BY LOCATION_CODE ASC";
-                        rslt = _dbContext.SqlQuery<LocationModels>(query).ToList();
-                        this._cacheManager.Set($"GetLocationListByLocationCode_{_workContext.CurrentUserinformation.User_id}_{_workContext.CurrentUserinformation.company_code}_{_workContext.CurrentUserinformation.branch_code}_{locationId}_{locationCode}_{searchText}", rslt, 20);
+                    rslt = _dbContext.SqlQuery<LocationModels>(query).ToList();
+                    this._cacheManager.Set($"GetLocationListByLocationCode_{_workContext.CurrentUserinformation.User_id}_{_workContext.CurrentUserinformation.company_code}_{_workContext.CurrentUserinformation.branch_code}_{locationId}_{locationCode}_{searchText}", rslt, 20);
 
-                    }
-                    else
-                    {
-                        string query = $@"SELECT DISTINCT LOCATION_CODE,LOCATION_EDESC,EMAIL,TELEPHONE_MOBILE_NO,ADDRESS,CREATED_DATE,CREATED_BY FROM IP_location_setup     WHERE 
+                }
+                else
+                {
+                    string query = $@"SELECT DISTINCT LOCATION_CODE,LOCATION_EDESC,EMAIL,TELEPHONE_MOBILE_NO,ADDRESS,CREATED_DATE,CREATED_BY FROM IP_location_setup     WHERE 
                             COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'  AND (UPPER(LOCATION_EDESC)) like '%{searchText.ToUpper()}%' OR (UPPER(EMAIL)) LIKE '%{searchText.ToUpper()}%' OR (UPPER(TELEPHONE_MOBILE_NO)) LIKE '%{searchText.ToUpper()}%' AND GROUP_SKU_FLAG = 'I' AND DELETED_FLAG='N'  ORDER BY LOCATION_CODE ASC";
-                        rslt = _dbContext.SqlQuery<LocationModels>(query).ToList();
-                        this._cacheManager.Set($"GetLocationListByLocationCode_{_workContext.CurrentUserinformation.User_id}_{_workContext.CurrentUserinformation.company_code}_{_workContext.CurrentUserinformation.branch_code}_{locationId}_{locationCode}_{searchText}", rslt, 20);
+                    rslt = _dbContext.SqlQuery<LocationModels>(query).ToList();
+                    this._cacheManager.Set($"GetLocationListByLocationCode_{_workContext.CurrentUserinformation.User_id}_{_workContext.CurrentUserinformation.company_code}_{_workContext.CurrentUserinformation.branch_code}_{locationId}_{locationCode}_{searchText}", rslt, 20);
 
-                    }
+                }
 
                 //}
                 return rslt;
@@ -4353,7 +4401,7 @@ ORDER BY CS.SERIAL_NO ASC";
             var agentList = _dbContext.SqlQuery<AgentModels>(query).ToList();
             return agentList;
         }
-       
+
         public List<TransporterModels> getAllTransporter()
         {
             string query = $@"SELECT * FROM TRANSPORTER_SETUP 
@@ -4406,7 +4454,7 @@ ORDER BY CS.SERIAL_NO ASC";
                     }
                     else
                     {
-                         if (accMasterCode == "niraj")
+                        if (accMasterCode == "niraj")
                         {
                             string query = $@"SELECT DISTINCT ACC_CODE,ACC_EDESC,TRANSACTION_TYPE,ACC_NATURE,CREATED_BY,to_char(CREATED_DATE ,'DD/MM/RRRR') CREATED_DATE FROM FA_CHART_OF_ACCOUNTS_SETUP WHERE 
                             COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'  AND ACC_EDESC like '%{searchText}%'  AND DELETED_FLAG='N' AND ACC_TYPE_FLAG='T' ORDER BY ACC_CODE ASC";
@@ -4508,14 +4556,14 @@ ORDER BY CS.SERIAL_NO ASC";
                     var isDispatchFlag = false;
                     var orclesqlQuery = $@"select ORDER_DISPATCH_FLAG from form_setup where form_code='{FormCode}'  AND COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
                     var dataLoadingSlip = _dbContext.SqlQuery<string>(orclesqlQuery).FirstOrDefault();
-                    if(dataLoadingSlip!=null)
+                    if (dataLoadingSlip != null)
                     {
                         isDispatchFlag = dataLoadingSlip == "Y" ? true : false;
                     }
 
-                    if(isDispatchFlag)
+                    if (isDispatchFlag)
                     {
-                        var refrence = new  RefrenceType(){ REF_TABLE_NAME= "SA_LOADING_SLIP_DETAIL", REFERENCE_FLAG="Y", REF_EDESC="Loading Slip",REF_CODE= "SA_LOADING_SLIP_DETAIL" };
+                        var refrence = new RefrenceType() { REF_TABLE_NAME = "SA_LOADING_SLIP_DETAIL", REFERENCE_FLAG = "Y", REF_EDESC = "Loading Slip", REF_CODE = "SA_LOADING_SLIP_DETAIL" };
                         var abc = new List<RefrenceType>();
                         abc.Add(refrence);
                         return abc;
@@ -5278,11 +5326,11 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
             {
 
                 string query = string.Format($@"select TEMPLATE_NAME from FORM_TEMPLATE_MAPPING where USER_ID='{_workContext.CurrentUserinformation.User_id}' and company_code='{_workContext.CurrentUserinformation.company_code}' and form_code='{formcode}' and deleted_flag='N'");
-                
-                
+
+
                 string voucherNo = this._dbContext.SqlQuery<string>(query).FirstOrDefault();
-                
-                
+
+
                 return voucherNo;
 
 
@@ -5348,7 +5396,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
         public int GetPrintCountByVoucherNo(string VoucherNo, string formcode, string UpdatePrintCountFlag)
         {
             var query = string.Empty;
-           
+
             int result = 0;
             query = $@"select nvl(PRINT_COUNT,0) as PRINT_COUNT from MASTER_TRANSACTION where VOUCHER_NO='{VoucherNo}' and COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' and DELETED_FLAG='N' and FORM_CODE='{formcode}'";
             result = _dbContext.SqlQuery<int>(query).FirstOrDefault();
@@ -5397,7 +5445,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                         string modulecode = this._dbContext.SqlQuery<string>(modulecodequery).FirstOrDefault().ToString();
                         if (mode == "Post")
                         {
-                            
+
                             {
                                 if (modulecode == "01")
                                 {
@@ -5427,7 +5475,8 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                         status = false;
                                     }
                                 }
-                                else {
+                                else
+                                {
                                     string query = $@"UPDATE MASTER_TRANSACTION SET  POSTED_BY = '{_workContext.CurrentUserinformation.login_code}', POSTED_DATE = SYSDATE where VOUCHER_NO='{orderNo}' and COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and form_code='{formcode}'";
                                     var rowCount = _coreentity.ExecuteSqlCommand(query);
                                     if (rowCount == 1)
@@ -5437,7 +5486,8 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                             message = "INVALIDTRIGGER";
                                             status = false;
                                         }
-                                        else {
+                                        else
+                                        {
                                             string queryNew = $@"INSERT INTO SA_POSTED_TRANSACTION(VOUCHER_NO,FORM_CODE,POSTED_BY, COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG) VALUES('{orderNo}','{formcode}','{_workContext.CurrentUserinformation.login_code}','{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.login_code}',SYSDATE,'N')";
                                             var rowCountNew = _coreentity.ExecuteSqlCommand(queryNew);
                                             if (rowCountNew == 1)
@@ -5453,7 +5503,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                                 status = false;
                                             }
                                         }
-                                       
+
                                     }
                                     else
                                     {
@@ -5464,7 +5514,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                 }
 
                             }
-                            
+
                         }
                         else if (mode == "UnPost")
                         {
@@ -5480,22 +5530,22 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                     //    status = false;
                                     //}
                                     //else {
-                                        string queryNew = $@"DELETE FROM FA_POSTED_TRANSACTION WHERE VOUCHER_NO='{orderNo}' AND FORM_CODE='{formcode}' AND POSTED_BY='{_workContext.CurrentUserinformation.login_code}' AND COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' AND BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}'";
-                                        var rowCountNew = _coreentity.ExecuteSqlCommand(queryNew);
-                                        if (rowCountNew == 1)
-                                        {
-                                            trans.Commit();
-                                            message = "SUCCESS";
-                                            status = true;
-                                        }
-                                        else
-                                        {
-                                            trans.Rollback();
-                                            message = "FAILED";
-                                            status = false;
-                                        }
+                                    string queryNew = $@"DELETE FROM FA_POSTED_TRANSACTION WHERE VOUCHER_NO='{orderNo}' AND FORM_CODE='{formcode}' AND POSTED_BY='{_workContext.CurrentUserinformation.login_code}' AND COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' AND BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}'";
+                                    var rowCountNew = _coreentity.ExecuteSqlCommand(queryNew);
+                                    if (rowCountNew == 1)
+                                    {
+                                        trans.Commit();
+                                        message = "SUCCESS";
+                                        status = true;
+                                    }
+                                    else
+                                    {
+                                        trans.Rollback();
+                                        message = "FAILED";
+                                        status = false;
+                                    }
                                     //}
-                                    
+
                                 }
                                 else
                                 {
@@ -5504,13 +5554,15 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                     status = false;
                                 }
                             }
-                            else {
+                            else
+                            {
                                 if (FindStopUSI() == "INVALID" || FindStopDSRT() == "INVALID" || FindStopUSR() == "INVALID")
                                 {
                                     message = "INVALIDTRIGGER";
                                     status = false;
                                 }
-                                else {
+                                else
+                                {
                                     string query = $@"UPDATE MASTER_TRANSACTION SET  POSTED_BY = NULL, POSTED_DATE = NULL  where VOUCHER_NO='{orderNo}' and COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and form_code='{formcode}'";
                                     var rowCount = _coreentity.ExecuteSqlCommand(query);
                                     if (rowCount == 1)
@@ -5538,10 +5590,10 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                     }
 
                                 }
-         
+
 
                             }
-                            
+
                         }
                         else if (mode == "Authorise")
                         {
@@ -5669,7 +5721,8 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                             }
                                         }
                                     }
-                                    else {
+                                    else
+                                    {
                                         if (FindStopUSI() == "INVALID" || FindStopDSRT() == "INVALID" || FindStopUSR() == "INVALID")
                                         {
                                             message = "INVALIDTRIGGER";
@@ -5690,7 +5743,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                             }
                                         }
                                     }
-                                    
+
                                 }
                                 if (mode == "UnPost")
                                 {
@@ -5718,17 +5771,17 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                                         else
                                         {
                                             string query = $@"UPDATE MASTER_TRANSACTION SET  POSTED_BY = NULL, POSTED_DATE = NULL where VOUCHER_NO='{voucherNum}' and COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and form_code='{formcode}'";
-                                        var rowCount = _coreentity.ExecuteSqlCommand(query);
-                                        if (rowCount == 1)
-                                        {
-                                            string queryNew = $@"DELETE FROM SA_POSTED_TRANSACTION WHERE VOUCHER_NO='{voucherNum}' AND FORM_CODE='{formcode}' AND COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
-                                            var rowCountNew = _coreentity.ExecuteSqlCommand(queryNew);
-                                            if (rowCountNew == 1)
+                                            var rowCount = _coreentity.ExecuteSqlCommand(query);
+                                            if (rowCount == 1)
                                             {
-                                                count++;
+                                                string queryNew = $@"DELETE FROM SA_POSTED_TRANSACTION WHERE VOUCHER_NO='{voucherNum}' AND FORM_CODE='{formcode}' AND COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
+                                                var rowCountNew = _coreentity.ExecuteSqlCommand(queryNew);
+                                                if (rowCountNew == 1)
+                                                {
+                                                    count++;
+                                                }
                                             }
                                         }
-                                    }
                                     }
                                 }
                                 if (mode == "Authorise")
@@ -6761,7 +6814,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
         //        }
         //    }
         //}
-        public void AutoCVP(string voucherNo,string formCode, NeoErpCoreEntity dbcontext = null)
+        public void AutoCVP(string voucherNo, string formCode, NeoErpCoreEntity dbcontext = null)
         {
             string query = $@"EXEC SA_POST.PR_SALES_INVOICE('01','01.01','21','SRSI/00001/76-77','SUMMIT')";
             dbcontext.ExecuteSqlCommand(query);
@@ -6780,7 +6833,7 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
             }
         }
 
-        public  CompanyInfo GetCompanyInfo()
+        public CompanyInfo GetCompanyInfo()
         {
             try
             {
@@ -6862,12 +6915,12 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
             return result;
         }
 
-        public List<COMMON_COLUMN> GetProductionFormDetail(string formCode, string TableName,string RoutingCode,decimal ProductQty=0)
+        public List<COMMON_COLUMN> GetProductionFormDetail(string formCode, string TableName, string RoutingCode, decimal ProductQty = 0)
         {
             if (string.IsNullOrEmpty(TableName))
                 throw new Exception("Table name is Empty");
 
-            if(string.IsNullOrEmpty(formCode))
+            if (string.IsNullOrEmpty(formCode))
                 throw new Exception("Form Code is Empty");
             if (string.IsNullOrEmpty(RoutingCode))
                 throw new Exception("RoutingCode is Empty");
@@ -6875,8 +6928,8 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
             //    throw new Exception("production Qty is Empty");
 
             var entityCode = new List<COMMON_COLUMN>();
-            if (TableName.ToUpper()== "IP_PRODUCTION_ISSUE")
-          {
+            if (TableName.ToUpper() == "IP_PRODUCTION_ISSUE")
+            {
                 var query = $@"SELECT  (select defa_value as FROM_LOCATION_CODE  from form_detail_setup where form_code='{formCode}' and company_code=a.company_code and column_name='FROM_LOCATION_CODE') as FROM_LOCATION_CODE,A.ITEM_CODE, D.ITEM_EDESC, D.INDEX_MU_CODE as MU_CODE, E.MU_EDESC,  case when a.quantity<>0 then to_number(((nvl(a.quantity, 1) / nvl(b.quantity, 1)) * 12)) else 0 end AS quantity,
    case when a.quantity<>0 then to_number(((nvl(a.quantity, 1) / nvl(b.quantity, 1)) * 12))else 0 end AS calc_quantity,0 as UNIT_PRICE,0 as TOTAL_PRICE,0 as CALC_UNIT_PRICE,0 as CALC_TOTAL_PRICE    FROM MP_ROUTINE_INPUT_SETUP A,  MP_ROUTINE_OUTPUT_SETUP B, MP_PROCESS_SETUP C, IP_ITEM_MASTER_SETUP D, IP_MU_CODE E
                                 WHERE A.PROCESS_CODE = C.PROCESS_CODE
@@ -6894,8 +6947,8 @@ AND ST.COMPANY_CODE=VC.COMPANY_CODE AND VOUCHER_NO = '{voucherNo}' AND ST.COMPAN
                 var entity = this._dbContext.SqlQuery<COMMON_COLUMN>(query).ToList();
                 return entity;
 
-           }
-            else if(TableName.ToUpper()== "IP_PRODUCTION_MRR")
+            }
+            else if (TableName.ToUpper() == "IP_PRODUCTION_MRR")
             {
                 var query = $@"    SELECT (select defa_value as TO_LOCATION_CODE  from form_detail_setup where form_code='478'
 and company_code=a.company_code 
@@ -6910,12 +6963,12 @@ and company_code=a.company_code
                         AND A.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
                 var entity = this._dbContext.SqlQuery<COMMON_COLUMN>(query).ToList();
                 return entity;
-               
+
             }
-         
 
 
-           
+
+
             return entityCode;
         }
 
@@ -7180,7 +7233,7 @@ and company_code=a.company_code
 
 
         }
-        public List<BATCHTRANSACTIONDATA> GetbatchdetailByItemCodeAndLocCode(string itemcode,string loactioncode)
+        public List<BATCHTRANSACTIONDATA> GetbatchdetailByItemCodeAndLocCode(string itemcode, string loactioncode)
         {
             var companyCode = _workContext.CurrentUserinformation.company_code;
             string Query = $@"SELECT BT.TRANSACTION_NO,ISS.ITEM_CODE,ISS.ITEM_EDESC,BT.MU_CODE,BT.QUANTITY,BT.SERIAL_NO,BT.BATCH_NO,BT.LOCATION_CODE,BT.ITEM_SERIAL_NO AS TRACKING_SERIAL_NO,BT.SOURCE_FLAG FROM BATCH_TRANSACTION BT,IP_ITEM_MASTER_SETUP ISS 
@@ -7193,7 +7246,7 @@ COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' AND BRANCH_COD
             var entity = this._dbContext.SqlQuery<BATCHTRANSACTIONDATA>(Query).ToList();
             return entity;
         }
-        public List<BATCHTRANSACTIONDATA> GetbatchdetailByItemCodeAndLocCodeforedit(string itemcode, string loactioncode,string voucherno)
+        public List<BATCHTRANSACTIONDATA> GetbatchdetailByItemCodeAndLocCodeforedit(string itemcode, string loactioncode, string voucherno)
         {
             var companyCode = _workContext.CurrentUserinformation.company_code;
             string Query = $@"SELECT DISTINCT BT.ITEM_SERIAL_NO AS TRACKING_SERIAL_NO, BT.TRANSACTION_NO,ISS.ITEM_CODE,ISS.ITEM_EDESC,BT.MU_CODE,BT.QUANTITY,BT.SERIAL_NO,BT.BATCH_NO,BT.LOCATION_CODE,BT.SOURCE_FLAG FROM BATCH_TRANSACTION BT,IP_ITEM_MASTER_SETUP ISS 
@@ -7394,11 +7447,12 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
     CASE WHEN IMPLEMENT_FLAG='Y' THEN 'Yes' ELSE 'No' END  as IMPLEMENT_FLAG,STATUS,CALCULATION_DAYS,FORM_CODE,ACCOUNT_CODE,CUSTOMER_CODE,ITEM_CODE,PARTY_TYPE_CODE,AREA_CODE,BRANCH_CODE,CHARGE_CODE,CHARGE_ACCOUNT_CODE,CHARGE_RATE,EFFECTIVE_FROM,EFFECTIVE_TO,QUERY_STRING,REMARKS 
                         FROM SCHEME_SETUP
                         WHERE DELETED_FLAG = 'N' AND STATUS='M' AND IMPLEMENT_FLAG='N'
-                        AND COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'"; }                           
-            else {
-                if(!string.IsNullOrEmpty(from) && from != "undefined" && from != null && !string.IsNullOrEmpty(to) && to != "undefined" && to != null)
+                        AND COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'"; }
+                else
+                {
+                    if (!string.IsNullOrEmpty(from) && from != "undefined" && from != null && !string.IsNullOrEmpty(to) && to != "undefined" && to != null)
                     {
-                    query = $@"SELECT DISTINCT 
+                        query = $@"SELECT DISTINCT 
                         INITCAP(SCHEME_EDESC) AS SCHEME_EDESC,
                         TO_CHAR(SCHEME_CODE)SCHEME_CODE,CASE WHEN scheme_type='CD' THEN 'Cash On Discount' WHEN scheme_type='BS' THEN 'Bonous' ELSE 'Scheme' END  as scheme_type,
     CASE WHEN type='I' THEN 'Item' ELSE 'Value' END  as type,
@@ -7406,9 +7460,10 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                         FROM SCHEME_SETUP
                         WHERE DELETED_FLAG = 'N' AND STATUS='M' AND IMPLEMENT_FLAG='Y' AND EFFECTIVE_FROM  >= TO_DATE('{from}', 'DD-MON-YYYY') AND EFFECTIVE_TO <= TO_DATE('{to}','DD-MON-YYYY')
                         AND COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'";
-                }
-                else {
-                    query = $@"SELECT DISTINCT 
+                    }
+                    else
+                    {
+                        query = $@"SELECT DISTINCT 
                         INITCAP(SCHEME_EDESC) AS SCHEME_EDESC,
                         TO_CHAR(SCHEME_CODE)SCHEME_CODE,CASE WHEN scheme_type='CD' THEN 'Cash On Discount' WHEN scheme_type='BS' THEN 'Bonous' ELSE 'Scheme' END  as scheme_type,
     CASE WHEN type='I' THEN 'Item' ELSE 'Value' END  as type,
@@ -7416,9 +7471,9 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                         FROM SCHEME_SETUP
                         WHERE DELETED_FLAG = 'N' AND STATUS='M' AND IMPLEMENT_FLAG='Y'
                         AND COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'";
+                    }
+
                 }
-               
-            }
             }
             var schemeList = _dbContext.SqlQuery<SchemeModels>(query).ToList();
             return schemeList;
@@ -7471,7 +7526,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
         }
         public List<PartyType> GetAllDealer()
         {
-           
+
             List<PartyType> result = new List<PartyType>();
             string query = $@"SELECT
                         COALESCE(PARTY_TYPE_CODE,' ') as PARTY_TYPE_CODE, 
@@ -7532,7 +7587,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
 
         public List<CustomerModels> getAllSchemeCustomer()
         {
-          
+
 
             try
             {
@@ -7604,11 +7659,12 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                         AND CUSTOMER_CODE IN({str})
                         ORDER BY CUSTOMER_CODE";
 
-                     customerList = _dbContext.SqlQuery<CustomerModels>(query).ToList();
+                    customerList = _dbContext.SqlQuery<CustomerModels>(query).ToList();
                 }
-                else {
+                else
+                {
 
-                     query = $@"SELECT DISTINCT 
+                    query = $@"SELECT DISTINCT 
                         INITCAP(CUSTOMER_EDESC) AS CUSTOMER_EDESC,
                         INITCAP(CUSTOMER_NDESC) AS CUSTOMER_NDESC,
                         CUSTOMER_CODE,
@@ -7627,7 +7683,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
 
                     customerList = _dbContext.SqlQuery<CustomerModels>(query).ToList();
                 }
-              
+
 
 
                 return customerList;
@@ -7657,7 +7713,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
             var productList = _dbContext.SqlQuery<ProductsModels>(query).ToList();
             return productList;
         }
-     
+
         public List<ProductsModels> getProductforSchemeByCode(string code)
         {
             string query = $@"SELECT DISTINCT 
@@ -7696,18 +7752,19 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                         FROM IP_PARTY_TYPE_CODE
                         where PARTY_TYPE_CODE IN({bb}) AND  PARTY_TYPE_FLAG='D' and DELETED_FLAG='N' AND COMPANY_CODE ='{_workContext.CurrentUserinformation.company_code}'";
             }
-            else {
+            else
+            {
                 query = $@"SELECT
                         COALESCE(PARTY_TYPE_CODE,' ') as PARTY_TYPE_CODE, 
                         COALESCE(PARTY_TYPE_EDESC,' ') as PARTY_TYPE_EDESC 
                         FROM IP_PARTY_TYPE_CODE
                         where PARTY_TYPE_CODE IN('{code}') AND  PARTY_TYPE_FLAG='D' and DELETED_FLAG='N' AND COMPANY_CODE ='{_workContext.CurrentUserinformation.company_code}'";
             }
-                 
+
             result = this._dbContext.SqlQuery<PartyType>(query).ToList();
             return result;
         }
-      
+
         public List<SchemeDetailsModel> getSchemeDetailGridData(SCHEME_MODEL model)
         {
             //List<SchemeModels> result = new List<SchemeModels>();
@@ -7754,8 +7811,8 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
             }
             var entity = this._dbContext.SqlQuery<SchemeDetailsModel>(Query).ToList();
             return entity;
-           
-           
+
+
         }
 
         public List<SchemeDetailsModel> getSchemeDetailFormImpact(SCHEME_MODEL model)
@@ -7786,7 +7843,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
         }
 
         public List<PartyType> GetAllPartyTypeByFilterAndSubCode(string filter, string Subcode)
-      {
+        {
             var dealer_system_flag = string.Empty;
             string dealer_system_flag_query = $@"SELECT
                         DEALER_SYSTEM_FLAG 
@@ -7900,14 +7957,15 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
                 words = code.Split(',');
                 foreach (var word in words)
                 {
-                    formatedcode = formatedcode+"'" +word+"'"+",";
+                    formatedcode = formatedcode + "'" + word + "'" + ",";
                 }
                 formatedcode = formatedcode.ToString().TrimEnd(',');
             }
-            else {
-                formatedcode = "'"+code+"'";
+            else
+            {
+                formatedcode = "'" + code + "'";
             }
-                
+
             List<BranchModels> result = new List<BranchModels>();
             string query = $@"SELECT
                         COALESCE(BRANCH_CODE,' ') as BRANCH_CODE, 
@@ -7947,7 +8005,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
         {
             if (name != "undefined" && name != "null")
             {
-                
+
                 string CUSQuery = $@"SELECT CUSTOMER_CODE  FROM SA_CUSTOMER_SETUP WHERE CUSTOMER_EDESC like '%{name.Trim()}%' AND  COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'  AND DELETED_FLAG='N'";
                 string CUSdata = this._dbContext.SqlQuery<string>(CUSQuery).FirstOrDefault().ToString();
                 return CUSdata;
@@ -8033,7 +8091,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
         }
         private string FindStopUSI()
         {
-            
+
             string USIQuery = $@"SELECT STATUS FROM USER_OBJECTS WHERE  OBJECT_NAME = 'TRG_STOP_UPDATE_SALES_INVOICE' AND OBJECT_TYPE ='TRIGGER'";
             var USIdata = this._dbContext.SqlQuery<string>(USIQuery).FirstOrDefault().ToString();
             return string.IsNullOrEmpty(USIdata) ? "" : USIdata;
@@ -8059,7 +8117,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
 
                 throw ex;
             }
-            
+
         }
         public bool CheckVoucherNoPosted(string voucherno)
         {
@@ -8085,7 +8143,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
             }
 
         }
-        public bool deletevouchernoFinance(string tablename,string formcode,string voucherno,string primarycolumnname)
+        public bool deletevouchernoFinance(string tablename, string formcode, string voucherno, string primarycolumnname)
         {
             using (var trans = _coreentity.Database.BeginTransaction())
             {
@@ -8118,9 +8176,9 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
 
                     trans.Commit();
                     return true;
-                  
+
                 }
-                 
+
                 catch (Exception ex)
                 {
                     trans.Rollback();
@@ -8129,70 +8187,24 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.SOURCE
             }
         }
 
-        public List<ChargeOnSales> GetLineItemChargeInfo(string companycode, string FormCode,string CustomerCode, string ItemCode)
+
+
+        public List<Employee> GetAllEmployees()
         {
             try
             {
-                var data = new ChargeOnSales();
-                var data1 = new ChargeOnSales();
-                //string query = $@" select CHARGE_CODE,CHARGE_TYPE_FLAG,VALUE_PERCENT_FLAG,VALUE_PERCENT_AMOUNT,GL_FLAG,PRIORITY_INDEX_NO,CHARGE_APPLY_ON,FORM_CODE,COMPANY_CODE,DELETED_FLAG,APPORTION_ON,IMPACT_ON,APPLY_ON,CHARGE_ACTIVE_FLAG,MANUAL_CALC_CHARGE,ON_ITEM,SPECIFIC_CHARGE_FLAG from (select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   'P' ELSE 'V' END from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}' and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),'P') ELSE CS.VALUE_PERCENT_FLAG END VALUE_PERCENT_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   NVL(IIDS.DISCOUNT_PERCENT,0) ELSE NVL( iids.discount_rate,0) END from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}' and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),0) ELSE CS.VALUE_PERCENT_AMOUNT END VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 THEN 'N' ELSE CS.MANUAL_CALC_CHARGE END MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code  where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag IN ('D','B','C','S','Y') UNION select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CS.VALUE_PERCENT_FLAG,CS.VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CS.MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code  where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag not IN ('D','B','C','S','Y')) order by priority_index_no";
-                string query = $@"select distinct CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CASE WHEN NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN 'P' ELSE 'V' END VALUE_PERCENT_FLAG,CASE WHEN NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN NVL(IIDS.DISCOUNT_PERCENT,0) ELSE NVL( iids.discount_rate,0) END VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO ,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON ,CS.CHARGE_ACTIVE_FLAG ,'N' MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code left JOIN IP_ITEM_DISCOUNT_SCHEDULE IIDS ON IIDS.COMPANY_CODE = CS.COMPANY_CODE AND IIDS.FORM_CODE = CS.FORM_CODE and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag IN ('D','B','C','S','Y') union select distinct CS.CHARGE_CODE,NVL(IICS.charge_type,'A') as CHARGE_TYPE_FLAG,NVL(IICS.VALUE_PERCENT_FLAG,'V'),NVL(IICS.VALUE_PERCENT_AMOUNT,0),CS.GL_FLAG,CS.PRIORITY_INDEX_NO ,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON ,CS.CHARGE_ACTIVE_FLAG ,'N' MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code left JOIN ip_item_charge_setup IICS ON IICS.COMPANY_CODE = CS.COMPANY_CODE AND IICS.FORM_CODE = CS.FORM_CODE and IICS.item_code = '{ItemCode}' where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag not IN ('D','B','C','S','Y') AND CS.CHARGE_CODE IN (select CHARGE_CODE from ip_item_charge_setup where form_code ='{FormCode}' and company_code = '{companycode}') UNION select distinct CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CS.VALUE_PERCENT_FLAG,CS.VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO ,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON ,CS.CHARGE_ACTIVE_FLAG ,NVL(CS.MANUAL_CALC_CHARGE,'N')MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND IP.specific_charge_flag NOT IN ('D','B','C','S','Y') AND CS.CHARGE_CODE NOT IN (select CHARGE_CODE from ip_item_charge_setup where form_code ='{FormCode}' and company_code = '{companycode}') order by priority_index_no";
-                var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
-                result.Add(data);
-                data.CHARGE_CODE = "NA";
-                result.Add(data1);
-                data1.CHARGE_CODE = "TA";
-                return result;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public List<CustomerItemType> GetItemDiscountScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
-        {
-            try
-            {
-
-                //string query = $@"  select * from COMPANY_SETUP where company_code='{_workContext.CurrentUserinformation.company_code}'";
-                string query1 = $@"select distinct IIDS.discount_rate,IIDS.DISCOUNT_PERCENT  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}' and IIDS.cs_code = {CustomerCode} and IIDS.item_code = {ItemCode} and FS.DISCOUNT_SCHEDULE_FLAG ='Y'";
-                var result = _dbContext.SqlQuery<CustomerItemType>(query1).ToList();
-               
-                return result;
+                string query = $@"SELECT
+                        COALESCE(EMPLOYEE_CODE,' ') as EMPLOYEE_CODE, 
+                        COALESCE(EMPLOYEE_EDESC,' ') as EMPLOYEE_EDESC 
+                        FROM hr_employee_setup
+                        WHERE DELETED_FLAG='N' AND COMPANY_CODE ='{_workContext.CurrentUserinformation.company_code}' AND BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}'";
+                List<Employee> entity = this._dbContext.SqlQuery<Employee>(query).ToList();
+                return entity;
             }
             catch (Exception ex)
             {
-                throw ex;
-            }
-        }
-
-        public List<ChargeOnSales> GetLineItemChargeParticularInfo(string companycode, string FormCode,string ChargeCode, string CustomerCode, string ItemCode)
-        {
-            try
-            {
-                //string query = $@"select CHARGE_CODE,CHARGE_TYPE_FLAG,VALUE_PERCENT_FLAG,VALUE_PERCENT_AMOUNT,GL_FLAG,PRIORITY_INDEX_NO,CHARGE_APPLY_ON,FORM_CODE,COMPANY_CODE,DELETED_FLAG,APPORTION_ON,IMPACT_ON,APPLY_ON,CHARGE_ACTIVE_FLAG,MANUAL_CALC_CHARGE,ON_ITEM,SPECIFIC_CHARGE_FLAG from (select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   'P' ELSE 'V' END from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}' and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),'P') ELSE CS.VALUE_PERCENT_FLAG END VALUE_PERCENT_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 THEN NVL((select distinct case when NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN   NVL(IIDS.DISCOUNT_PERCENT,0) ELSE NVL( iids.discount_rate,0) END from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}' and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' and FS.DISCOUNT_SCHEDULE_FLAG ='Y'),0) ELSE CS.VALUE_PERCENT_AMOUNT END VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CASE WHEN (select COUNT(*)  from IP_ITEM_DISCOUNT_SCHEDULE IIDS INNER JOIN form_setup FS ON IIDS.FORM_CODE = FS.form_code where IIDS.company_code = '{companycode}' and IIDS.form_code = '{FormCode}') > 0 THEN 'N' ELSE CS.MANUAL_CALC_CHARGE END MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code  where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag IN ('D','B','C','S','Y') UNION select DISTINCT CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CS.VALUE_PERCENT_FLAG,CS.VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON,CS.CHARGE_ACTIVE_FLAG,CS.MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag not IN ('D','B','C','S','Y')) order by priority_index_no";
-                string query = $@"select distinct CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CASE WHEN NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN 'P' ELSE 'V' END VALUE_PERCENT_FLAG,CASE WHEN NVL(IIDS.DISCOUNT_PERCENT,0) > 0 THEN NVL(IIDS.DISCOUNT_PERCENT,0) ELSE NVL( iids.discount_rate,0) END VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO ,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON ,CS.CHARGE_ACTIVE_FLAG ,'N' MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code left JOIN IP_ITEM_DISCOUNT_SCHEDULE IIDS ON IIDS.COMPANY_CODE = CS.COMPANY_CODE AND IIDS.FORM_CODE = CS.FORM_CODE and IIDS.cs_code = '{CustomerCode}' and IIDS.item_code = '{ItemCode}' where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag IN ('D','B','C','S','Y') union select distinct CS.CHARGE_CODE,NVL(IICS.charge_type,'A') as CHARGE_TYPE_FLAG,NVL(IICS.VALUE_PERCENT_FLAG,'V'),NVL(IICS.VALUE_PERCENT_AMOUNT,0),CS.GL_FLAG,CS.PRIORITY_INDEX_NO ,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON ,CS.CHARGE_ACTIVE_FLAG ,'N' MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code left JOIN ip_item_charge_setup IICS ON IICS.COMPANY_CODE = CS.COMPANY_CODE AND IICS.FORM_CODE = CS.FORM_CODE and IICS.item_code = '{ItemCode}' where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag not IN ('D','B','C','S','Y') AND CS.CHARGE_CODE IN (select CHARGE_CODE from ip_item_charge_setup where form_code ='{FormCode}' and company_code = '{companycode}') UNION select distinct CS.CHARGE_CODE,CS.CHARGE_TYPE_FLAG,CS.VALUE_PERCENT_FLAG,CS.VALUE_PERCENT_AMOUNT,CS.GL_FLAG,CS.PRIORITY_INDEX_NO ,CS.CHARGE_APPLY_ON,CS.FORM_CODE,CS.COMPANY_CODE,CS.DELETED_FLAG,CS.APPORTION_ON,CS.IMPACT_ON,CS.APPLY_ON ,CS.CHARGE_ACTIVE_FLAG ,NVL(CS.MANUAL_CALC_CHARGE,'N')MANUAL_CALC_CHARGE,CS.ON_ITEM,IP.SPECIFIC_CHARGE_FLAG from charge_setup CS INNER JOIN ip_charge_code IP ON ip.charge_code = cs.charge_code where CS.company_code = '{companycode}' and CS.form_code = '{FormCode}' AND CS.charge_code = '{ChargeCode}' AND IP.specific_charge_flag NOT IN ('D','B','C','S','Y') AND CS.CHARGE_CODE NOT IN (select CHARGE_CODE from ip_item_charge_setup where form_code ='{FormCode}' and company_code = '{companycode}') order by priority_index_no";
-                var result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
-                return result;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public decimal GetFreezeRateScheduleInfo(string companycode, string FormCode, string CustomerCode, string ItemCode)
-        {
-            try
-            {
-                string query = $@"select IIRSS.standard_rate from form_setup FS INNER JOIN IP_ITEM_RATE_SCHEDULE_SETUP IIRSS ON IIRSS.form_code = FS.form_code where FS.company_code = '{companycode}' and FS.form_code = '{FormCode}' and IIRSS.cs_code = '{CustomerCode}' and IIRSS.item_code = '{ItemCode}'";
-                var result = _dbContext.SqlQuery<decimal>(query).FirstOrDefault().ToString();
-                return Convert.ToDecimal(result);
-            }
-            catch (Exception)
-            {
-                throw;
+                _logErp.ErrorInDB("Error while gettting data : " + ex.StackTrace);
+                throw new Exception(ex.Message);
             }
         }
     }

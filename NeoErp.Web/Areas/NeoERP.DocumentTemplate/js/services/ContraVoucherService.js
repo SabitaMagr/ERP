@@ -87,7 +87,8 @@ DTModule.service('contravoucherservice', function (contravoucherfactory, $http) 
 DTModule.factory('contravoucherfactory', function ($http) {
     var fac = {};
     fac.getFormDetail = function (formcode) {
-        var req = "/api/TemplateApi/GetFormDetailSetup?formCode=";
+        /*var req = "/api/TemplateApi/GetFormDetailSetup?formCode=";*/
+        var req = "/api/TemplateApi/GetFormDetailSetup?formCode=" + formcode + "&orderno=" + 168;
         return $http.get(req + formcode);
     }
 

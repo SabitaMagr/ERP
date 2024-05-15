@@ -21,8 +21,7 @@ namespace NeoERP.DocumentTemplate.Service.Models
         public decimal? QUANTITY { get; set; }
         public string NARRATION { get; set; }
         public List<BUDGETDATA> BUDGET { get; set; }
-        
-
+        public int SUB_PROJECT_CODE { get; set; }
     }
     public class BUDGETDATA
     {

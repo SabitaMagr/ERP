@@ -263,6 +263,8 @@ namespace NeoERP.DocumentTemplate.Service.Models
         // public string DRIVER MOBILE { get; set; }
         public string PP_NO { get; set; }
         public string PARTY_CODE { get; set; }
+        public int SUB_PROJECT_CODE { get; set; }
+        public string SUB_PROJECT_NAME { get; set; }
         public DateTime? EST_DELIVERY_DATE { get; set; }
         public DateTime? EFFECTIVE_DATE { get; set; }
         //public decimal BONUS_DISCOUNT { get; set; }

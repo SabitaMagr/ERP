@@ -212,6 +212,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                     inventoryChildDetails.CALC_QUANTITY = childCol.CALC_QUANTITY;
                     inventoryChildDetails.TOTAL_PRICE = childCol.TOTAL_PRICE;
                     inventoryChildDetails.UNIT_PRICE = childCol.UNIT_PRICE;
+                    inventoryChildDetails.SUB_PROJECT_CODE = childCol.SUB_PROJECT_CODE;
                     inventoryChildDetails.QUANTITY = childCol.QUANTITY;
                     inventoryChildDetails.MU_CODE = string.IsNullOrEmpty(childCol.MU_CODE) ? masterColumnValue.MU_CODE : childCol.MU_CODE;
                     inventoryChildDetails.ITEM_CODE = string.IsNullOrEmpty(childCol.ITEM_CODE) ? masterColumnValue.ITEM_CODE : childCol.ITEM_CODE;
@@ -337,6 +338,32 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
 
                         insertedToChild = true;
                     }
+                    //else if (commonValue.TableName.ToUpper() == "IP_PURCHASE_INVOICE")
+                    //{
+                    //    var insertQuery = $@"INSERT INTO IP_PURCHASE_INVOICE (INVOICE_NO,INVOICE_DATE, MANUAL_NO, SUPPLIER_CODE, SUPPLIER_INV_NO, SUPPLIER_INV_DATE,SUPPLIER_BUDGET_FLAG,
+                    //        SERIAL_NO, BUDGET_FLAG, ITEM_CODE, MU_CODE,QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE,CALC_TOTAL_PRICE, COMPLETED_QUANTITY,
+                    //        REMARKS, FORM_CODE, COMPANY_CODE,BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, DUE_DATE,CURRENCY_CODE, EXCHANGE_RATE, TERMS_DAY,
+                    //        SYN_ROWID, TRACKING_NO,TO_LOCATION_CODE, SESSION_ROWID, BATCH_NO, MODIFY_DATE, LOT_NO,SUPPLIER_MRR_NO, PP_NO, MODIFY_BY, P_TYPE, PP_DATE,
+                    //        DIVISION_CODE, NET_GROSS_RATE, NET_SALES_RATE, NET_TAXABLE_RATE, MASTER_PP_NO,SECOND_QUANTITY, THIRD_QUANTITY, RECONCILE_DATE, RECONCILE_FLAG,
+                    //        RECONCILE_BY)
+                    //        VALUES ('{commonValue.NewVoucherNumber}',TO_DATE('{inventoryChildDetails.INVOICE_DATE}','DD-MON-YY'),'{inventoryChildDetails.MANUAL_NO}','{inventoryChildDetails.SUPPLIER_CODE}'
+                    //        ,'{inventoryChildDetails.SUPPLIER_INV_NO}','{inventoryChildDetails.SUPPLIER_INV_DATE}','{inventoryChildDetails.SUPPLIER_BUDGET_FLAG}',{serialno}
+                    //        ,'{inventoryChildDetails.BUDGET_FLAG}','{inventoryChildDetails.ITEM_CODE}', '{inventoryChildDetails.MU_CODE}','{inventoryChildDetails.QUANTITY}'
+                    //        ,'{inventoryChildDetails.UNIT_PRICE}','{inventoryChildDetails.TOTAL_PRICE}','{inventoryChildDetails.CALC_QUANTITY}','{inventoryChildDetails.CALC_UNIT_PRICE}'
+                    //        ,'{inventoryChildDetails.CALC_TOTAL_PRICE}','{inventoryChildDetails.COMPLETED_QUANTITY}','{inventoryChildDetails.REMARKS}','{inventoryChildDetails.FORM_CODE}'
+                    //        ,'{inventoryChildDetails.COMPANY_CODE}','{inventoryChildDetails.BRANCH_CODE}','{inventoryChildDetails.CREATED_BY}'
+                    //        ,{inventoryChildDetails.CREATED_DATE},'{inventoryChildDetails.DELETED_FLAG}','{inventoryChildDetails.DUE_DATE}','{inventoryChildDetails.CURRENCY_CODE}'
+                    //        ,'{inventoryChildDetails.EXCHANGE_RATE}','{inventoryChildDetails.TERMS_DAY}','{inventoryChildDetails.SYN_ROWID}','{inventoryChildDetails.TRACKING_NO}'
+                    //        ,'{inventoryChildDetails.TO_LOCATION_CODE}','{inventoryChildDetails.SESSION_ROWID}','{inventoryChildDetails.BATCH_NO}',{inventoryChildDetails.MODIFY_DATE}
+                    //        ,'{inventoryChildDetails.LOT_NO}','{inventoryChildDetails.SUPPLIER_MRR_NO}','{inventoryChildDetails.PP_NO}','{inventoryChildDetails.MODIFY_BY}'
+                    //        ,'{inventoryChildDetails.P_TYPE}','{inventoryChildDetails.PP_DATE}','{inventoryChildDetails.DIVISION_CODE}','{inventoryChildDetails.NET_GROSS_RATE}'
+                    //        ,'{inventoryChildDetails.NET_SALES_RATE}','{inventoryChildDetails.NET_TAXABLE_RATE}','{inventoryChildDetails.MASTER_PP_NO}','{inventoryChildDetails.SECOND_QUANTITY}'
+                    //        ,'{inventoryChildDetails.THIRD_QUANTITY}','{inventoryChildDetails.RECONCILE_DATE}','{inventoryChildDetails.RECONCILE_FLAG}','{inventoryChildDetails.RECONCILE_BY}'
+                    //        )";
+                    //    dbcontext.ExecuteSqlCommand(insertQuery);
+                    //    serialno++;
+                    //    insertedToChild = true;
+                    //} for sub projecty code for construction system
                     else if (commonValue.TableName.ToUpper() == "IP_PURCHASE_INVOICE")
                     {
                         var insertQuery = $@"INSERT INTO IP_PURCHASE_INVOICE (INVOICE_NO,INVOICE_DATE, MANUAL_NO, SUPPLIER_CODE, SUPPLIER_INV_NO, SUPPLIER_INV_DATE,SUPPLIER_BUDGET_FLAG,
@@ -344,7 +371,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                             REMARKS, FORM_CODE, COMPANY_CODE,BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, DUE_DATE,CURRENCY_CODE, EXCHANGE_RATE, TERMS_DAY,
                             SYN_ROWID, TRACKING_NO,TO_LOCATION_CODE, SESSION_ROWID, BATCH_NO, MODIFY_DATE, LOT_NO,SUPPLIER_MRR_NO, PP_NO, MODIFY_BY, P_TYPE, PP_DATE,
                             DIVISION_CODE, NET_GROSS_RATE, NET_SALES_RATE, NET_TAXABLE_RATE, MASTER_PP_NO,SECOND_QUANTITY, THIRD_QUANTITY, RECONCILE_DATE, RECONCILE_FLAG,
-                            RECONCILE_BY)
+                            RECONCILE_BY,SUB_PROJECT_CODE)
                             VALUES ('{commonValue.NewVoucherNumber}',TO_DATE('{inventoryChildDetails.INVOICE_DATE}','DD-MON-YY'),'{inventoryChildDetails.MANUAL_NO}','{inventoryChildDetails.SUPPLIER_CODE}'
                             ,'{inventoryChildDetails.SUPPLIER_INV_NO}','{inventoryChildDetails.SUPPLIER_INV_DATE}','{inventoryChildDetails.SUPPLIER_BUDGET_FLAG}',{serialno}
                             ,'{inventoryChildDetails.BUDGET_FLAG}','{inventoryChildDetails.ITEM_CODE}', '{inventoryChildDetails.MU_CODE}','{inventoryChildDetails.QUANTITY}'
@@ -357,13 +384,12 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                             ,'{inventoryChildDetails.LOT_NO}','{inventoryChildDetails.SUPPLIER_MRR_NO}','{inventoryChildDetails.PP_NO}','{inventoryChildDetails.MODIFY_BY}'
                             ,'{inventoryChildDetails.P_TYPE}','{inventoryChildDetails.PP_DATE}','{inventoryChildDetails.DIVISION_CODE}','{inventoryChildDetails.NET_GROSS_RATE}'
                             ,'{inventoryChildDetails.NET_SALES_RATE}','{inventoryChildDetails.NET_TAXABLE_RATE}','{inventoryChildDetails.MASTER_PP_NO}','{inventoryChildDetails.SECOND_QUANTITY}'
-                            ,'{inventoryChildDetails.THIRD_QUANTITY}','{inventoryChildDetails.RECONCILE_DATE}','{inventoryChildDetails.RECONCILE_FLAG}','{inventoryChildDetails.RECONCILE_BY}'
+                            ,'{inventoryChildDetails.THIRD_QUANTITY}','{inventoryChildDetails.RECONCILE_DATE}','{inventoryChildDetails.RECONCILE_FLAG}','{inventoryChildDetails.RECONCILE_BY}','{inventoryChildDetails.SUB_PROJECT_CODE}'
                             )";
                         dbcontext.ExecuteSqlCommand(insertQuery);
                         serialno++;
                         insertedToChild = true;
                     }
-
                     else if (commonValue.TableName.ToUpper() == "IP_GOODS_ISSUE_RETURN")
                     {
                         var insertQuery = $@"INSERT INTO IP_GOODS_ISSUE_RETURN (
@@ -391,11 +417,29 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                     }
                     else if (commonValue.TableName.ToUpper() == "IP_GOODS_ISSUE")
                     {
+                        //var insertQuery = $@"INSERT INTO IP_GOODS_ISSUE (ISSUE_NO,ISSUE_DATE, MANUAL_NO, ISSUE_TYPE_CODE, FROM_LOCATION_CODE, TO_LOCATION_CODE, 
+                        //    TO_BUDGET_FLAG, ITEM_CODE, SERIAL_NO, MU_CODE, REQ_QUANTITY,QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, 
+                        //    CALC_TOTAL_PRICE, COMPLETED_QUANTITY, REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, CURRENCY_CODE, 
+                        //    EXCHANGE_RATE, SYN_ROWID, TRACKING_NO, SESSION_ROWID, BATCH_NO, MODIFY_DATE, PRODUCT_CODE, MODIFY_BY, USE_PLACE, CUSTOMER_CODE, 
+                        //    EMPLOYEE_CODE, SUPPLIER_CODE, ISSUE_SLIP_NO, DIVISION_CODE, REFERENCE_NO, SECOND_QUANTITY, THIRD_QUANTITY)
+                        //    VALUES ('{commonValue.NewVoucherNumber}',TO_DATE('{inventoryChildDetails.ISSUE_DATE}','DD-MON-YY hh24:mi:ss'),'{inventoryChildDetails.MANUAL_NO}','{inventoryChildDetails.ISSUE_TYPE_CODE}'
+                        //    ,'{inventoryChildDetails.FROM_LOCATION_CODE}','{inventoryChildDetails.TO_LOCATION_CODE}','{inventoryChildDetails.TO_BUDGET_FLAG}','{inventoryChildDetails.ITEM_CODE}'
+                        //    ,{serialno},'{inventoryChildDetails.MU_CODE}','{inventoryChildDetails.REQ_QUANTITY}','{inventoryChildDetails.QUANTITY}'
+                        //    ,'{inventoryChildDetails.UNIT_PRICE}','{inventoryChildDetails.TOTAL_PRICE}','{inventoryChildDetails.CALC_QUANTITY}','{inventoryChildDetails.CALC_UNIT_PRICE}'
+                        //    ,'{inventoryChildDetails.CALC_TOTAL_PRICE}'
+                        //    ,'{inventoryChildDetails.COMPLETED_QUANTITY}','{inventoryChildDetails.REMARKS}', '{inventoryChildDetails.FORM_CODE}', '{inventoryChildDetails.COMPANY_CODE}'
+                        //    ,'{inventoryChildDetails.BRANCH_CODE}','{inventoryChildDetails.CREATED_BY}'
+                        //    ,{inventoryChildDetails.CREATED_DATE},'{inventoryChildDetails.DELETED_FLAG}','{inventoryChildDetails.CURRENCY_CODE}','{inventoryChildDetails.EXCHANGE_RATE}'
+                        //    ,'{inventoryChildDetails.SYN_ROWID}','{inventoryChildDetails.TRACKING_NO}','{inventoryChildDetails.SESSION_ROWID}','{inventoryChildDetails.BATCH_NO}'
+                        //    ,{inventoryChildDetails.MODIFY_DATE},'{inventoryChildDetails.PRODUCT_CODE}','{inventoryChildDetails.MODIFY_BY}','{inventoryChildDetails.USE_PLACE}'
+                        //    ,'{inventoryChildDetails.CUSTOMER_CODE}','{inventoryChildDetails.EMPLOYEE_CODE}','{inventoryChildDetails.SUPPLIER_CODE}','{inventoryChildDetails.ISSUE_SLIP_NO}'
+                        //    ,'{inventoryChildDetails.DIVISION_CODE}','{inventoryChildDetails.REFERENCE_NO}','{inventoryChildDetails.SECOND_QUANTITY}','{inventoryChildDetails.THIRD_QUANTITY}'
+                        //   )";
                         var insertQuery = $@"INSERT INTO IP_GOODS_ISSUE (ISSUE_NO,ISSUE_DATE, MANUAL_NO, ISSUE_TYPE_CODE, FROM_LOCATION_CODE, TO_LOCATION_CODE, 
                             TO_BUDGET_FLAG, ITEM_CODE, SERIAL_NO, MU_CODE, REQ_QUANTITY,QUANTITY, UNIT_PRICE, TOTAL_PRICE, CALC_QUANTITY, CALC_UNIT_PRICE, 
                             CALC_TOTAL_PRICE, COMPLETED_QUANTITY, REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, DELETED_FLAG, CURRENCY_CODE, 
                             EXCHANGE_RATE, SYN_ROWID, TRACKING_NO, SESSION_ROWID, BATCH_NO, MODIFY_DATE, PRODUCT_CODE, MODIFY_BY, USE_PLACE, CUSTOMER_CODE, 
-                            EMPLOYEE_CODE, SUPPLIER_CODE, ISSUE_SLIP_NO, DIVISION_CODE, REFERENCE_NO, SECOND_QUANTITY, THIRD_QUANTITY)
+                            EMPLOYEE_CODE, SUPPLIER_CODE, ISSUE_SLIP_NO, DIVISION_CODE, REFERENCE_NO, SECOND_QUANTITY, THIRD_QUANTITY,SUB_PROJECT_CODE)
                             VALUES ('{commonValue.NewVoucherNumber}',TO_DATE('{inventoryChildDetails.ISSUE_DATE}','DD-MON-YY hh24:mi:ss'),'{inventoryChildDetails.MANUAL_NO}','{inventoryChildDetails.ISSUE_TYPE_CODE}'
                             ,'{inventoryChildDetails.FROM_LOCATION_CODE}','{inventoryChildDetails.TO_LOCATION_CODE}','{inventoryChildDetails.TO_BUDGET_FLAG}','{inventoryChildDetails.ITEM_CODE}'
                             ,{serialno},'{inventoryChildDetails.MU_CODE}','{inventoryChildDetails.REQ_QUANTITY}','{inventoryChildDetails.QUANTITY}'
@@ -408,7 +452,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                             ,{inventoryChildDetails.MODIFY_DATE},'{inventoryChildDetails.PRODUCT_CODE}','{inventoryChildDetails.MODIFY_BY}','{inventoryChildDetails.USE_PLACE}'
                             ,'{inventoryChildDetails.CUSTOMER_CODE}','{inventoryChildDetails.EMPLOYEE_CODE}','{inventoryChildDetails.SUPPLIER_CODE}','{inventoryChildDetails.ISSUE_SLIP_NO}'
                             ,'{inventoryChildDetails.DIVISION_CODE}','{inventoryChildDetails.REFERENCE_NO}','{inventoryChildDetails.SECOND_QUANTITY}','{inventoryChildDetails.THIRD_QUANTITY}'
-                           )";
+                            ,'{inventoryChildDetails.SUB_PROJECT_CODE}')";
                         dbcontext.ExecuteSqlCommand(insertQuery);
                         serialno++;
                         insertedToChild = true;
@@ -478,6 +522,34 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                         serialno++;
                         insertedToChild = true;
                     }
+                    //else if (commonValue.TableName.ToUpper() == "IP_GOODS_REQUISITION")
+                    //{
+                    //    var insertQuery = $@"INSERT INTO IP_GOODS_REQUISITION (REQUISITION_NO, 
+                    //            REQUISITION_DATE, MANUAL_NO, FROM_LOCATION_CODE, TO_LOCATION_CODE, SUPPLIER_CODE,ITEM_CODE, 
+                    //            SERIAL_NO, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, 
+                    //            CALC_QUANTITY, CALC_UNIT_PRICE, CALC_TOTAL_PRICE, COMPLETED_QUANTITY, REMARKS, 
+                    //            FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, 
+                    //            DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE, SYN_ROWID, TRACKING_NO, 
+                    //            SESSION_ROWID, MODIFY_DATE,  MODIFY_BY, CUSTOMER_CODE, 
+                    //            SECOND_QUANTITY, THIRD_QUANTITY)
+                    //        VALUES ('{commonValue.NewVoucherNumber}',TO_DATE('{inventoryChildDetails.REQUISITION_DATE}','DD-MON-YY hh24:mi:ss'),'{inventoryChildDetails.MANUAL_NO}'
+                    //            ,'{inventoryChildDetails.FROM_LOCATION_CODE}','{inventoryChildDetails.TO_LOCATION_CODE}','{inventoryChildDetails.SUPPLIER_CODE}'                            
+                    //        ,'{inventoryChildDetails.ITEM_CODE}',{serialno},'{inventoryChildDetails.MU_CODE}','{inventoryChildDetails.QUANTITY}'
+                    //        ,'{inventoryChildDetails.UNIT_PRICE}','{inventoryChildDetails.TOTAL_PRICE}','{inventoryChildDetails.CALC_QUANTITY}','{inventoryChildDetails.CALC_UNIT_PRICE}'
+                    //        ,'{inventoryChildDetails.CALC_TOTAL_PRICE}','{inventoryChildDetails.COMPLETED_QUANTITY}','{inventoryChildDetails.REMARKS}'
+                    //        ,'{inventoryChildDetails.FORM_CODE}'
+                    //        ,'{inventoryChildDetails.COMPANY_CODE}','{inventoryChildDetails.BRANCH_CODE}','{inventoryChildDetails.CREATED_BY}'
+                    //        ,{inventoryChildDetails.CREATED_DATE},'{inventoryChildDetails.DELETED_FLAG}','{inventoryChildDetails.CURRENCY_CODE}'
+                    //        ,'{inventoryChildDetails.EXCHANGE_RATE}','{inventoryChildDetails.SYN_ROWID}','{inventoryChildDetails.TRACKING_NO}'
+                    //        ,'{inventoryChildDetails.SESSION_ROWID}',{inventoryChildDetails.MODIFY_DATE}
+                    //        ,'{inventoryChildDetails.MODIFY_BY}'
+                    //        ,'{inventoryChildDetails.CUSTOMER_CODE}','{inventoryChildDetails.SECOND_QUANTITY}'
+                    //        ,'{inventoryChildDetails.THIRD_QUANTITY}'
+                    //       )";
+                    //    dbcontext.ExecuteSqlCommand(insertQuery);
+                    //    serialno++;
+                    //    insertedToChild = true;
+                    //}  For sub Project code for construction setup
                     else if (commonValue.TableName.ToUpper() == "IP_GOODS_REQUISITION")
                     {
                         var insertQuery = $@"INSERT INTO IP_GOODS_REQUISITION (REQUISITION_NO, 
@@ -487,7 +559,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                                 FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, 
                                 DELETED_FLAG, CURRENCY_CODE, EXCHANGE_RATE, SYN_ROWID, TRACKING_NO, 
                                 SESSION_ROWID, MODIFY_DATE,  MODIFY_BY, CUSTOMER_CODE, 
-                                SECOND_QUANTITY, THIRD_QUANTITY)
+                                SECOND_QUANTITY, THIRD_QUANTITY,SUB_PROJECT_CODE)
                             VALUES ('{commonValue.NewVoucherNumber}',TO_DATE('{inventoryChildDetails.REQUISITION_DATE}','DD-MON-YY hh24:mi:ss'),'{inventoryChildDetails.MANUAL_NO}'
                                 ,'{inventoryChildDetails.FROM_LOCATION_CODE}','{inventoryChildDetails.TO_LOCATION_CODE}','{inventoryChildDetails.SUPPLIER_CODE}'                            
                             ,'{inventoryChildDetails.ITEM_CODE}',{serialno},'{inventoryChildDetails.MU_CODE}','{inventoryChildDetails.QUANTITY}'
@@ -500,12 +572,13 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                             ,'{inventoryChildDetails.SESSION_ROWID}',{inventoryChildDetails.MODIFY_DATE}
                             ,'{inventoryChildDetails.MODIFY_BY}'
                             ,'{inventoryChildDetails.CUSTOMER_CODE}','{inventoryChildDetails.SECOND_QUANTITY}'
-                            ,'{inventoryChildDetails.THIRD_QUANTITY}'
+                            ,'{inventoryChildDetails.THIRD_QUANTITY}','{inventoryChildDetails.SUB_PROJECT_CODE}'
                            )";
                         dbcontext.ExecuteSqlCommand(insertQuery);
                         serialno++;
                         insertedToChild = true;
                     }
+
                     else if (commonValue.TableName.ToUpper() == "IP_TRANSFER_ISSUE")
                     {
                         var insertQuery = $@"INSERT INTO IP_TRANSFER_ISSUE (ISSUE_NO, 
@@ -776,11 +849,56 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                 throw new Exception(ex.Message);
             }
         }
+        //public void SaveBudgetTransactionColumnValue(List<FinancialBudgetTransaction> budgetTransaction, CommonFieldsForInventory commonValue, NeoErpCoreEntity dbcontext = null)
+        //{
+        //    try
+        //    {
+        //        var budSerial = 1;
+        //        foreach (var btrans in budgetTransaction)
+        //        {
+        //            var budgetflag = btrans.BUDGET_FLAG == "" ? "L" : btrans.BUDGET_FLAG;
+        //            if (btrans.BUDGET != null)
+        //            {
+        //                if (btrans.BUDGET.Count > 0)
+        //                {
+        //                    foreach (var bud in btrans.BUDGET)
+        //                    {
+        //                        if (bud.BUDGET_CODE != "")
+        //                        {
+        //                            var VoucherNumber = (commonValue.VoucherNumber == "undefined") ? commonValue.NewVoucherNumber : commonValue.VoucherNumber;
+        //                            string maxtransnoquery = string.Format(@"SELECT TO_NUMBER(TO_CHAR(NVL(MAX(TO_NUMBER(TRANSACTION_NO )+1),1))) as TRANSACTIONNO FROM BUDGET_TRANSACTION");
+        //                            int newMaxTransNoForBudget = _coreEntity.SqlQuery<int>(maxtransnoquery).FirstOrDefault();
+        //                            string insertbudgettransQuery = $@"INSERT INTO BUDGET_TRANSACTION(
+        //                                                                      TRANSACTION_NO,FORM_CODE,REFERENCE_NO,BUDGET_FLAG,SERIAL_NO,BUDGET_CODE,
+        //                                                                      BUDGET_AMOUNT,PARTICULARS,COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,
+        //                                                                      CURRENCY_CODE,EXCHANGE_RATE,VALIDATION_FLAG,ACC_CODE,SESSION_ROWID)
+        //                                                                      VALUES('{newMaxTransNoForBudget}','{commonValue.FormCode}','{VoucherNumber}','{budgetflag}',{budSerial++},'{bud.BUDGET_CODE}',
+        //                                                                     {bud.QUANTITY},'{bud.NARRATION}','{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.login_code.ToUpper()}',SYSDATE,'N','NRS',{1},'Y','{bud.ACC_CODE}','')";
+        //                            dbcontext.ExecuteSqlCommand(insertbudgettransQuery);
+
+
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //throw new Exception(ex.StackTrace);
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //Budget Transaction wuth project sub code
         public void SaveBudgetTransactionColumnValue(List<FinancialBudgetTransaction> budgetTransaction, CommonFieldsForInventory commonValue, NeoErpCoreEntity dbcontext = null)
         {
             try
             {
                 var budSerial = 1;
+                string maxtransnoquery = string.Format(@"SELECT TO_NUMBER(TO_CHAR(NVL(MAX(TO_NUMBER(TRANSACTION_NO )+1),1))) as TRANSACTIONNO FROM BUDGET_TRANSACTION");
+                int newMaxTransNoForBudget = _coreEntity.SqlQuery<int>(maxtransnoquery).FirstOrDefault();
                 foreach (var btrans in budgetTransaction)
                 {
                     var budgetflag = btrans.BUDGET_FLAG == "" ? "L" : btrans.BUDGET_FLAG;
@@ -793,23 +911,19 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                                 if (bud.BUDGET_CODE != "")
                                 {
                                     var VoucherNumber = (commonValue.VoucherNumber == "undefined") ? commonValue.NewVoucherNumber : commonValue.VoucherNumber;
-                                    string maxtransnoquery = string.Format(@"SELECT TO_NUMBER(TO_CHAR(NVL(MAX(TO_NUMBER(TRANSACTION_NO )+1),1))) as TRANSACTIONNO FROM BUDGET_TRANSACTION");
-                                    int newMaxTransNoForBudget = _coreEntity.SqlQuery<int>(maxtransnoquery).FirstOrDefault();
                                     string insertbudgettransQuery = $@"INSERT INTO BUDGET_TRANSACTION(
                                                                               TRANSACTION_NO,FORM_CODE,REFERENCE_NO,BUDGET_FLAG,SERIAL_NO,BUDGET_CODE,
                                                                               BUDGET_AMOUNT,PARTICULARS,COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,
-                                                                              CURRENCY_CODE,EXCHANGE_RATE,VALIDATION_FLAG,ACC_CODE,SESSION_ROWID)
+                                                                              CURRENCY_CODE,EXCHANGE_RATE,VALIDATION_FLAG,ACC_CODE,SESSION_ROWID,SUB_PROJECT_CODE)
                                                                               VALUES('{newMaxTransNoForBudget}','{commonValue.FormCode}','{VoucherNumber}','{budgetflag}',{budSerial++},'{bud.BUDGET_CODE}',
-                                                                             {bud.QUANTITY},'{bud.NARRATION}','{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.login_code.ToUpper()}',SYSDATE,'N','NRS',{1},'Y','{bud.ACC_CODE}','')";
+                                                                             {bud.QUANTITY},'{bud.NARRATION}','{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.login_code.ToUpper()}',SYSDATE,'N','NRS',{1},'Y','{bud.ACC_CODE}','','{btrans.SUB_PROJECT_CODE}')";
                                     dbcontext.ExecuteSqlCommand(insertbudgettransQuery);
-
-
+                                    newMaxTransNoForBudget = newMaxTransNoForBudget + 1;
                                 }
                             }
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -823,7 +937,9 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
             {
                 bool insertedToCharges = false;
                 string currencyformat = "NRS";
-                int chargeSerialNo = 0;
+                int chargeSerialNo = 1;
+                //int chargeSerialNo = 0;  and added serial no in the query
+
                 // var chargeCol = JsonConvert.DeserializeObject<List<ChargeOnSales>>(chargeOnSales);
                 foreach (var cc in chargeCol)
                 {
@@ -831,7 +947,7 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                     string transquery = string.Format(@"select TO_NUMBER(TO_CHAR(NVL(MAX(TO_NUMBER(TRANSACTION_NO )+1),1))) ORDER_NO from CHARGE_TRANSACTION");
 
                     int newtransno = dbcontext.SqlQuery<int>(transquery).FirstOrDefault();
-                    string insertChargeQuery = $@"INSERT INTO CHARGE_TRANSACTION(TRANSACTION_NO,TABLE_NAME,REFERENCE_NO,APPLY_ON,ACC_CODE,CHARGE_CODE,CHARGE_TYPE_FLAG,CHARGE_AMOUNT,FORM_CODE,COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,CURRENCY_CODE,EXCHANGE_RATE,CALCULATE_BY,GL_FLAG,NON_GL_FLAG) VALUES('{newtransno}','{commonField.TableName}','{commonField.NewVoucherNumber}','{cc.APPLY_ON}','{cc.ACC_CODE}','{cc.CHARGE_CODE}','{cc.CHARGE_TYPE_FLAG}', {cc.CHARGE_AMOUNT},'{commonField.FormCode}','{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.login_code}',SYSDATE,'N','{currencyformat}',{commonField.ExchangeRate},'{cc.VALUE_PERCENT_FLAG}','{cc.GL_FLAG}','{cc.NON_GL_FLAG}')";
+                    string insertChargeQuery = $@"INSERT INTO CHARGE_TRANSACTION(TRANSACTION_NO,TABLE_NAME,REFERENCE_NO,SERIAL_NO,APPLY_ON,ACC_CODE,CHARGE_CODE,CHARGE_TYPE_FLAG,CHARGE_AMOUNT,FORM_CODE,COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,CURRENCY_CODE,EXCHANGE_RATE,CALCULATE_BY,GL_FLAG,NON_GL_FLAG) VALUES('{newtransno}','{commonField.TableName}','{commonField.NewVoucherNumber}',{chargeSerialNo},'{cc.APPLY_ON}','{cc.ACC_CODE}','{cc.CHARGE_CODE}','{cc.CHARGE_TYPE_FLAG}', {cc.CHARGE_AMOUNT},'{commonField.FormCode}','{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.login_code}',SYSDATE,'N','{currencyformat}',{commonField.ExchangeRate},'{cc.VALUE_PERCENT_FLAG}','{cc.GL_FLAG}','{cc.NON_GL_FLAG}')";
                     dbcontext.ExecuteSqlCommand(insertChargeQuery);
                     insertedToCharges = true;
                     chargeSerialNo++;
@@ -1364,10 +1480,10 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
                         var maxRefNo = dbcontext.SqlQuery<string>(maxRefNoQry).FirstOrDefault();
                         var refInsQuery = $@"INSERT INTO REFERENCE_DETAIL (TRANSACTION_NO,VOUCHER_NO,FORM_CODE,COMPANY_CODE,SERIAL_NO,REFERENCE_NO,REFERENCE_FORM_CODE,
                                                     REFERENCE_ITEM_CODE,
-                                                     REFERENCE_QUANTITY,REFERENCE_MU_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,REFERENCE_UNIT_PRICE,REFERENCE_TOTAL_PRICE,REFERENCE_CALC_UNIT_PRICE,REFERENCE_CALC_TOTAL_PRICE, REFERENCE_REMARKS,REFERENCE_DATE,BRANCH_CODE,REFERENCE_BRANCH_CODE,REFERENCE_SERIAL_NO,SYN_ROWID,BATCH_NO,REFERENCE_BATCH_NO,VOUCHER_DATE) 
+                                                     REFERENCE_QUANTITY,REFERENCE_MU_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,REFERENCE_UNIT_PRICE,REFERENCE_TOTAL_PRICE,REFERENCE_CALC_UNIT_PRICE,REFERENCE_CALC_TOTAL_PRICE, REFERENCE_REMARKS,REFERENCE_DATE,BRANCH_CODE,REFERENCE_BRANCH_CODE,REFERENCE_SERIAL_NO,SYN_ROWID,BATCH_NO,REFERENCE_BATCH_NO,VOUCHER_DATE,SUB_PROJECT_CODE) 
                                                    VALUES('{maxRefNo}','{commonValue.NewVoucherNumber}','{commonValue.FormCode}','{_workContext.CurrentUserinformation.company_code}','{serialNo}','{RefPurchaseOrder.ISSUE_NO}','{RefPurchaseOrder.FORM_CODE}','{RefPurchaseOrder.ITEM_CODE}',
                                                     '{Ref.calc_qty}','{RefPurchaseOrder.MU_CODE}','{_workContext.CurrentUserinformation.login_code}',SYSDATE,
-                                                          'N','{Ref.cal_unit_price}','{Ref.Total_price}','{Ref.cal_unit_price}','{Ref.cal_total_price}','{RefPurchaseOrder.REMARKS}',SYSDATE,'{_workContext.CurrentUserinformation.branch_code}','{RefPurchaseOrder.BRANCH_CODE}','{RefPurchaseOrder.SERIAL_NO}','','','',TO_DATE('{RefPurchaseOrder.ISSUE_DATE}','DD-MON-YYYY hh24:mi:ss'))";
+                                                          'N','{Ref.cal_unit_price}','{Ref.Total_price}','{Ref.cal_unit_price}','{Ref.cal_total_price}','{RefPurchaseOrder.REMARKS}',SYSDATE,'{_workContext.CurrentUserinformation.branch_code}','{RefPurchaseOrder.BRANCH_CODE}','{RefPurchaseOrder.SERIAL_NO}','','','',TO_DATE('{RefPurchaseOrder.ISSUE_DATE}','DD-MON-YYYY hh24:mi:ss'),'{Ref.SUB_PROJECT_CODE}')";
 
                         dbcontext.ExecuteSqlCommand(refInsQuery);
                     }
@@ -1400,7 +1516,9 @@ BT.BRANCH_CODE='{_workContext.CurrentUserinformation.branch_code}' AND BT.BATCH_
         {
             try
             {
-                var getPrevDataQuery = $@"SELECT VOUCHER_NO,SESSION_ROWID, CREATED_BY, TO_CHAR(CREATED_DATE, 'DD-MON-YY hh12:mi:ss PM') as CREATED_DATE FROM MASTER_TRANSACTION WHERE VOUCHER_NO= '{voucherNumber}'";
+                //var getPrevDataQuery = $@"SELECT VOUCHER_NO,SESSION_ROWID, CREATED_BY, TO_CHAR(CREATED_DATE, 'DD-MON-YY hh12:mi:ss PM') as CREATED_DATE FROM MASTER_TRANSACTION WHERE VOUCHER_NO= '{voucherNumber}'"; //previously
+
+                var getPrevDataQuery = $@"SELECT VOUCHER_NO,SESSION_ROWID, CREATED_BY, TO_CHAR(CREATED_DATE, 'DD-MON-YY') as CREATED_DATE FROM MASTER_TRANSACTION WHERE VOUCHER_NO= '{voucherNumber}'";
                 var defaultData = _coreEntity.SqlQuery<Inventory>(getPrevDataQuery).ToList();
                 return defaultData;
             }

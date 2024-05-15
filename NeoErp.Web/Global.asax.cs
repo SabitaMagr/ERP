@@ -29,7 +29,7 @@ namespace NeoErp
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            
+
             //Clear View engines and add RazorViewEngine to avoide search for aspx engine, as it is not using in application.
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new RazorViewEngine());
@@ -69,7 +69,7 @@ namespace NeoErp
         public void Application_Error(object sender, EventArgs e)
         {
             try
-            {             
+            {
 
 
                 Exception ex = new Exception();
@@ -91,7 +91,7 @@ namespace NeoErp
                         FORM NAME: {3}
                         QUERYSTRING: {4}
                         TARGETSITE: {5}
-                        STACKTRACE: {6}{7}", 
+                        STACKTRACE: {6}{7}",
                          System.DateTime.Now.ToString(System.Globalization.CultureInfo.InvariantCulture),
                          ex.Message,
                          ex.Source,
@@ -111,14 +111,12 @@ namespace NeoErp
 
         protected void Session_Start()
         {
-            Session.Timeout  = 60000;
+            Session.Timeout = 60000;
 
         }
 
         protected void Application_PreRequestHandlerExecute()
         {
-
-
             System.Globalization.CultureInfo cultureInfo = new System.Globalization.CultureInfo("en-GB");
 
             //Creating the DateTime Information specific to our application.
@@ -136,7 +134,7 @@ namespace NeoErp
 
             //Assigning our custom Culture to the application.
 
-         //   Thread.CurrentThread.CurrentCulture = cultureInfo;
+            //   Thread.CurrentThread.CurrentCulture = cultureInfo;
             //Thread.CurrentThread.CurrentUICulture = cultureInfo;
 
 
@@ -190,17 +188,17 @@ namespace NeoErp
         {
             try
             {
-                IPublicPageHandler publicpages =  null;
-                publicpages= new PublicPageHandler();
+                IPublicPageHandler publicpages = null;
+                publicpages = new PublicPageHandler();
 
                 List<string> AllowedPath = new List<string>();
-             //   AllowedPath.AddRange(publicpages.AllowedPath.);
+                //   AllowedPath.AddRange(publicpages.AllowedPath.);
 
                 AllowedPath.Add("/Security/Account/Login");
                 AllowedPath.Add("/Security/Account/ExternalLogin");
                 AllowedPath.Add("/Security/Account/AdminLogin");
                 AllowedPath.Add("/Security/Account/ForgotPassword");
-                
+
                 AllowedPath.Add("/Grievance/Lodge/Status");
                 AllowedPath.Add("/Grievance/Lodge");
                 AllowedPath.Add("/Grievance/Lodge/Index");
@@ -220,11 +218,11 @@ namespace NeoErp
                 //string area = Request.RequestContext.RouteData.Values["area"].ToString();
                 //string controller = Request.RequestContext.RouteData.Values["controller"].ToString();
                 //string action = Request.RequestContext.RouteData.Values["action"].ToString();
-               // string id = Request.RequestContext.RouteData.Values["id"].ToString();
+                // string id = Request.RequestContext.RouteData.Values["id"].ToString();
 
                 //string actualUrl = MenuManager.CreateLink(area, controller, action,"").ToLower();
 
-               
+
                 //if (Session.IsNewSession == false && Session["loginDetail"] == null && AllowedPath.Contains(actualUrl) == false && Request.Url.AbsolutePath != "/")
                 //{
                 //    Response.Redirect(string.Format("{0}{1}{2}", AppSettingsModel.loginPage , "?returnUrl=" , Server.UrlEncode(Request.Url.AbsolutePath)));
@@ -234,9 +232,9 @@ namespace NeoErp
                 //    Response.Redirect(string.Format("{0}{1}{2}", AppSettingsModel.loginPage, "?returnUrl=", Server.UrlEncode(Request.Url.AbsolutePath)));
                 //}
             }
-            catch( Exception ex)
+            catch (Exception ex)
             {
-               // Response.Redirect(IntegrationHelpers.loginPage);
+                // Response.Redirect(IntegrationHelpers.loginPage);
             }
 
         }
