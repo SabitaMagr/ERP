@@ -273,16 +273,16 @@
         });
 
         // Convert sums to have two decimal places
-        $scope.TOTAL_AMOUNT = $scope.TOTAL_AMOUNT.toFixed(2);
-        $scope.TOTAL_DISCOUNT = $scope.TOTAL_DISCOUNT.toFixed(2);
-        $scope.TOTAL_EXCISE = $scope.TOTAL_EXCISE.toFixed(2);
+        $scope.TOTAL_AMOUNT = ($scope.TOTAL_AMOUNT).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        $scope.TOTAL_DISCOUNT = ($scope.TOTAL_DISCOUNT).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        $scope.TOTAL_EXCISE = ($scope.TOTAL_EXCISE).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         var totalTaxableAmt = $scope.TOTAL_TAXABLE_AMOUNT;
-        $scope.TOTAL_TAXABLE_AMOUNT = $scope.TOTAL_TAXABLE_AMOUNT.toFixed(2);
+        $scope.TOTAL_TAXABLE_AMOUNT = ($scope.TOTAL_TAXABLE_AMOUNT).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         var totalVatAmt = ($scope.TOTAL_TAXABLE_AMOUNT || 0.00) * 0.13;
-        $scope.TOTAL_VAT = totalVatAmt.toFixed(2);
+        $scope.TOTAL_VAT = (totalVatAmt).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         // Calculate total net amount
-        $scope.TOTAL_NET_AMOUNT = (totalVatAmt + totalTaxableAmt).toFixed(2);
+        $scope.TOTAL_NET_AMOUNT = (totalVatAmt + totalTaxableAmt).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }, true);
     $scope.saveData = function () {
         var formData = {

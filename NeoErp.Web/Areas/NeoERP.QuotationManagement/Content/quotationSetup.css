@@ -2,9 +2,6 @@
     padding-left: 20px;
     padding-right: 20px;
 }
-.row {
-    padding-top: 1rem;
-}
 .rightallign {
     font-weight: bold;
     font-size: 8px !important;
@@ -819,13 +816,52 @@ span.k-picker-wrap.k-state-default {
     margin: 4px 0 0 !important;
     max-width: 70%;
 }
-.portlet-body {
-margin-top:1.5rem !important;
-}
+
 .sticky {
     position: sticky!important;
     left: 0!important;
     background-color: white !important;
     z-index: 1 !important; 
 }
+.k-loading-image {
+    display: none !important; /* Hide the loading image */
+}
 
+.k-loading-mask {
+    display: none !important; /* Hide the entire loading mask */
+}
+.text-right {
+    text-align: right;
+}
+.portlet.light .portlet-body {
+    padding-top: 10px !important;
+}
+.dropdown-view-mode {
+    width: 44rem;
+}
+
+.dropdown-edit-mode {
+    width: 34rem;
+}
+
+.terms-table-container .tablecontainer {
+    overflow-x: auto; 
+}
+
+.terms-table-container .terms-table td input {
+    width: 100%; 
+    box-sizing: border-box; /* Ensures padding and border are included in the width */
+    word-wrap: break-word; /* Allows word wrapping within the input field */
+}
+
+.terms-table-container .terms-table td {
+    white-space: normal; /* Allows text to wrap within table cells */
+}
+
+.terms-table-container .terms-table .table-head {
+    white-space: nowrap; /* Prevents header text from wrapping */
+}
+
+.terms-table-container .terms-table {
+    table-layout: auto; /* Ensures table columns adjust based on content */
+}

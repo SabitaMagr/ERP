@@ -61,5 +61,17 @@ namespace NeoERP.QuotationManagement.Controllers
         {
             return View();
         }
+        public ActionResult TenderSetup()
+        {
+            return View();
+        }
+        public ActionResult QuotationDetail(string id)
+        {
+            return View();
+        }
+        public ActionResult QuotationDetailItemwise(string quotation,string tender)
+        {
+            return View();
+        }
     }
 }

@@ -858,3 +858,6 @@ input[type=checkbox], input[type=radio] {
 .discount-popup ul li:hover {
     background-color: #f0f0f0;
 }
+.text-right {
+    text-align: right;
+}

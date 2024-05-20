@@ -19,11 +19,26 @@ QMModule.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/QuotationSetup', {
         templateUrl: '/QuotationManagement/Home/QuotationSetup',
     });
-    $routeProvider.when('/QuotationDetails', {
-        templateUrl: '/QuotationManagement/Home/QuotationDetails',
+    $routeProvider.when('/QuotationDetail', {
+        templateUrl: '/QuotationManagement/Home/QuotationDetail',
     });
+    $routeProvider.when('/QuotationDetail/:id',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/QuotationManagement/Home/QuotationDetail?id=' + stateParams.id;
+            },
+            controller: 'quotationDetail',
+            resolve: {
+                module: function ($route) { return $route.current.params.id; }
+            }
+
+        });
     $routeProvider.when('/SummaryReport', {
         templateUrl: '/QuotationManagement/Home/SummaryReport',
+    });
+    $routeProvider.when('/TenderNoSetup', {
+        templateUrl: '/QuotationManagement/Home/TenderSetup',
     });
     $routeProvider.otherwise({
         redirectTo: function () {

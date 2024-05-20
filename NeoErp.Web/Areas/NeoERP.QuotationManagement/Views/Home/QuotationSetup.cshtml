@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="portlet-body" ng-show="createPanel">
-                <div class="row boxbg">
+                <div class="row boxbg" style=" margin-top: 2rem;">
                     <form id="quotationForm" class="quotationform" ng-submit="saveData()" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="tenderId" id="" value="{{ID}}" ng-model="ID">
                         <div style="display:flex;margin-bottom:1rem;" class="col-md-12">
@@ -53,6 +53,10 @@
                             <div class="form-group" ng-if="panelMode === 'view'">
                                 <label for="validDt">To be Delivery Date</label><br />
                                 <input type="text" ng-model="VALID_DATE" class="form-control" id="validDt" readonly />
+                            </div>
+                            <div class="form-group" ng-if="panelMode === 'view'">
+                                <label for="validDt">Status</label><br />
+                                <input type="text" ng-model="APPROVED_STATUS" class="form-control" id="approvedStatus" readonly />
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -88,7 +92,7 @@
                                             <td class="btn-action" ng-show="createEdit">&nbsp;</td>
                                         </tr>
                                         <tr ng-repeat="product in productFormList">
-                                            <td ng-show="idShowHide" >
+                                            <td ng-show="idShowHide">
                                                 <input type="hidden" name="product_ID" id="product_ID_{{product.ID}}" value="{{product.ID}}" ng-model="product.TID">
                                             </td>
                                             <td class="sticky">
@@ -98,8 +102,8 @@
                                                 <select id="itemSelected" name="item_{{product.ID}}" kendo-drop-down-list
                                                         k-options="{dataSource: ItemSelect.dataSource,dataTextField: 'ItemDescription', dataValueField: 'ItemCode',filter: 'contains', autoClose: true }"
                                                         slim-scroll ng-change="updateUnit(product)"
-                                                        ng-model="product.ItemDescription"
-                                                        style="width:38rem;" ng-readonly="panelMode === 'view'">
+                                                        ng-model="product.ItemDescription"         ng-class="{'dropdown-view-mode': panelMode === 'view', 'dropdown-edit-mode': panelMode !== 'view'}"
+                                                        ng-readonly="panelMode === 'view'">
                                                 </select>
                                             </td>
                                             <td>
@@ -139,7 +143,7 @@
                                                 <input type="number" name="sizeHeight_{{product.ID}}" min="0" id="sizeHeight_{{product.ID}}" ng-model="product.SIZE_WIDTH" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
                                             </td>
                                             <td ng-show="createEdit" style="display:flex;">
-                                                <input type="file" name="image_{{product.ID}}" id="image_{{product.ID}}" ng-model="product.IMAGE"  class="form-control large-width">
+                                                <input type="file" name="image_{{product.ID}}" id="image_{{product.ID}}" ng-model="product.IMAGE" class="form-control large-width">
                                                 <img ng-src="{{product.IMAGE_LINK}}" ng-if="product.IMAGE_NAME" style="max-width: 40px; max-height: 40px;">
                                                 @*<input type="file" name="image_{{product.ID}}" id="image_{{product.ID}}" ng-model="product.IMAGE" required="required" class="form-control large-width" value="" readonly>*@
                                             </td>
@@ -172,7 +176,7 @@
                             <div style="display:flex;">
                                 <div class="col-md-8 text-right">
                                 </div>
-                                <div class="col-md-2" ng-if="panelMode === 'view'">
+                                <div class="col-md-2" ng-if="panelMode === 'view'" ng-show="APPROVED_STATUS=='Approved'">
                                     <button type="button" class="btn btn-info" ng-click="generateLink()">Generate Link</button>
                                 </div>
                                 <div class="col-md-1 text-right">
@@ -186,7 +190,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="generatedLink"  ng-if="panelMode === 'view'">
+                <div class="generatedLink"  ng-if="panelMode === 'view'" ng-show="APPROVED_STATUS=='Approved'">
                     Generated Link: <a href="{{ generatedUrl }}" target="_blank">{{ generatedUrl }}</a>
                 </div>
             </div>
@@ -239,14 +243,14 @@
         var validUntilDt = moment(engDate, 'M/D/YYYY');
 
         if (validUntilDt.isBefore(issueDt)) {
-            alert("To be Deliver Date cannot be greater than  Date/Miti date.");
+            displayPopupNotification("To be Deliver Date cannot be greater than  Date/Miti date.","error");
         }
     }
-    function showMessage(message) {
-        var popMessageElement = $(".popContainer .popContent .popMessage");
-        popMessageElement.text(message);
-        $(".popContainer").show();
-    }
+    //function showMessage(message) {
+    //    var popMessageElement = $(".popContainer .popContent .popMessage");
+    //    popMessageElement.text(message);
+    //    $(".popContainer").show();
+    //}
 
     function ConvertNepToEng(e) {
         var date = BS2AD($("#nepaliDate").val());

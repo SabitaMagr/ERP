@@ -411,13 +411,7 @@
     $http.post('/api/QuotationApi/ListAllTenders')
         .then(function (response) {
             var tenders = response.data;
-
             if (tenders && tenders.length > 0) {
-                //tenders.forEach(function (tender) {
-                //    tender.ISSUE_DATE = formatDate(tender.ISSUE_DATE);
-                //    tender.VALID_DATE = formatDate(tender.VALID_DATE);
-                //    tender.CREATED_DATE = formatDate(tender.CREATED_DATE);
-                //});
                 $scope.dataSource.data(tenders); // Set the data to the dataSource
             } else {
                 console.log("No tenders found.");
@@ -491,12 +485,14 @@
 
         // Handle click event on the "Yes" button
         $(document).on('click', '.confirm-delete', function () {
-            $http.post('/api/QuotationApi/deleteTenderId?tenderNo=' + id)
+            $http.post('/api/QuotationApi/deleteQuotationId?tenderNo=' + id)
                 .then(function (response) { 
                 var message = response.data.MESSAGE; // Extract message from response
                     displayPopupNotification(message, "success");
-                window.location.reload(); // Reload the page
-            }).catch(function (error) {
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 5000)
+                }).catch(function (error) {
                 var message = 'Error in displaying project!!'; // Extract message from response
                 displayPopupNotification(message, "error");
             });
@@ -517,11 +513,13 @@
         $http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + id)
             .then(function (response) {
                 var quotation = response.data[0];
+                console.log(quotation);
                 $scope.TENDER_NO = quotation.TENDER_NO;
                 $scope.ISSUE_DATE = formatDate(quotation.ISSUE_DATE);
                 $scope.VALID_DATE = formatDate(quotation.VALID_DATE);
                 $scope.NEPALI_DATE = quotation.NEPALI_DATE;
                 $scope.TXT_REMARKS = quotation.REMARKS;
+                $scope.APPROVED_STATUS = quotation.APPROVED_STATUS;
                 var id = 1;
                 $scope.panelMode = 'view';
                 $scope.productFormList = [];

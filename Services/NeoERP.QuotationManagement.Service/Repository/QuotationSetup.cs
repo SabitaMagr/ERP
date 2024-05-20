@@ -75,7 +75,9 @@ namespace NeoERP.QuotationManagment.Service.Repository
 
         public List<Quotation_setup> GetQuotationId()
         {
-            string query = $@"select FN_NEW_TENDERNO('{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}') as TENDER_NO from dual";
+            //string query = $@"select FN_NEW_TENDERNO('{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}') as TENDER_NO from dual";
+            string query = $@"select GENERATE_TENDER_NO('{_workContext.CurrentUserinformation.company_code}') as TENDER_NO from dual";
+
             List<Quotation_setup> id = _dbContext.SqlQuery<Quotation_setup>(query).ToList();
             return id;
         }
@@ -216,11 +218,11 @@ namespace NeoERP.QuotationManagment.Service.Repository
         public List<Quotation_setup> ListAllTenders()
         {
             string query = $@"SELECT  TENDER_NO,ISSUE_DATE,VALID_DATE,CREATED_DATE,bs_date(ISSUE_DATE) as NEPALI_DATE,
-       CASE   WHEN approved_status = 'N' THEN 'No'  ELSE 'Yes'  END AS approved_status FROM sa_quotation_setup WHERE status = 'E' and company_code='{_workContext.CurrentUserinformation.company_code}' ORDER BY id desc";
+       CASE   WHEN approved_status = 'Y' THEN 'Approved'  ELSE 'Pending'  END AS approved_status FROM sa_quotation_setup WHERE status = 'E' and company_code='{_workContext.CurrentUserinformation.company_code}' ORDER BY id desc";
             List<Quotation_setup> tenderDetails = _dbContext.SqlQuery<Quotation_setup>(query).ToList();
             return tenderDetails;
         }
-        public bool DeleteTender(string tenderNo)
+        public bool deleteQuotationId(string tenderNo)
         {
             try
             {
@@ -238,7 +240,8 @@ namespace NeoERP.QuotationManagment.Service.Repository
             try
             {
                 // Fetch project data
-                string Query = $@"SELECT TENDER_NO,ISSUE_DATE,VALID_DATE,CREATED_DATE,bs_date(ISSUE_DATE) as NEPALI_DATE,REMARKS,ID FROM sa_quotation_setup WHERE TENDER_NO = '{tenderNo}' AND STATUS = 'E'";
+                string Query = $@"SELECT TENDER_NO,ISSUE_DATE,VALID_DATE,CREATED_DATE,bs_date(ISSUE_DATE) as NEPALI_DATE,REMARKS,ID,
+                (CASE WHEN APPROVED_STATUS='Y' THEN 'Approved' else 'Pending' END) AS APPROVED_STATUS FROM sa_quotation_setup WHERE TENDER_NO = '{tenderNo}' AND STATUS = 'E'";
                 List<Quotation_setup> quotations = this._dbContext.SqlQuery<Quotation_setup>(Query).ToList();
                 foreach (var quotation in quotations)
                 {
@@ -277,14 +280,17 @@ namespace NeoERP.QuotationManagment.Service.Repository
             List<Quotation_Details> tenderDetails = _dbContext.SqlQuery<Quotation_Details>(query).ToList();
             return tenderDetails;
         }
-        public List<Quotation_Details> QuotationDetailsById(string quotationNo)
+        public List<Quotation_Details> QuotationDetailsById(string quotationNo,string tenderNo)
         {
             try
             {
                 string Query = $@"SELECT SQS.ISSUE_DATE,SQS.VALID_DATE,BS_DATE(SQS.ISSUE_DATE) AS NEPALI_DATE,QD.QUOTATION_NO,QD.TENDER_NO,QD.PAN_NO,QD.PARTY_NAME,QD.ADDRESS,QD.CONTACT_NO,QD.EMAIL,QD.CURRENCY,QD.CURRENCY_RATE,QD.DELIVERY_DATE,
             QD.TOTAL_AMOUNT,QD.TOTAL_DISCOUNT,QD.TOTAL_EXCISE,QD.TOTAL_TAXABLE_AMOUNT,QD.TOTAL_VAT,QD.TOTAL_NET_AMOUNT,
-            (CASE WHEN QD.STATUS='RQ' then 'Pending' when QD.status='AP' then 'Approved' else 'Reject' end) AS STATUS,
-            QD.TERM_CONDITION FROM  QUOTATION_DETAILS  QD,SA_QUOTATION_SETUP SQS WHERE SQS.TENDER_NO=QD.TENDER_NO AND  QD.QUOTATION_NO='{quotationNo}'";
+           CASE 
+        WHEN QD.STATUS = 'AP' THEN 'Approved'
+        WHEN NOT EXISTS (SELECT 1 FROM QUOTATION_DETAILS WHERE TENDER_NO = QD.TENDER_NO AND STATUS = 'AP') THEN 'Pending'
+        ELSE 'Reject' 
+    END AS STATUS,QD.TERM_CONDITION FROM  QUOTATION_DETAILS  QD,SA_QUOTATION_SETUP SQS WHERE SQS.TENDER_NO=QD.TENDER_NO AND  QD.QUOTATION_NO='{quotationNo}'";
                 List<Quotation_Details> quotations = this._dbContext.SqlQuery<Quotation_Details>(Query).ToList();
                 foreach (var quotation in quotations)
                 {
@@ -353,6 +359,93 @@ namespace NeoERP.QuotationManagment.Service.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public bool updateQuotation(string quotationNo, string status)
+        {
+            try
+            {
+                var UPDATE_QUERY = $@"UPDATE quotation_details SET status ='{status}' WHERE QUOTATION_NO='{quotationNo}'";
+                _dbContext.ExecuteSqlCommand(UPDATE_QUERY);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool InsertTenderData(Tender data)
+        {
+            try
+            {
+                int tenderId = data.ID;
+                if (tenderId == 0)
+                {
+                    var idquery = $@"SELECT COALESCE(MAX(ID) + 1, 1) AS id FROM QA_TENDER_SETUP";
+                    int id = _dbContext.SqlQuery<int>(idquery).FirstOrDefault();
+                    string insertQuery = string.Format(@"INSERT INTO QA_TENDER_SETUP(ID, PREFIX, SUFFIX,BODY_LENGTH,STATUS,CREATED_DATE, CREATED_BY, COMPANY_CODE) 
+                                 VALUES({0},'{1}','{2}',{3},'{4}', TO_DATE('{5}', 'DD-MON-YYYY'),'{6}','{7}')",
+                                              id,data.PREFIX,data.SUFFIX,data.BODY_LENGTH,"E",
+                                              DateTime.Now.ToString("dd-MMM-yyyy"),
+                                              _workContext.CurrentUserinformation.User_id,
+                                              _workContext.CurrentUserinformation.company_code
+                                              );
+                    _dbContext.ExecuteSqlCommand(insertQuery);
+                }
+                else
+                {
+                    string updateQuery = $@"UPDATE QA_TENDER_SETUP 
+                       SET PREFIX = '{data.PREFIX}',SUFFIX='{data.SUFFIX}',BODY_LENGTH={data.BODY_LENGTH},
+                           MODIFIED_DATE = '{DateTime.Now.ToString("dd-MMM-yyyy")}',
+                           MODIFIED_BY = '{_workContext.CurrentUserinformation.User_id}',
+                           COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'
+                       WHERE id = '{data.ID}' ";
+                    _dbContext.ExecuteSqlCommand(updateQuery);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
+        public List<Tender> getTenderDetails()
+        {
+            try
+            {
+                string query = $@"SELECT * FROM QA_TENDER_SETUP WHERE STATUS='E' ORDER BY ID DESC";
+                List<Tender> tenders = this._dbContext.SqlQuery<Tender>(query).ToList();
+                return tenders;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public bool deleteTenderId(string id)
+        {
+            try
+            {
+                var UPDATE_QUERY = $@"UPDATE QA_TENDER_SETUP SET STATUS ='D' WHERE ID='{id}'";
+                _dbContext.ExecuteSqlCommand(UPDATE_QUERY);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public List<Tender> getTenderById( string id)
+        {
+            try
+            {
+                string query = $@"SELECT * FROM QA_TENDER_SETUP WHERE STATUS='E' AND ID='{id}'";
+                List<Tender> tenders = this._dbContext.SqlQuery<Tender>(query).ToList();
+                return tenders;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -16,11 +16,17 @@ namespace NeoERP.QuotationManagement.Service.Interface
         List<Quotation_setup> GetTenderId(string tenderNo);
         List<Quotation_setup> ListAllTenders();
         List<Quotation_Details> ListQuotationDetails();
-        bool DeleteTender(string tenderNo);
+        bool deleteQuotationId(string tenderNo);
         List<Quotation_setup> GetQuotationById(string tenderNo);
         bool updateItemsById(string tenderNo,string id);
-        List<Quotation_Details> QuotationDetailsById(string quotationNo);
+        List<Quotation_Details> QuotationDetailsById(string quotationNo,string tenderNo);
         List<SummaryReport> TendersItemWise();
         List<Quotation> ItemDetailsTenderNo(string tenderNo);
+        bool updateQuotation(string quotationNo, string status);
+        bool InsertTenderData(Tender data);
+        List<Tender> getTenderDetails();
+        bool deleteTenderId(string id);
+        List<Tender> getTenderById(string id);
+
     }
 }

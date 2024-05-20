@@ -57,11 +57,11 @@ namespace NeoERP.QuotationManagement.Controllers.Api
             return quotation;
         }
         [HttpPost]
-        public HttpResponseMessage deleteTenderId(string tenderNo)
+        public HttpResponseMessage deleteQuotationId(string tenderNo)
         {
             try
             {
-                bool isDeleted = _quotRepo.DeleteTender(tenderNo);
+                bool isDeleted = _quotRepo.deleteQuotationId(tenderNo);
                 if (isDeleted)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, new { MESSAGE = "Quotation deleted successfully!!", STATUS_CODE = (int)HttpStatusCode.OK });
@@ -163,12 +163,12 @@ namespace NeoERP.QuotationManagement.Controllers.Api
             }
         }
         [HttpGet]
-        public List<Quotation_Details> QuotationDetailsById(string quotationNo)
+        public List<Quotation_Details> QuotationDetailsById(string quotationNo,string tenderNo)
         {
             List<Quotation_Details> response = new List<Quotation_Details>();
             try
             {
-                response = _quotRepo.QuotationDetailsById(quotationNo);
+                response = _quotRepo.QuotationDetailsById(quotationNo, tenderNo);
                 return response;
 
             }
@@ -205,6 +205,96 @@ namespace NeoERP.QuotationManagement.Controllers.Api
                 throw new Exception(ex.StackTrace);
             }
         }
-
+        [HttpPost]
+        public HttpResponseMessage updateQuotationStatus(string quotationNo, string status)
+        {
+            try
+            {
+                bool isDeleted = _quotRepo.updateQuotation(quotationNo, status);
+                if (isDeleted)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, new { MESSAGE = "Quotation !!", STATUS_CODE = (int)HttpStatusCode.OK });
+                }
+                else
+                {
+                    // Handle case where project was not posted successfully
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, new { MESSAGE = "Quotation !!", STATUS_CODE = (int)HttpStatusCode.InternalServerError });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occurred during the operation
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { MESSAGE = ex.Message, STATUS_CODE = (int)HttpStatusCode.InternalServerError });
+            }
+        }
+        [HttpPost]
+        public IHttpActionResult saveTender(Tender formData)
+        {
+            try
+            {
+                bool isPosted = _quotRepo.InsertTenderData(formData);
+                if (isPosted)
+                {
+                    return Ok(new { success = true, message = "Tender data saved successfully." });
+                }
+                else
+                {
+                    return Ok(new { success = true, message = "Failed to save Quotation Tender." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+        [HttpGet]
+        public List<Tender> TenderDetails()
+        {
+            List<Tender> response = new List<Tender>();
+            try
+            {
+                response = _quotRepo.getTenderDetails();
+                return response;
+            }
+            catch(Exception ex) {
+                throw new Exception(ex.StackTrace);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage deleteTenderId(string tenderNo)
+        {
+            try
+            {
+                bool isDeleted = _quotRepo.deleteTenderId(tenderNo);
+                if (isDeleted)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, new { MESSAGE = "Tender No. deleted successfully!!", STATUS_CODE = (int)HttpStatusCode.OK });
+                }
+                else
+                {
+                    // Handle case where project was not posted successfully
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, new { MESSAGE = "Failed to delete Tender No.!!", STATUS_CODE = (int)HttpStatusCode.InternalServerError });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occurred during the operation
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new { MESSAGE = ex.Message, STATUS_CODE = (int)HttpStatusCode.InternalServerError });
+            }
+        }
+        [HttpGet]
+        public List<Tender> getTenderById(string tenderNo)
+        {
+            List<Tender> response = new List<Tender>();
+            try
+            {
+                response = _quotRepo.getTenderById(tenderNo);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.StackTrace);
+            }
+        }
     }
 }
