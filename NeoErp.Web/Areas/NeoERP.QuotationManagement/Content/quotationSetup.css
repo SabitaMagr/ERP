@@ -646,9 +646,9 @@ fieldset legend {
 }
 
 .dropzone-download {
-    font-size: 17px !important;
+    font-size: 15px !important;
     position: absolute;
-    top: 112px;
+    top: 55px;
     right: 9px;
 }
 
@@ -865,3 +865,87 @@ span.k-picker-wrap.k-state-default {
 .terms-table-container .terms-table {
     table-layout: auto; /* Ensures table columns adjust based on content */
 }
+.dropzone {
+    min-height: 182px;
+    width: 35rem;
+    padding: 12px;
+}
+
+    .dropzone .dz-default.dz-message {
+        width: 10px;
+        height: 0px;
+        margin-left: -15px;
+        margin-top: -25.5px;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        background: none; /* Ensures no background image is shown */
+    }
+
+.upload-icon {
+    font-size: 2em; /* Adjust the size of the icon as needed */
+    color: #000; /* Adjust the color as needed */
+}
+
+.dropzone .dz-preview .dz-details .dz-size, .dropzone-previews .dz-preview .dz-details .dz-size {
+    position: absolute;
+    bottom: -28px;
+    left: 3px;
+    font-size: 11px;
+    height: 31px;
+    line-height: 22px;
+ 
+}
+
+.dropzone .dz-preview, .dropzone-previews .dz-preview {
+    background: rgba(255, 255, 255, 0.8);
+    position: relative;
+    display: inline-block;
+    margin: -14px;
+    width: 76px;
+    margin: 3px;
+    vertical-align: top;
+    border: 1px solid #acacac;
+    padding: 4px 4px 4px 4px;
+}
+
+    .dropzone .dz-preview .dz-details img, .dropzone-previews .dz-preview .dz-details img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+        width: 67px;
+        height: 67px;
+    }
+
+.dropzone a.dz-remove, .dropzone-previews a.dz-remove {
+    border-radius: 2px;
+    border: 1px solid #eee;
+    text-decoration: none;
+    display: block;
+    font-size: 10px;
+    padding: 0px 21px;
+    text-align: center;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.dropzone .dz-preview .dz-details, .dropzone-previews .dz-preview .dz-details {
+    width: 70px;
+    height: 50px;
+    position: relative;
+    background: #ebebeb;
+    padding: 5px;
+    margin-bottom: 16px;
+}
+    .dropzone .dz-preview .dz-details .dz-filename, .dropzone-previews .dz-preview .dz-details .dz-filename {
+        font-size: 10px;
+    }
+.dropzone .dz-preview .dz-details .dz-size, .dropzone-previews .dz-preview .dz-details .dz-size {
+        font-size: 9px;
+        line-height: 19px;
+}
+.dropzone.dz-clickable {
+    cursor: default; 
+    pointer-events: none; 
+}
+

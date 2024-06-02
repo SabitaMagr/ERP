@@ -1,0 +1,142 @@
+﻿.card-container {
+    margin-bottom: 15px; /* Add some margin between the cards */
+}
+
+/* CSS for the card */
+.card {
+    position: relative;
+    transition: transform 0.3s; /* Add transition effect */
+    border-radius: 10px !important;
+}
+
+    .card:hover {
+        transform: translateY(-5px); /* Move the card slightly upwards on hover */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+    }
+
+        .card:hover .card-body {
+            background-color: black; /* Change background color of card body on hover */
+            color: white; /* Change text color of card body on hover */
+            border-radius: 10px !important;
+        }
+
+.font {
+    font-size: 25px; /* Adjust the font size as needed */
+    text-align: center; /* Center align the icon */
+    line-height: 1;
+    margin-top: 1rem;
+    /* Ensure proper alignment */
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.project-card {
+    border: 1px solid #ccc;
+    border-radius: 10px !important;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .project-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+.project-card-body {
+    padding: 20px;
+}
+
+.project-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.project-card p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* CSS for the card header */
+.card-header {
+    font-size: 25px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.nav-tabs li.active:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: #333; /* Adjust border color as needed */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.card-body {
+    text-align: center; /* Center align the content horizontally */
+}
+/* CSS for the card count */
+.count {
+    font-size: 24px;
+}
+
+/* CSS for the card text */
+.card-text {
+    font-size: 14px;
+}
+
+/* CSS for the chart wrapper */
+.chart-wrapper {
+    margin-top: 15px;
+}
+
+.font i {
+    font-size: 5rem !important; /* Adjust the font size as needed */
+    text-align: center !important; /* Center align the icon */
+    line-height: 1 !important;
+    margin-top: 1rem !important; /* Ensure proper alignment */
+}
+
+.chart-container {
+    text-align: center; /* Center align the charts */
+    margin-top: 50px; /* Add some top margin */
+}
+
+.project-list {
+    display: flex;
+    overflow-x: auto;
+}
+
+.project-details {
+    flex: 0 0 auto;
+    width: 40%; /* Adjust as needed */
+    padding: 0 10px; /* Adjust as needed */
+}
+
+.project-card {
+    margin-bottom: 9rem;
+    margin-top: 5rem;
+    width: 20rem;
+}
+
+.scroller {
+    overflow-y: auto;
+}
+
+.tab-content {
+    overflow: hidden;
+}
+
+.portlet {
+    border-bottom-left-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+.chart {
+    height: 400px !important;
+    width: 600px !important;
+}

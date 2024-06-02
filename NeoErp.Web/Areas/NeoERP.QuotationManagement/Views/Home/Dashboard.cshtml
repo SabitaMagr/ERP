@@ -1,5 +1,268 @@
-﻿@{
-    Layout = null;
+﻿
+@using NeoErp.Core;
+@using NeoErp.Core.Infrastructure;
+@{
+    var workingContent = EngineContext.Current.Resolve<IWorkContext>();
+    Layout = "~/Areas/NeoERP.QuotationManagement/Views/Shared/_Layout.cshtml";
 }
-<h2>Dashboard</h2>
+
+<style>
+ 
+    .simpleDemo ul[dnd-list] {
+        min-height: 42px;
+        padding-left: 0px;
+    }
+
+    .portlet {
+        padding: 3px !important;
+    }
+    .simpleDemo ul[dnd-list] .dndDraggingSource {
+        display: none;
+    }
+
+    .simpleDemo ul[dnd-list] .dndPlaceholder {
+        background-color: #ddd;
+        display: block;
+        min-height: 42px;
+    }
+
+    .simpleDemo ul[dnd-list] li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-top-right-radius: 4px;
+        border-top-left-radius: 4px;
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: -1px;
+    }
+
+        /**
+    * Show selected elements in green
+    */
+        .simpleDemo ul[dnd-list] li.selected {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+
+    .rightallign {
+        font-weight: bold;
+        font-size: 8px !important;
+        float: right;
+    }
+
+    .comboBoxedescName {
+        width: 65% !important;
+        display: inline-block !important;
+    }
+
+    .portlet.portlet-sortable {
+        min-height: 0px !important;
+    }
+
+    .page-content {
+        padding: 7px 20px 10px !important;
+        min-height: 5000px !important;
+        height: auto !important;
+    }
+
+    /*.DistMenuHeight {
+        height: 1400px !important;
+    }*/
+    .icon-button a {
+        height: auto !important;
+        display: inline-block !important;
+        margin-right: 3px;
+    }
+
+    .icon-button {
+        /*width: auto !important;
+        margin-top: -10% !important;*/
+    }
+
+        .icon-button a {
+            display: none !important;
+            color: #fff;
+            border-radius: 3px !important;
+        }
+
+    .erp-iconlist ul li:hover .icon-button a {
+        display: inline-block !important;
+        -moz-transition: all 2s;
+        -webkit-transition: all 2s;
+        transition: all 2s;
+        color: #fff !important;
+        transform: translate(-50%, -50%);
+    }
+
+
+    /*li.k-item.k-state-default.k-last {
+        width: 102px;
+    }*/
+
+    .modal_dialog_custom {
+        width: 195px;
+    }
+
+    #ResetFolder {
+        width: 76px;
+    }
+
+    .toggle {
+        width: 81px !important;
+        height: 28px !important;
+        margin-top: 4px;
+    }
+
+    .toggle-handle {
+        padding: 0px !important;
+    }
+
+    .toggle-off.btn, .toggle-on.btn {
+        padding: 4px 0px 0px 0px !important;
+    }
+
+    .toggle-off {
+        background-color: #3c763d !important;
+        color: white !important;
+    }
+
+    #FolderContent:hover {
+        background-color: #a7a1a1 !important;
+        color: white !important;
+    }
+
+    #FolderContent {
+        background-color: #fff !important;
+        color: #000000 !important;
+    }
+
+    #ResetFolder:hover {
+        background-color: #a7a1a1 !important;
+        color: white !important;
+    }
+
+    #ResetFolder {
+        background-color: #fff !important;
+        color: #000000 !important;
+        padding-right: 32px;
+    }
+
+    #ShowFolder:hover {
+        background-color: #a7a1a1 !important;
+        color: white !important;
+    }
+
+    #ShowFolder {
+        background-color: #fff !important;
+        color: #000000 !important;
+    }
+
+    #HideFolder:hover {
+        background-color: #a7a1a1 !important;
+        color: white !important;
+    }
+
+    #HideFolder {
+        background-color: #fff !important;
+        color: #000000 !important;
+    }
+
+    #AddToFolder:hover {
+        background-color: #a7a1a1 !important;
+        color: white !important;
+    }
+
+    #AddToFolder {
+        background-color: #fff !important;
+        color: #000000 !important;
+    }
+</style>
+
+<link href="~/Areas/NeoERP.QuotationManagement/Content/hotkeys.css" rel="stylesheet" />
+
+<link href="@Styles.Url("~/Content/MainTheme/fontawesome-iconpicker-1.0.0/dist/css/fontawesome-iconpicker.css")" rel="stylesheet" />
+<link href="@Styles.Url("~/Areas/NeoErp.QuotationManagement/Content/MenuStyleSheet.css")" rel="stylesheet" />
+
+<!DOCTYPE html>
+
+<html lang="en" class="no-js">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/hotkeys.js")"></script>
+    <script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/js/module/QMModule.js")"></script>
+    <script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/js/controller/DashboardCtrl.js")"></script>
+    <script src="@Scripts.Url("~/Content/MainTheme/keymaster.js")"></script>
+    <link href="@Styles.Url("~/Areas/NeoERP.QuotationManagement/Content/quotationDashboard.css")" rel="stylesheet" />
+</head>
+
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
+    <div class="busy-loader">
+        <div id="preloader" class="loader"></div>
+        <span style="color:white">Loading.....Please Wait.....</span>
+    </div>
+    <div id="myarea" ng-controller="DashboardCtrl">
+        <div class="clearfix"></div>
+        <div class="">
+            <div class="page-sidebar-wrapper">
+                <div class="">
+                    <div class="page-bar">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a href="/main/GlobalDashboard">Home</a>
+                            </li>
+                        </ul>
+                        <div class="row">
+                            <div class="col-md-3 pull-right">
+                                <div class="form-group has-feedback">
+                                    <input type="search" id="searchFolder" placeholder="Search..." ng-model="searchBox" ng-change="ShowIcon(searchBox)" class="search form-control">
+                                    <span class="search-icon glyphicon glyphicon-search form-control-feedback"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margin-top-10 portlet col-md-12  light border portlet_bg_dm">
+                        <div class="margin-top-10 ">
+                            <div class="col-sm-6 col-lg-3 " ng-repeat="quotationCount in quotationCountList">
+                                <div class="card" ng-style="{'background-color': quotationCount.COLOR}">
+                                    <div class="card-body pb-0">
+                                        <div class="font">
+                                            <i class="{{ quotationCount.ICON }}" aria-hidden="true"></i>
+                                        </div>
+                                        <h4 class="mb-0">
+                                            <span class="count"><b>{{ quotationCount.COUNT }}</b></span>
+                                        </h4>
+                                        <p style="font-weight: bold;">{{ quotationCount.HEADING }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="display: flex; flex-wrap: wrap;margin-top:25rem;">
+                            <div class="margin-top-10" style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center;">
+                                <canvas class="chart" id="myChart" width="400" height="400"></canvas>
+                            </div>
+                            <div class="margin-top-10" style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center;">
+                                <canvas class="chart" id="myPieChart" width="400" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <link href="~/Areas/NeoERP.QuotationManagement/Content/bootstrap2-toggle.css" rel="stylesheet" />
+    <script src="~/Areas/NeoERP.QuotationManagement/Scripts/jscolor.js"></script>
+    <script src="~/Areas/NeoERP.QuotationManagement/Scripts/bootstrap2-toggle.js"></script>
+    <script src="~/Areas/NeoERP.QuotationManagement/Scripts/drag-arrange.min.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
 

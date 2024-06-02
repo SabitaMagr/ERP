@@ -19,6 +19,7 @@ namespace NeoERP.QuotationManagement.Service.Models
         public string COMPANY_CODE { get; set; }
         public string REMARKS { get; set; }
         public char STATUS { get; set; }
+        public string BRANCH_CODE { get; set; }
         public string STATUS_DETAILS { get; set; }
         public string APPROVED_STATUS { get; set; }
         public List<Item> Items { get; set; }

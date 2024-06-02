@@ -26,7 +26,7 @@ namespace NeoERP.QuotationManagement
                 new string[] { "NeoErp.QuotationManagement.Controllers" }
             );
 
-            context.MapRoute("QuotationManagement", "QuotationManagement/Home/Index");
+            context.MapRoute("QuotationManagement", "QuotationManagement/Home/Dashboard");
         }
     }
 }

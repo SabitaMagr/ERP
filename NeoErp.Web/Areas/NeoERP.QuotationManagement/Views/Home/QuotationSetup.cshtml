@@ -101,8 +101,8 @@
                                             <td class="sticky">
                                                 <select id="itemSelected" name="item_{{product.ID}}" kendo-drop-down-list
                                                         k-options="{dataSource: ItemSelect.dataSource,dataTextField: 'ItemDescription', dataValueField: 'ItemCode',filter: 'contains', autoClose: true }"
-                                                        slim-scroll ng-change="updateUnit(product)"
-                                                        ng-model="product.ItemDescription"         ng-class="{'dropdown-view-mode': panelMode === 'view', 'dropdown-edit-mode': panelMode !== 'view'}"
+                                                        slim-scroll ng-change="updateUnit(product)" 
+                                                        ng-model="product.ItemDescription" ng-class="{'dropdown-view-mode': panelMode === 'view', 'dropdown-edit-mode': panelMode !== 'view'}"
                                                         ng-readonly="panelMode === 'view'">
                                                 </select>
                                             </td>

@@ -18,13 +18,17 @@ namespace NeoErp.Core.Quotation
         public decimal CURRENCY_RATE { get; set; }
         public DateTime? DELIVERY_DATE { get; set; }
         public decimal TOTAL_AMOUNT { get; set; }
+        public string BRANCH_CODE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string COMPANY_CODE { get; set; }
+        public string CUSTOMER_CODE { get; set; }
         public decimal TOTAL_DISCOUNT { get; set; }
         public decimal TOTAL_EXCISE { get; set; }
         public decimal TOTAL_TAXABLE_AMOUNT { get; set; }
         public decimal TOTAL_VAT { get; set; }
         public decimal TOTAL_NET_AMOUNT { get; set; }
-        public string TERM_CONDITION { get; set; }
         public char STATUS { get; set; }
+        public string DISCOUNT_TYPE { get; set; }
         public List<Item_details> Item_Detail { get; set; }
         public List<Term_Conditions> TermsCondition { get; set; }
     }

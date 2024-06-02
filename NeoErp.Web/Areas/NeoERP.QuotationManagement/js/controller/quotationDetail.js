@@ -30,16 +30,6 @@
         }
     };
 
-    // Fetch tender details
-    $http.post('/api/QuotationApi/TendersItemWise')
-        .then(function (response) {
-            var tenderDetails = response.data;
-            if (tenderDetails && tenderDetails.length > 0) {
-                $scope.dataSource.data(tenderDetails); // Set the data to the dataSource
-            } else {
-                console.log("No tenders found.");
-            }
-        });
 
     $scope.openImage = function (imageUrl) {
         window.open(imageUrl, '_blank');
@@ -78,7 +68,7 @@
                                 ratesByItemCode[party.ITEM_CODE] = {};
                             }
                             ratesByItemCode[party.ITEM_CODE][party.PARTY_NAME] = {
-                                rate: party.RATE,
+                                rate: party.ACTUAL_PRICE,
                                 status: party.STATUS
                             };
                             var vendorExists = uniqueVendors.some(function (item) {

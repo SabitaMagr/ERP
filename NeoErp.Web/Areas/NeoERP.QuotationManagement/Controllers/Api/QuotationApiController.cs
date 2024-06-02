@@ -177,6 +177,21 @@ namespace NeoERP.QuotationManagement.Controllers.Api
                 throw new Exception(ex.StackTrace);
             }
         }
+        [HttpGet]
+        public List<Quotation_Details> QuotationDetailsId(string quotationNo, string tenderNo)
+        {
+            List<Quotation_Details> response = new List<Quotation_Details>();
+            try
+            {
+                response = _quotRepo.QuotationDetailsId(quotationNo, tenderNo);
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.StackTrace);
+            }
+        }
         public List<SummaryReport> TendersItemWise()
         {
             List<SummaryReport> response = new List<SummaryReport>();
@@ -210,7 +225,15 @@ namespace NeoERP.QuotationManagement.Controllers.Api
         {
             try
             {
-                bool isDeleted = _quotRepo.updateQuotation(quotationNo, status);
+                bool isDeleted=false;
+                if (status == "AP")
+                {
+                     isDeleted = _quotRepo.acceptQuotation(quotationNo, status);
+                }
+                else if(status=="R")
+                {
+                     isDeleted = _quotRepo.rejectQuotation(quotationNo, status);
+                }
                 if (isDeleted)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, new { MESSAGE = "Quotation !!", STATUS_CODE = (int)HttpStatusCode.OK });
@@ -290,6 +313,20 @@ namespace NeoERP.QuotationManagement.Controllers.Api
             {
                 response = _quotRepo.getTenderById(tenderNo);
                 return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.StackTrace);
+            }
+        }
+        public List<QuotationCount> GetQuotationCount()
+        {
+            List<QuotationCount> response = new List<QuotationCount>();
+            try
+            {
+                response = _quotRepo.GetQuotationCount();
+                return response;
+
             }
             catch (Exception ex)
             {

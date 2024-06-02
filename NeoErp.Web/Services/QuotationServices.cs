@@ -1,6 +1,7 @@
 ﻿using NeoErp.Data;
 using NeoErp.Models.QueryBuilder;
 using System;
+using NeoErp.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,9 +12,11 @@ namespace NeoErp.Services
 {
     public class QuotationServices: IQuotation
     {
+        IWorkContext _workContext;
         private IDbContext _dbContext;
-        public QuotationServices(IDbContext dbContext)
+        public QuotationServices(IDbContext dbContext, IWorkContext workContext)
         {
+            this._workContext = workContext;
             _dbContext = dbContext;
         }
 
@@ -40,15 +43,15 @@ namespace NeoErp.Services
                 throw new Exception(ex.Message);
             }
         }
-        public List<Employee> GetEmployeeDetails(string panNo)
+        public List<Supplier> GetSupplierDetails(string panNo)
         {
             try
             {
-                List<Employee> ProductsList = new List<Employee>();
+                List<Supplier> supList = new List<Supplier>();
 
-                string query = $@"select customer_code as EMPLOYEE_CODE,customer_edesc as EMPLOYEE_EDESC,Email,regd_office_eaddress as ADDRESS,tel_mobile_no1 as CONTACT_NO from sa_customer_setup where pan_no='{panNo}'";
-                ProductsList = this._dbContext.SqlQuery<Employee>(query).ToList();
-                return ProductsList;
+                string query = $@"select SUPPLIER_CODE,SUPPLIER_EDESC ,Email,regd_office_eaddress as ADDRESS,tel_mobile_no1 as CONTACT_NO from ip_supplier_setup where tpin_vat_no='{panNo}'";
+                supList = this._dbContext.SqlQuery<Supplier>(query).ToList();
+                return supList;
             }
             catch (Exception ex)
             {
@@ -71,42 +74,100 @@ namespace NeoErp.Services
                 throw new Exception(ex.Message);
             }
         }
-        public bool InsertQuotationDetails(Quotation_Details data)
+
+        public int? InsertQuotationDetails(Quotation_Details data)
         {
             try
-            {
-                var idquery = $@"SELECT COALESCE(MAX(QUOTATION_NO) + 1, 1) AS id FROM QUOTATION_DETAILS";
-                int id = _dbContext.SqlQuery<int>(idquery).FirstOrDefault();
-                string insertQuery = string.Format(@"INSERT INTO QUOTATION_DETAILS(QUOTATION_NO, TENDER_NO, PAN_NO, PARTY_NAME, ADDRESS, CONTACT_NO, EMAIL, CURRENCY, CURRENCY_RATE, DELIVERY_DATE, TOTAL_AMOUNT, TOTAL_DISCOUNT, TOTAL_EXCISE, TOTAL_TAXABLE_AMOUNT, TOTAL_VAT, TOTAL_NET_AMOUNT, STATUS,TERM_CONDITION) 
-                                     VALUES({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, TO_DATE('{9}', 'DD-MON-YYYY'), {10}, {11}, {12}, {13}, {14}, {15}, 'RQ','{16}')",
-                                     id, data.TENDER_NO, data.PAN_NO, data.PARTY_NAME, data.ADDRESS, data.CONTACT_NO, data.EMAIL, data.CURRENCY, data.CURRENCY_RATE,
-                                     data.DELIVERY_DATE.HasValue ? data.DELIVERY_DATE.Value.ToString("dd-MMM-yyyy") : "NULL", data.TOTAL_AMOUNT, data.TOTAL_DISCOUNT,
-                                     data.TOTAL_EXCISE, data.TOTAL_TAXABLE_AMOUNT, data.TOTAL_VAT, data.TOTAL_NET_AMOUNT,data.TERM_CONDITION);
+            { 
+                int quotationNo=0;
+                var newmaxitemcode = "null";
+                var maxPreCode = string.Empty;
+                var maxSupCOde = string.Empty;
+                var newmasteracccode = string.Empty;
+                if (!string.IsNullOrEmpty(data.PAN_NO)) {
+                    var query = $@"select count(*) from IP_SUPPLIER_SETUP where TPIN_VAT_NO='{data.PAN_NO}'";
+                    int count = _dbContext.SqlQuery<int>(query).FirstOrDefault();
+                    if (count == 0)
+                    {
 
-                _dbContext.ExecuteSqlCommand(insertQuery);
-                List<Item_details> itemDetails = data.Item_Detail;
-                if (itemDetails != null)
-                {
-                    foreach (var item in itemDetails)
-                    {
-                        InsertItemDetails(item, id); 
+                        List<Supplier>supplierDetail = checkSupplier();
+                        if (supplierDetail.Count==0)
+                        {
+                            var newmaxitemcodequery = $@"select NVL(MAX(TO_NUMBER(REGEXP_SUBSTR(TO_NUMBER(SUPPLIER_CODE), '[^.]+', 1, 1))),0)+1 as MASTER_SUPPLIER_CODE from IP_SUPPLIER_SETUP  WHERE COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
+                            newmaxitemcode = _dbContext.SqlQuery<int>(newmaxitemcodequery).FirstOrDefault().ToString();
+                            var maxprecodequery = $@"SELECT NVL(MAX(substr(MASTER_SUPPLIER_CODE,-instr(reverse(MASTER_SUPPLIER_CODE),'.')+1))+1,0) as MAXCODE FROM IP_SUPPLIER_SETUP 
+                                                         WHERE company_code = '{_workContext.CurrentUserinformation.company_code}'";
+                            var maxCode = _dbContext.SqlQuery<int>(maxprecodequery).FirstOrDefault();
+                            maxPreCode = maxCode == 0 ? "1" : maxCode.ToString();
+                            if (maxPreCode == null)
+                                maxPreCode = "1";
+                            if (Convert.ToInt32(maxPreCode) <= 9)
+                            {
+                                maxPreCode = "0" + maxPreCode.ToString();
+                            }
+                            var supsetupquery = $@"Insert into IP_SUPPLIER_SETUP 
+                        (SUPPLIER_CODE,SUPPLIER_EDESC,SUPPLIER_NDESC,REGD_OFFICE_EADDRESS,REGD_OFFICE_NADDRESS,TEL_MOBILE_NO1,TEL_MOBILE_NO2,
+                        FAX_NO,EMAIL,PARTY_TYPE_CODE,LINK_SUB_CODE,REMARKS,ACTIVE_FLAG,GROUP_SKU_FLAG,MASTER_SUPPLIER_CODE,PRE_SUPPLIER_CODE,
+                        COMPANY_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,CREDIT_DAYS,CREDIT_ACTION_FLAG,ACC_CODE,PR_CODE,TPIN_VAT_NO,SYN_ROWID,
+                        CREDIT_LIMIT,MODIFY_DATE,BRANCH_CODE,MODIFY_BY,M_DAYS,OPENING_DATE,APPROVED_FLAG,SUBSTITUTE_NAME,MATURITY_DATE,IMAGE_FILE_NAME,
+                        INTEREST_RATE,CASH_SUPPLIER_FLAG,SUPPLIER_ID,GROUP_START_NO,PREFIX_TEXT,DELTA_FLAG,EXCISE_NO,TIN,TDS_CODE) 
+                        values ('{newmaxitemcode}','Quotation Supplier','Quotation Supplier',null,null,null,null,null,null,null,
+                        null,null,'Y','G','{maxCode}','00','{data.COMPANY_CODE}','{data.CREATED_BY}',TO_DATE('{DateTime.Now.ToString("MM/dd/yyyy")}','MM/dd/yyyy'),null,
+                        null,null,null,null,null,null,null,null,null,
+                        null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)";
+                          _dbContext.ExecuteSqlCommand(supsetupquery);
+                        }
+
+                        List<Supplier> supDetail = checkSupplier();
+                            var newmaxquery = $@"select NVL(MAX(TO_NUMBER(REGEXP_SUBSTR(TO_NUMBER(SUPPLIER_CODE), '[^.]+', 1, 1))),0)+1 as MASTER_SUPPLIER_CODE from IP_SUPPLIER_SETUP  WHERE COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
+                            newmaxitemcode = _dbContext.SqlQuery<int>(newmaxquery).FirstOrDefault().ToString();
+                            var maxCOde = supDetail[0].MASTER_SUPPLIER_CODE + "." + "00";
+                            var setupquery = $@"INSERT INTO ip_supplier_setup (supplier_code,supplier_edesc,supplier_ndesc,regd_office_eaddress,regd_office_naddress,tel_mobile_no1,tel_mobile_no2,fax_no,
+                            email,party_type_code,link_sub_code,remarks,active_flag,group_sku_flag,master_supplier_code,pre_supplier_code,company_code,created_by,created_date,
+                            deleted_flag,credit_days,credit_action_flag,acc_code,pr_code,tpin_vat_no,syn_rowid,credit_limit,modify_date,branch_code,modify_by,m_days,opening_date,
+                            approved_flag,substitute_name,maturity_date,image_file_name,interest_rate,cash_supplier_flag,supplier_id,group_start_no,prefix_text,delta_flag,excise_no,tin,tds_code)
+                            VALUES ('{newmaxitemcode}','{data.PARTY_NAME}','{data.PARTY_NAME}','{data.ADDRESS}','{data.ADDRESS}','{data.CONTACT_NO}',NULL,NULL,'{data.EMAIL}',NULL,NULL,NULL,'Y',
+                            'I','{maxCOde}','{supDetail[0].MASTER_SUPPLIER_CODE}','{data.COMPANY_CODE}','{data.CREATED_BY}',TO_DATE('{DateTime.Now.ToString("MM/dd/yyyy")}', 'MM/DD/YYYY'),
+                            'N',0,NULL,NULL,NULL,'{data.PAN_NO}',NULL,0,NULL,NULL,NULL,NULL,null,NULL,NULL,NULL,NULL,null,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)";
+                            _dbContext.ExecuteSqlCommand(setupquery);
                     }
                 }
-                List<Term_Conditions> termConditions = data.TermsCondition;
-                if (termConditions != null)
-                {
-                    foreach (var term in termConditions)
+                    var idquery = $@"SELECT COALESCE(MAX(QUOTATION_NO) + 1, 1) AS id FROM QUOTATION_DETAILS";
+                     quotationNo = _dbContext.SqlQuery<int>(idquery).FirstOrDefault();
+
+                    string insertQuery = string.Format(@"INSERT INTO QUOTATION_DETAILS(QUOTATION_NO, TENDER_NO, PAN_NO, supplier_code,CURRENCY, CURRENCY_RATE, DELIVERY_DATE, TOTAL_AMOUNT, TOTAL_DISCOUNT, TOTAL_EXCISE, TOTAL_TAXABLE_AMOUNT, TOTAL_VAT, TOTAL_NET_AMOUNT, STATUS, DISCOUNT_TYPE) 
+                                             VALUES({0}, '{1}', '{2}', '{3}', '{4}', {5}, TO_DATE('{6}', 'DD-MON-YYYY'), {7}, {8}, {9}, {10}, {11}, {12}, 'RQ', '{13}')",
+                                                         quotationNo, data.TENDER_NO, data.PAN_NO,string.IsNullOrEmpty(data.CUSTOMER_CODE) ? newmaxitemcode : data.CUSTOMER_CODE, data.CURRENCY, data.CURRENCY_RATE,
+                                                         data.DELIVERY_DATE.HasValue ? data.DELIVERY_DATE.Value.ToString("dd-MMM-yyyy") : "NULL", data.TOTAL_AMOUNT, data.TOTAL_DISCOUNT,
+                                                         data.TOTAL_EXCISE, data.TOTAL_TAXABLE_AMOUNT, data.TOTAL_VAT, data.TOTAL_NET_AMOUNT, data.DISCOUNT_TYPE);
+
+                    _dbContext.ExecuteSqlCommand(insertQuery);
+
+                    List<Item_details> itemDetails = data.Item_Detail;
+                    if (itemDetails != null)
                     {
-                        InsertTermConditions(term, id,data.TENDER_NO); 
+                        foreach (var item in itemDetails)
+                        {
+                            InsertItemDetails(item, quotationNo);
+                        }
                     }
-                }
-                return true;
+
+                    List<Term_Conditions> termConditions = data.TermsCondition;
+                    if (termConditions != null)
+                    {
+                        foreach (var term in termConditions)
+                        {
+                            InsertTermConditions(term, quotationNo, data.TENDER_NO);
+                        }
+                    }
+                return quotationNo;
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
         }
+
         public bool InsertItemDetails(Item_details itemDetail, int quotationId)
         {
             try
@@ -122,7 +183,20 @@ namespace NeoErp.Services
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
+            }
+        }
+        public List<Supplier> checkSupplier()
+        {
+            try
+            {
+                var checkQuery = $@"select * from IP_SUPPLIER_SETUP where supplier_edesc='Quotation Supplier'";
+                List<Supplier> supplierDetail = _dbContext.SqlQuery<Supplier>(checkQuery).ToList();
+                return supplierDetail;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
         public bool InsertTermConditions(Term_Conditions termDetail, int quotationId,string tenderNo)
@@ -139,8 +213,21 @@ namespace NeoErp.Services
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
+        }
+        public int? DocumentIfExists(string tenderNo, string quotationNo)
+        {
+            string query = $@"SELECT MAX(SERIAL_NO) FROM QUOTATION_TRANSACTION WHERE TENDER_NO = '{tenderNo}' AND QUOTATION_NO = '{quotationNo}' AND COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'";
+
+            int? result = _dbContext.SqlQuery<int?>(query).FirstOrDefault();
+            return result;
+        }
+        public string InsertQuotationImage(QuotationTranscation quotationdetail)
+        {
+            var insertitem = $@"INSERT INTO QUOTATION_TRANSACTION(TENDER_NO,SERIAL_NO,QUOTATION_NO,DOCUMENT_NAME,DOCUMENT_FILE_NAME,COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,SESSION_ROWID,SYN_ROWID)VALUES('{quotationdetail.TENDER_NO}', '{quotationdetail.SERIAL_NO}','{quotationdetail.QUOTATION_NO}','{quotationdetail.DOCUMENT_FILE_NAME}', '{quotationdetail.DOCUMENT_NAME}','{_workContext.CurrentUserinformation.company_code}', '{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.User_id}',SYSDATE,'{'N'}','','')";
+            var iteminsert = _dbContext.ExecuteSqlCommand(insertitem);
+            return null;
         }
     }
 }

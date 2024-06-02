@@ -33,10 +33,10 @@ namespace NeoErp.Controllers.Api
             }
         }
 
-        public List<Employee> getEmployeeDetails(string panNo)
+        public List<Supplier> getSupplierDetails(string panNo)
         {
-            List<Employee> employeeDetails = _quoTemplate.GetEmployeeDetails(panNo);
-            return employeeDetails;
+            List<Supplier> supplierDetails = _quoTemplate.GetSupplierDetails(panNo);
+            return supplierDetails;
         }
         public List<Company> GetCompanyDetails(string id)
         {
@@ -48,14 +48,15 @@ namespace NeoErp.Controllers.Api
         {
             try
             {
-                bool isPosted = _quoTemplate.InsertQuotationDetails(formData);
-                if (isPosted)
+                int? isPosted = _quoTemplate.InsertQuotationDetails(formData);
+
+                if (isPosted.HasValue && isPosted > 0)
                 {
-                    return Ok(new { success = true, message = "Quotation Details saved successfully." });
+                    return Ok(new { success = true, message = "Quotation Details saved successfully.", data = new { quotationNo = isPosted, tenderNo = formData.TENDER_NO } });
                 }
                 else
                 {
-                    return Ok(new { success = true, message = "Failed to save Quotation Details." });
+                    return Ok(new { success = false, message = "Failed to save Quotation Details." });
                 }
             }
             catch (Exception ex)
@@ -63,6 +64,7 @@ namespace NeoErp.Controllers.Api
                 return InternalServerError(ex);
             }
         }
+
 
     }
 }

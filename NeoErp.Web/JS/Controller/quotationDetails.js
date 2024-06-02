@@ -6,6 +6,13 @@
     $scope.termList = [];
     $scope.counterProduct = 1;
     $scope.counterTerm = 1;
+    $scope.quotationNo = "";
+    $scope.tenderNo = "";
+    $scope.companyCode = "";
+    $scope.branchCode = "";
+    $scope.customerCode = "";
+    $scope.createdBy = "";
+
 
     $scope.showCustomerDetails = false;
     $scope.showSpecificationDetail = false;
@@ -27,8 +34,8 @@
     };
 
     var url = new URL(window.location.href);
-    var qoValue = url.searchParams.get("qo");
-    $http.get("/api/ApiQuotation/GetCompanyDetails?id=" + qoValue)
+    $scope.quotationNo = url.searchParams.get("qo");
+    $http.get("/api/ApiQuotation/GetCompanyDetails?id=" + $scope.quotationNo)
         .then(function (response) {
             var company = response.data[0];
             company.LOGO_FILE_NAME = window.location.protocol + "//" + window.location.host + "/Pictures/Login/" + company.LOGO_FILE_NAME;
@@ -42,20 +49,24 @@
         window.open(imageUrl, '_blank');
     };
     $scope.TOTAL_QUANTITY = 0;
-    $http.get("/api/ApiQuotation/GetQuotationDetails?id=" + qoValue)
+    $http.get("/api/ApiQuotation/GetQuotationDetails?id=" + $scope.quotationNo)
         .then(function (response) {
             var quotation = response.data[0];
             $scope.TENDER_NO = quotation.TENDER_NO;
             $scope.ISSUE_DATE = formatDate(quotation.ISSUE_DATE);
             $scope.VALID_DATE = formatDate(quotation.VALID_DATE);
             $scope.TXT_REMARKS = quotation.REMARKS;
+            $scope.companyCode = quotation.COMPANY_CODE;
+            $scope.createdBy = quotation.CREATED_BY;
+            $scope.branchCode = quotation.BRANCH_CODE;
             var id = 1;
             var quantity = 0;
 
             for (var i = 0; i < quotation.Items.length; i++) {
                 var itemList = quotation.Items[i];
-                var imageUrl = window.location.protocol + "//" + window.location.host + "/Areas/NeoERP.QuotationManagement/Image/Items/" + itemList.IMAGE;
-                //$scope.getItemDesc(itemList);
+                if (itemList.IMAGE) {
+                    var imageUrl = window.location.protocol + "//" + window.location.host + "/Areas/NeoERP.QuotationManagement/Image/Items/" + itemList.IMAGE;
+                }
                 $scope.productFormList.push(angular.copy({
                     ID: id,
                     ITEM_CODE: itemList.ITEM_DESC,
@@ -189,7 +200,7 @@
         }
     };
     $scope.updateTaxableAmt = function (product) {
-        if (product.EXCISE || product.DISCOUNT) {
+        if (product.EXCISE || product.DISCOUNT || product.AMOUNT) {
             var taxableAMt = (product.AMOUNT ? product.AMOUNT : 0) - (product.DISCOUNT_AMOUNT ? product.DISCOUNT_AMOUNT : 0) + (product.EXCISE ? product.EXCISE : 0);
             product.TAXABLE_AMOUNT = parseFloat(taxableAMt.toFixed(2));
             var vatAMt = (13 / 100) * product.TAXABLE_AMOUNT;
@@ -227,11 +238,12 @@
     $scope.employee = {};
 
     $scope.fetchEmployeeDetails = function () {
-        $http.get('/api/ApiQuotation/getEmployeeDetails', { params: { panNo: $scope.PAN_NO } })
+        $http.get('/api/ApiQuotation/getSupplierDetails', { params: { panNo: $scope.PAN_NO } })
             .then(function (response) {
                 if (response.data.length > 0) {
                     var employeeDetails = response.data[0];
-                    $scope.PARTY_NAME = employeeDetails.EMPLOYEE_EDESC;
+                    $scope.customerCode = employeeDetails.SUPPLIER_CODE;
+                    $scope.PARTY_NAME = employeeDetails.SUPPLIER_EDESC;
                     $scope.ADDRESS = employeeDetails.ADDRESS;
                     $scope.CONTACT_NO = employeeDetails.CONTACT_NO;
                     $scope.EMAIL = employeeDetails.EMAIL;
@@ -278,64 +290,112 @@
         $scope.TOTAL_EXCISE = ($scope.TOTAL_EXCISE).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         var totalTaxableAmt = $scope.TOTAL_TAXABLE_AMOUNT;
         $scope.TOTAL_TAXABLE_AMOUNT = ($scope.TOTAL_TAXABLE_AMOUNT).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        var totalVatAmt = ($scope.TOTAL_TAXABLE_AMOUNT || 0.00) * 0.13;
+        var totalVatAmt = (totalTaxableAmt || 0.00) * 0.13;
         $scope.TOTAL_VAT = (totalVatAmt).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         // Calculate total net amount
         $scope.TOTAL_NET_AMOUNT = (totalVatAmt + totalTaxableAmt).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }, true);
     $scope.saveData = function () {
-        var formData = {
-            PAN_NO: $scope.PAN_NO,
-            TENDER_NO: $scope.TENDER_NO,
-            PARTY_NAME: $scope.PARTY_NAME,
-            ADDRESS: $scope.ADDRESS,
-            CONTACT_NO: $scope.CONTACT_NO,
-            EMAIL: $scope.EMAIL,
-            CURRENCY: $scope.selectedCurrency,
-            CURRENCY_RATE: $scope.CURRENCY_RATE,
-            DELIVERY_DATE: $('#deliveryDt').val(),
-            TOTAL_AMOUNT: $scope.TOTAL_AMOUNT,
-            TOTAL_DISCOUNT: $scope.TOTAL_DISCOUNT,
-            TOTAL_EXCISE: $scope.TOTAL_EXCISE,
-            TOTAL_TAXABLE_AMOUNT: $scope.TOTAL_TAXABLE_AMOUNT,
-            TOTAL_VAT: $scope.TOTAL_VAT,
-            TOTAL_NET_AMOUNT: $scope.TOTAL_NET_AMOUNT,
-            TERM_CONDITION: $scope.TERM_CONDITION,
-            Item_Detail: [],
-            TermsCondition: []
-        };
-        angular.forEach($scope.productFormList, function (itemDetails) {
-            var itemDetail = {
-                ITEM_CODE: itemDetails.ITEM,
-                RATE: itemDetails.RATE,
-                AMOUNT: itemDetails.AMOUNT,
-                DISCOUNT: itemDetails.DISCOUNT,
-                DISCOUNT_AMOUNT: itemDetails.DISCOUNT_AMOUNT,
-                EXCISE: itemDetails.EXCISE,
-                TAXABLE_AMOUNT: itemDetails.TAXABLE_AMOUNT,
-                VAT_AMOUNT: itemDetails.VAT_AMOUNT,
-                NET_AMOUNT: itemDetails.NET_AMOUNT
+        if ($scope.PAN_NO == "") {
+            displayPopupNotification("PAN No is required", "warning");
+        }
+        else if ($scope.PARTY_NAME == "") {
+            displayPopupNotification("Party Name is required", "warning");
+        }
+        else if ($scope.ADDRESS == "") {
+            displayPopupNotification("Address is required", "warning");
+        }
+        else if ($scope.CONTACT_NO == "") {
+            displayPopupNotification("Contact No is required", "warning");
+        }
+        else if ($scope.CURRENCY_RATE == "") {
+            displayPopupNotification("Currency Rate is required", "warning");
+        }
+        else if ($scope.EMAIL == "") {
+            displayPopupNotification("Email is required", "warning");
+        } else if ($scope.isValidEmail($scope.EMAIL) === 'invalid') {
+            displayPopupNotification("Please enter a valid email address", "warning");
+        }
+        else if ($scope.selectedCurrency == "") {
+            displayPopupNotification("Currency is required", "warning");
+        }
+        else if ($('#deliveryDt').val() == "") {
+            displayPopupNotification("Delivery Date is required", "warning");
+        }
+        else {
+            var formData = {
+                PAN_NO: $scope.PAN_NO,
+                TENDER_NO: $scope.TENDER_NO,
+                PARTY_NAME: $scope.PARTY_NAME,
+                ADDRESS: $scope.ADDRESS,
+                CONTACT_NO: $scope.CONTACT_NO,
+                CUSTOMER_CODE: $scope.customerCode,
+                EMAIL: $scope.EMAIL,
+                CURRENCY: $scope.selectedCurrency,
+                CURRENCY_RATE: $scope.CURRENCY_RATE,
+                DELIVERY_DATE: $('#deliveryDt').val(),
+                TOTAL_AMOUNT: $scope.TOTAL_AMOUNT,
+                TOTAL_DISCOUNT: $scope.TOTAL_DISCOUNT,
+                TOTAL_EXCISE: $scope.TOTAL_EXCISE,
+                TOTAL_TAXABLE_AMOUNT: $scope.TOTAL_TAXABLE_AMOUNT,
+                TOTAL_VAT: $scope.TOTAL_VAT,
+                TOTAL_NET_AMOUNT: $scope.TOTAL_NET_AMOUNT,
+                DISCOUNT_TYPE: $scope.selectedDiscountType,
+                COMPANY_CODE: $scope.companyCode,
+                BRANCH_CODE: $scope.branchCode,
+                CREATED_BY: $scope.createdBy,
+                Item_Detail: [],
+                TermsCondition: []
             };
-            formData.Item_Detail.push(itemDetail);
-        });
-        angular.forEach($scope.termList, function (termCondition) {
-            var termConditions = {
-                TERM_CONDITION: termCondition.TERM_CONDITION
-            };
-            formData.TermsCondition.push(termConditions);
-        });
-        $http.post('/api/ApiQuotation/SaveFormData', formData)
-            .then(function (response) {
-                $scope.Cancel();
-                window.location.reload(); // Reload the page
-                var message = response.data.MESSAGE;
-                window.location.href = '/Quotation/Message';
-            })
-            .catch(function (error) {
-                var message = error;
-                displayPopupNotification(message, "error");
+            var rateEmpty = false; // Flag to check if any rate is empty
+
+            angular.forEach($scope.productFormList, function (itemDetails) {
+                if (itemDetails.RATE == "" || typeof itemDetails.RATE === "undefined") {
+                    displayPopupNotification("Rate is required", "warning");
+                    rateEmpty = true;
+                } else {
+                    var itemDetail = {
+                        ITEM_CODE: itemDetails.ITEM,
+                        RATE: itemDetails.RATE,
+                        AMOUNT: itemDetails.AMOUNT,
+                        DISCOUNT: itemDetails.DISCOUNT,
+                        DISCOUNT_AMOUNT: itemDetails.DISCOUNT_AMOUNT,
+                        EXCISE: itemDetails.EXCISE,
+                        TAXABLE_AMOUNT: itemDetails.TAXABLE_AMOUNT,
+                        VAT_AMOUNT: itemDetails.VAT_AMOUNT,
+                        NET_AMOUNT: itemDetails.NET_AMOUNT
+                    };
+                    formData.Item_Detail.push(itemDetail);
+                }
             });
+            if (!rateEmpty) { // Proceed with HTTP POST only if all rates are filled
+                angular.forEach($scope.termList, function (termCondition) {
+                    // Check if the term and condition is not empty
+                    if (termCondition.TERM_CONDITION.trim() !== "") {
+                        var termConditions = {
+                            TERM_CONDITION: termCondition.TERM_CONDITION
+                        };
+                        formData.TermsCondition.push(termConditions);
+                    }
+                });
+                
+                $http.post('/api/ApiQuotation/SaveFormData', formData)
+                    .then(function (response) {
+                        $scope.Cancel();
+                        $scope.tenderNo = response.data.data.tenderNo; // Access the TENDER_NO from the response
+                        $scope.quotationNo = response.data.data.quotationNo;
+                        myInventoryDropzone.processQueue();
+                        window.location.reload();
+                        var message = response.data.MESSAGE;
+                        window.location.href = '/Quotation/Message';
+                    })
+                    .catch(function (error) {
+                        var message = error;
+                        displayPopupNotification(message, "error");
+                    });
+            }
+        }
     };
     $scope.addTerm = function () {
         $scope.termList.push({
@@ -405,6 +465,11 @@
             input.value = '';
         })
     };
+    $scope.isValidEmail = function (email) {
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email) ? 'valid' : 'invalid';
+    };
+
 });
 
 

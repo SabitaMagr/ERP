@@ -6,8 +6,7 @@
 <script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/js/controller/quotationDetailItemWise.js")"></script>
 
 <link href="@Styles.Url("~/Areas/NeoERP.QuotationManagement/Content/quotationSetup.css")" rel="stylesheet" />
-<link href="@Styles.Url("~/Areas/NeoERP.QuotationManagement/Content/quotationSetup.css")" rel="stylesheet" />
-<div class="col-md-12 bodyController" ng-controller="quotationDetailItemWise">
+<div class="col-md-12 bodyController" ng-controller="quotationDetailItemWise" id="quotationDetailItemWise">
     <div class="portlet light form-fit bordered bottomspance">
         <div class="portlet box green-box main">
             <div class="portlet-title">
@@ -20,7 +19,7 @@
                 </div>
             </div>
 
-            <div class="portlet light form-fit bordered bottomspance" >
+            <div class="portlet light form-fit bordered bottomspance">
 
                 <div class="row boxbg">
                     <form id="quotationForm" class="quotationform" ng-submit="saveData()" method="post" enctype="multipart/form-data">
@@ -121,10 +120,11 @@
                                             <td class="table-head">Quantity</td>
                                             <td class="table-head">Rate</td>
                                             <td class="table-head">Amount</td>
-                                            <td class="table-head"> Discount</td>
+                                            <td class="table-head"> Discount( <span ng-bind="DISCOUNT_TYPE"></span>)</td>
                                             <td class="table-head">Discount Amount</td>
                                             <td class="table-head">Excise</td>
                                             <td class="table-head">Taxable Amount</td>
+                                            <td class="table-head" style="background-color: #aafa32">Actual Price</td>
                                             <td class="table-head">Vat Amount(13%)</td>
                                             <td class="table-head">Net Amount</td>
                                         </tr>
@@ -134,11 +134,12 @@
                                             </td>
                                             <td>
                                                 <select id="itemSelected" name="item_{{product.ID}}" kendo-drop-down-list
-                                                        k-options="{dataSource: ItemSelect.dataSource,dataTextField: 'ItemDescription', dataValueField: 'ItemCode',filter: 'contains', autoClose: true }"
-                                                        slim-scroll ng-change="updateUnit(product)"
-                                                        ng-model="product.ItemDescription" readonly
-                                                        style="width:38rem;">
-                                                </select>
+                                        k-options="{dataSource: ItemSelect.dataSource,dataTextField: 'ItemDescription', dataValueField: 'ItemCode',filter: 'contains', autoClose: true }"
+                                        slim-scroll ng-change="updateUnit(product)"
+                                        ng-model="product.ItemDescription" readonly
+                                        style="width:38rem;">
+                                </select>
+                                                @*<input type="text" name="item_{{product.ID}}" id="item_{{product.ID}}" ng-model="product.ItemDescription" readonly class="form-control" value="">*@
                                             </td>
                                             <td>
                                                 <input type="text" name="specification_{{product.ID}}" id="specification_{{product.ID}}" ng-model="product.SPECIFICATION" readonly class="form-control" value="">
@@ -204,6 +205,9 @@
                                                 <input type="text" name="taxableAmt_{{product.ID}}" id="taxableAmt_{{product.ID}}" ng-model="product.TAXABLE_AMOUNT" class="form-control large-width right-align" readonly>
                                             </td>
                                             <td>
+                                                <input type="text" name="vatAmt_{{product.ID}}" id="vatAmt_{{product.ID}}" ng-model="product.ACTUAL_PRICE" class="form-control large-width right-align" readonly value="">
+                                            </td>
+                                            <td>
                                                 <input type="text" name="vatAmt_{{product.ID}}" id="vatAmt_{{product.ID}}" ng-model="product.VAT_AMOUNT" class="form-control large-width right-align" readonly value="">
                                             </td>
                                             <td>
@@ -215,7 +219,7 @@
                             </div>
                         </div>
                         <div class="summary-table">
-                            <div class="col-xs-3 col-sm-2 col-md-3 customerDetailsSection">
+                            <div class="col-xs-2 col-sm-1 col-md-3 customerDetailsSection">
                                 <table class="table table-bordered">
                                     <thead class="font-green">
                                         <tr>
@@ -250,7 +254,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-xs-3 col-sm-1 col-md-2 customerDetailsSection">
+                            <div class="col-xs-2 col-sm-1 col-md-1 customerDetailsSection">
                                 <table class="table table-bordered">
                                     <thead class="font-green">
                                         <tr>
@@ -265,16 +269,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-xs-3 col-sm-2 col-md-2">
-                                <div>
-                                    <label class="control-label">Remarks</label>
-                                    <textarea id="remarks" ng-model="TXT_REMARKS" readonly class="form-control salestype" type="textarea" style="width:90%; height:29px;"></textarea>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-4 col-md-5">
-                                <div class="tablecontainer terms-table-container" ng-init="setInitialWidth()">
+
+                            <div class="col-xs-5 col-sm-4 col-md-4">
+                                <div class="table-container" ng-init="setInitialWidth()" style="height:20rem;">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered table-striped modal-table terms-table">
+                                        <table class="table-bordered table-striped modal-table">
                                             <thead>
                                                 <tr>
                                                     <td style="width: 44px;" class="table-head">S.N</td>
@@ -284,10 +283,10 @@
                                             <tbody>
                                                 <tr ng-repeat="term in termList">
                                                     <td>
-                                                        <input type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.ID" value="" readonly class="form-control text-right">
+                                                        <input style="width:44px;" type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.ID" value="" readonly class="form-control text-right">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.TERM_CONDITION" class="form-control" readonly>
+                                                        <input type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.TERM_CONDITION" class="form-control" style="width:35.8rem;">
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -295,16 +294,33 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-xs-3 col-sm-2 col-md-2">
+                                <div>
+                                    <label class="control-label">Upload Files</label>
+                                    <div id="dQuotationUpload" class="dropzone">
+                                        <div class="dz-default dz-message">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-md-12" style="margin-top: 1.5rem;" ng-show="STATUS === 'Pending'">
-                            <div class="col-md-10 text-right">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label class="control-label">Remarks</label>
+                                <textarea id="remarks" ng-model="TXT_REMARKS" readonly class="form-control salestype" type="textarea" style="width:90%; height:29px;"></textarea>
+                            </div>
+                            <div class="col-md-5">
+
                             </div>
                             <div class="col-md-1 text-right">
+                                <button type="submit" class="btn btn-primary" ng-click="printPage()">Print</button>
+                            </div>
+
+                            <div class="col-md-1 text-right"  ng-show="STATUS === 'Pending'">
                                 <button type="submit" class="btn btn-success" ng-click="AcceptEvent()">Accept</button>
                             </div>
-                            <div class="col-md-1 text-right">
+                            <div class="col-md-1 text-right"  ng-show="STATUS === 'Pending'">
                                 <button type="submit" class="btn btn-danger" ng-click="RejectEvent()">Reject</button>
                             </div>
                         </div>
@@ -314,4 +330,102 @@
             </div>
         </div>
     </div>
+    <div class="modal fade-out" id="saveAndPrintQuotationModal" data-backdrop="static" tabindex="-1" data-width="760">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title">
+                        <span class="fa fa-print"></span>
+
+                    </h4>
+                </div>
+
+                <div id="saveAndPrintQuotationModalFor" class="modal-body saveAndPrintModal main">
+                    <form name="saveAndPrint" class="form-horizontal">
+
+                        @*Changes made for marriot AA*@
+                        @Html.Partial("~/Areas/NeoERP.QuotationManagement/Views/Shared/PrintTemplate/QuotationPrintTemplate.cshtml")
+                     
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    @*<a href="~/Views/Shared/PrintTemplate/Sales/_salesInvoicePrintTemplate.cshtml">~/Views/Shared/PrintTemplate/Sales/_salesInvoicePrintTemplate.cshtml</a>*@
+                    <a ng-click="printDiv1()" class="btn btn-sm btn-green" id="savedocumentformdata" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                        <i class="fa fa-floppy-o"></i> Print
+                    </a>
+                    <a class="btn btn-sm btn-default" id="cancelPrint" @*ng-click="cancelPrint(event)*@ ng-click="cnlPrint()" data-dismiss="modal">Cancel Print</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script>
+    var myInventoryDropzone;
+
+    // Initialize myInventoryDropzone when AngularJS controller is ready
+    angular.element(document).ready(function () {
+        var scope = angular.element(document.getElementById('quotationDetailItemWise')).scope();
+
+        myInventoryDropzone = new Dropzone('#dQuotationUpload', {
+            url: "/Quotation/QuotationFileUpload/",
+            thumbnailWidth: 200,
+            thumbnailHeight: 75,
+            autoDiscover: false,
+            autoProcessQueue: false,
+            addRemoveLinks: true,
+            paramName: "inputFiles",
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            maxFileSize: 10,
+        });
+
+        myInventoryDropzone.on('sending', function (file, xhr, formData) {
+            // Ensure scope values are available and not undefined
+            if (scope) {
+                var tenderNo = scope.tenderNo;
+                var quotationNo = scope.quotationNo;
+
+                formData.append('TenderNo', tenderNo);
+                formData.append('QuotationNo', quotationNo);
+            } else {
+                console.error("Scope is undefined");
+            }
+        });
+
+        myInventoryDropzone.on("success", function (file, responseText) {
+            if (responseText.status == "Error") {
+                displayPopupNotification("File upload did not succeed. Please try again.", "error");
+            } else {
+                myInventoryDropzone.removeFile(file);
+            }
+        });
+
+        myInventoryDropzone.on("removedfile", function (file, xhr, formData) {
+            if (scope) {
+                var filename = file.name;
+                var voucherno = scope.OrderNo;
+                var formcode = scope.formcode;
+                var model = {
+                    FILE_NAME: filename,
+                    FORM_CODE: formcode,
+                    VOUCHER_NO: voucherno
+                };
+                var staturl = window.location.protocol + "//" + window.location.host + "/api/TemplateApi/deleteUploadedFile";
+                $.ajax({
+                    type: 'POST',
+                    url: staturl,
+                    data: model,
+                    dataType: "json",
+                    success: function (data) {
+                        // Handle success if needed
+                    }
+                });
+            } else {
+                console.error("Scope is undefined during file removal");
+            }
+        });
+    });
+</script>

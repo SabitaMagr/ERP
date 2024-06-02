@@ -260,7 +260,7 @@
         };
 
         var count = 0;
-
+        var ProductEmpty = false;
         // Loop over the productFormList if it's not empty
         if ($scope.productFormList && $scope.productFormList.length > 0) {
             var totalFiles = $scope.productFormList.length;
@@ -268,16 +268,53 @@
             angular.forEach($scope.productFormList, function (itemList) {
                 var fileInput = document.getElementById('image_' + itemList.ID);
                 var file = fileInput.files[0];
+                if (itemList.ItemDescription == "" || typeof itemList.ItemDescription === "undefined" || itemList.ItemDescription === null) {
+                    displayPopupNotification("Product Name is required", "warning");
+                    ProductEmpty = true;
+                    return;// Set flag to true if any rate is empty
+                }
+                if (!ProductEmpty) {
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            var itemListData = {
+                                ID: itemList.TID,
+                                ITEM_CODE: itemList.ItemDescription,
+                                SPECIFICATION: itemList.SPECIFICATION,
+                                IMAGE: reader.result.split(',')[1],
+                                UNIT: itemList.UNIT,
+                                IMAGE_NAME: itemList.IMAGE_NAME,
+                                QUANTITY: itemList.QUANTITY,
+                                CATEGORY: itemList.CATEGORY,
+                                BRAND_NAME: itemList.BRAND_NAME,
+                                INTERFACE: itemList.INTERFACE,
+                                TYPE: itemList.TYPE,
+                                LAMINATION: itemList.LAMINATION,
+                                ITEM_SIZE: itemList.ITEM_SIZE,
+                                THICKNESS: itemList.THICKNESS,
+                                COLOR: itemList.COLOR,
+                                GRADE: itemList.GRADE,
+                                SIZE_LENGTH: itemList.SIZE_LENGTH,
+                                SIZE_WIDTH: itemList.SIZE_WIDTH,
+                            };
+                            formData.Items.push(itemListData);
+                            count++;
 
-                if (file) {
-                    var reader = new FileReader();
+                            if (count === totalFiles) {
+                                saveFormData(formData);
+                            }
+                        };
+                        reader.onerror = function (error) {
+                            displayPopupNotification("Error reading file!!", "error");
+                        };
 
-                    reader.onload = function () {
+                        reader.readAsDataURL(file); // Convert file to base64
+                    } else {
                         var itemListData = {
                             ID: itemList.TID,
                             ITEM_CODE: itemList.ItemDescription,
                             SPECIFICATION: itemList.SPECIFICATION,
-                            IMAGE: reader.result.split(',')[1],
+                            IMAGE: null,
                             UNIT: itemList.UNIT,
                             IMAGE_NAME: itemList.IMAGE_NAME,
                             QUANTITY: itemList.QUANTITY,
@@ -299,49 +336,13 @@
                         if (count === totalFiles) {
                             saveFormData(formData);
                         }
-                    };
-                    reader.onerror = function (error) {
-                        displayPopupNotification("Error reading file!!", "error");
-                    };
-
-                    reader.readAsDataURL(file); // Convert file to base64
-                } else {
-                    var itemListData = {
-                        ID: itemList.TID,
-                        ITEM_CODE: itemList.ItemDescription,
-                        SPECIFICATION: itemList.SPECIFICATION,
-                        IMAGE: null,
-                        UNIT: itemList.UNIT,
-                        IMAGE_NAME: itemList.IMAGE_NAME,
-                        QUANTITY: itemList.QUANTITY,
-                        CATEGORY: itemList.CATEGORY,
-                        BRAND_NAME: itemList.BRAND_NAME,
-                        INTERFACE: itemList.INTERFACE,
-                        TYPE: itemList.TYPE,
-                        LAMINATION: itemList.LAMINATION,
-                        ITEM_SIZE: itemList.ITEM_SIZE,
-                        THICKNESS: itemList.THICKNESS,
-                        COLOR: itemList.COLOR,
-                        GRADE: itemList.GRADE,
-                        SIZE_LENGTH: itemList.SIZE_LENGTH,
-                        SIZE_WIDTH: itemList.SIZE_WIDTH,
-                    };
-                    formData.Items.push(itemListData);
-                    count++;
-
-                    if (count === totalFiles) {
-                        saveFormData(formData);
                     }
                 }
             });
-        } else {
-            // If productFormList is empty, save formData directly
-            saveFormData(formData);
-        }
+        } 
     };
 
     function saveFormData(formData) {
-        console.log(formData);
         $http.post('/api/QuotationApi/SaveItemData', formData)
             .then(function (response) {
                 var message = response.data.message;

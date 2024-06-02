@@ -10,9 +10,11 @@ namespace NeoErp.Services
     public interface IQuotation
     {
         List<Quotation> GetQuotationDetails(string id);
-        List<Employee> GetEmployeeDetails(string panNo);
+        List<Supplier> GetSupplierDetails(string panNo);
         List<Company> GetCompanyDetails(string id);
-        bool InsertQuotationDetails(Quotation_Details formDatas);
+        int? InsertQuotationDetails(Quotation_Details formDatas);
+        int? DocumentIfExists(string tenderNo, string quotationNo);
+        string InsertQuotationImage(QuotationTranscation quotationdetail);
 
     }
 }

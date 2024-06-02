@@ -360,7 +360,13 @@
                         setTimeout(function () {
                             $("#saveAndPrintInvoiceModal").modal("toggle");
                         }, 50);
-                } if ($scope.DocumentName == "SA_SALES_INVOICE" && ($scope.subDocumentName == "Sales TAX Invoice opera" || $scope.subDocumentName == "Sales TAX Invoice - Opera")) {
+                    }
+                    if ($scope.DocumentName == "SA_SALES_INVOICE" && ($scope.subDocumentName == "Sales TAX Invoice - COP" || $scope.subDocumentName == "Sales Tax COP")) {
+
+                        setTimeout(function () {
+                            $("#saveAndPrintInvoiceCOPModal").modal("toggle");
+                        }, 50);
+                    }if ($scope.DocumentName == "SA_SALES_INVOICE" && ($scope.subDocumentName == "Sales TAX Invoice opera" || $scope.subDocumentName == "Sales TAX Invoice - Opera")) {
                         setTimeout(function () {
                             $("#saveAndPrintInvoiceOperaModal").modal("toggle");
                         }, 50);
@@ -885,6 +891,10 @@
                             }
                             if ($scope.DocumentName == "SA_SALES_INVOICE" && $scope.subDocumentName == "Sales TAX Invoice opera") {
                                 $("#saveAndPrintInvoiceOperaModal").modal("toggle");
+
+                            }
+                            if ($scope.DocumentName == "SA_SALES_INVOICE" && ($scope.subDocumentName == "Sales TAX Invoice - COP" || $scope.subDocumentName == "Sales Tax COP")) {
+                                $("#saveAndPrintInvoiceCOPModal").modal("toggle");
 
                             }
                             //if ($scope.DocumentName == "SA_SALES_INVOICE") {

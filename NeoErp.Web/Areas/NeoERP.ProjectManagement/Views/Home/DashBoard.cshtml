@@ -69,7 +69,9 @@
         font-weight: bold;
         color: #fff;
     }
-
+    #myPieChart {
+        height: 388px;
+    }
     .nav-tabs li.active:after {
         content: "";
         display: block;
@@ -140,6 +142,9 @@
         border-bottom-left-radius: 10px !important;
         border-bottom-right-radius: 10px !important;
     }
+    .custom-col {
+        width: 20% !important;
+    }
 </style>
 
 <div class="col-md-12" ng-controller="projectDashbaord">
@@ -156,7 +161,7 @@
     </div>
     <div class="portlet-body">
         <div class="row">
-            <div class="col-sm-6 col-lg-3" ng-repeat="projectCount in projectCountList">
+            <div class="col-sm-4 col-lg-3 custom-col" ng-repeat="projectCount in projectCountList">
                 <div class="card" ng-style="{'background-color': projectCount.COLOR}">
                     <div class="card-body pb-0">
                         <div class="font">

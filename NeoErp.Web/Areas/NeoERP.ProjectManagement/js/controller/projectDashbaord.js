@@ -44,14 +44,14 @@
                             x: {
                                 title: {
                                     display: true,
-                                    text: '<-------- Project Details ------->'
+                                    text: 'Project Details'
                                 }
                             },
                             y: {
                                 beginAtZero: true,
                                 title: {
                                     display: true,
-                                    text: '<-------- Percentage ------->'
+                                    text: 'Percentage'
                                 }
                             }
                         }

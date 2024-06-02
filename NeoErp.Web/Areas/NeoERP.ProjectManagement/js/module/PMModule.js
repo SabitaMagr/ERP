@@ -35,6 +35,20 @@ PMModule.config(function ($routeProvider, $locationProvider) {
         controller: 'consumption',
 
     });
+    $routeProvider.when('/RequisitionEntry/:formcode/:orderno', {
+
+        templateUrl: function (stateParams) {
+
+            return '/ProjectManagement/Home/RequisitionEntry?formCode=' + stateParams.formcode + '&voucherNo=' + stateParams.orderno;
+        },
+        controller: 'Requisition',
+        resolve:
+        {
+            formcode: function ($route) { return $route.current.params.formcode; },
+            OrderNo: function ($route) { return $route.current.params.orderno; }
+        }
+
+    });
     $routeProvider.when('/AuxiliaryEntry', {
         templateUrl: '/ProjectManagement/Home/AuxiliaryEntry',
         controller: 'consumption',

@@ -227,26 +227,27 @@ namespace NeoERP.ProjectManagement.Service.Repository
                                 FROM project_setup
                                 WHERE status = 'E'
                                 UNION 
-                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'Completed Sub-Project' AS heading, 'lawngreen' AS color, 'fa fa-asterisk' AS icon, 2 AS sortOrder
+                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'Total Sub Project' AS heading, 'purple' AS color, 'fa fa-minus-circle' AS icon, 2 AS sortOrder
+                                FROM sub_project_setup sps
+                                LEFT JOIN project_setup ps ON(ps.id = sps.project_id)
+                                WHERE ps.status = 'E' 
+                                UNION 
+                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'Completed Sub-Project' AS heading, 'lawngreen' AS color, 'fa fa-asterisk' AS icon, 3 AS sortOrder
                                 FROM sub_project_setup sps 
                                 LEFT JOIN project_setup ps ON (ps.id = sps.project_id)
                                 WHERE sps.status = 'C' AND ps.status = 'E' 
                                 UNION 
-                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'Running Sub-Project' AS heading, 'olive' AS color, 'fa fa-spinner' AS icon, 3 AS sortOrder
+                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'Running Sub-Project' AS heading, 'olive' AS color, 'fa fa-spinner' AS icon, 4 AS sortOrder
                                 FROM sub_project_setup sps 
                                 LEFT JOIN project_setup ps ON (ps.id = sps.project_id)
                                 WHERE sps.status = 'R' AND ps.status = 'E'  
                                 UNION 
-                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'On Hold Sub-Project' AS heading, 'hotpink' AS color, 'fa fa-minus-circle' AS icon, 4 AS sortOrder
+                                SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'On Hold Sub-Project' AS heading, 'hotpink' AS color, 'fa fa-minus-circle' AS icon, 5 AS sortOrder
                                 FROM sub_project_setup sps 
                                 LEFT JOIN project_setup ps ON (ps.id = sps.project_id)
                                 WHERE sps.status = 'H' AND ps.status = 'E' 
                                 ORDER BY sortOrder";
-                //UNION
-                //          SELECT COUNT(DISTINCT sps.sub_project_id) AS count, 'Total Sub Project' AS heading, 'red' AS color, 'fa fa-minus-circle' AS icon, 5 AS sortOrder
-                //                FROM sub_project_setup sps
-                //                LEFT JOIN project_setup ps ON(ps.id = sps.project_id)
-                //                WHERE ps.status = 'E'
+                
                 List<ProjectCount> entity = this._dbContext.SqlQuery<ProjectCount>(query).ToList();
                 return entity;
             }

@@ -27,10 +27,12 @@ namespace NeoERP.QuotationManagement.Service.Models
         public decimal TOTAL_TAXABLE_AMOUNT { get; set; }
         public decimal TOTAL_VAT { get; set; }
         public decimal TOTAL_NET_AMOUNT { get; set; }
-        public string TERM_CONDITION { get; set; }
+        public string DISCOUNT_TYPE { get; set; }
         public string STATUS { get; set; }
         public List<Item_details> Item_Detail { get; set; }
         public List<Term_Conditions> TermsCondition { get; set; }
+        public List<QuotationTransaction> IMAGES_LIST { get; set; }
+
 
     }
     public class Term_Conditions

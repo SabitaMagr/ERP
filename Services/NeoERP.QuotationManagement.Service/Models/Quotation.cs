@@ -29,7 +29,7 @@ namespace NeoERP.QuotationManagement.Service.Models
         public int QUOTATION_NO { get; set; }
         public string PARTY_NAME { get; set; }
         public string ITEM_CODE { get; set; }
-        public float RATE { get; set; }
+        public decimal ACTUAL_PRICE { get; set; }
         public string STATUS { get; set; }
     }
     public class Item_Detail

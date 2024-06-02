@@ -16,6 +16,7 @@ namespace NeoErp.Core.Quotation
         public DateTime? CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public string COMPANY_CODE { get; set; }
+        public string BRANCH_CODE { get; set; }
         public string REMARKS { get; set; }
         public List<Item> Items { get; set; }
 

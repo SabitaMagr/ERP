@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using PagedList;
 using System.Web.Mvc;
 using NeoErp.Models;
 using NeoErp.Models.Common;
@@ -20,35 +18,21 @@ using NeoErp.Models.QueryBuilder;
 using NeoErp.Core.Services.CommonSetting;
 using NeoErp.Core.Models.Log4NetLoggin;
 using NeoErp.Core.Quotation;
+using NeoErp.Core.Models;
+using System.Web;
+using System.IO;
 
 namespace NeoErp.Controllers
 {
     public class QuotationController : Controller
     {
-        private IWorkContext _workContext;
-        private IAuthenticationService _authenticationService;
-        private IMenuModel _menuService;
-        private readonly ICacheManager _cacheManager;
-        private IPluginFinder _pluginFinder;
-        private IQueryBuilder _queryService;
-        private IDbContext _dbContext;
-        private ISettingService _settingService;
-        private ILogViewer _logViewer;
-        private ILogErp _logErp;
+        private NeoErpCoreEntity _coreEntity;
+        private IQuotation _quoTemplate;
 
-        public QuotationController(IWorkContext workContext, IAuthenticationService authenticationService, IMenuModel menuService, ICacheManager cacheManager, IPluginFinder pluginFinder, IQueryBuilder queryService, IDbContext dbContext, ISettingService settingService, ILogViewer logViewer, ILogErp logErp)
+        public QuotationController(NeoErpCoreEntity coreEntity, IQuotation quotationTemplate)
         {
-            this._workContext = workContext;
-            this._authenticationService = authenticationService;
-            this._menuService = menuService;
-            this._cacheManager = cacheManager;
-            this._pluginFinder = pluginFinder;
-            this._queryService = queryService;
-            this._dbContext = dbContext;
-            this._settingService = settingService;
-            this._logViewer = logViewer;
-            this._logErp = new LogErp(this);
-
+            _coreEntity = coreEntity;
+            _quoTemplate = quotationTemplate;
         }
         public ActionResult Index(string qo)
         {
@@ -59,5 +43,59 @@ namespace NeoErp.Controllers
             return View();
 
         }
+        [HttpPost]
+        public JsonResult QuotationFileUpload(IEnumerable<HttpPostedFileBase> inputFiles, FormCollection collection)
+        {
+            var tenderNos = Convert.ToString(collection["TenderNo"]);
+            var quotationNos = Convert.ToString(collection["QuotationNo"]);
+            var tenderNo = tenderNos.Split(',')[0];
+            var quotationNo = quotationNos.Split(',')[0];
+            int serialno = 1;
+            int? serialnumber = _quoTemplate.DocumentIfExists(tenderNo, quotationNo);
+            if (serialnumber != null)
+            {
+                serialno = Convert.ToInt32(serialnumber) + 1;
+            }
+            if (inputFiles != null)
+            {
+                foreach (HttpPostedFileBase fileName in inputFiles)
+                {
+                    string dbstrMappath = "";
+                    HttpPostedFileBase file = fileName;
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var replacedvoucherno = tenderNo.Replace("/", "_");
+                        string picture = System.IO.Path.GetFileName(file.FileName);
+                        string SalesModule = "QuotationModule";
+                        string strMappath = "~/Pictures/" + SalesModule + "/" + quotationNo + "/" + replacedvoucherno + "/";
+                        string path = System.IO.Path.Combine(
+                                               Server.MapPath(strMappath), picture);
+                        string ext = Path.GetExtension(path);
+                        dbstrMappath = "\\Pictures\\" + SalesModule + "\\" + quotationNo + "\\" + tenderNo + "\\" + picture;
+                        if (!Directory.Exists(strMappath))
+                        {
+                            Directory.CreateDirectory(Server.MapPath(strMappath));
+                        }
+                        file.SaveAs(path);
+                        QuotationTranscation quotationdetail = new QuotationTranscation();
+                        quotationdetail.QUOTATION_NO = quotationNo;
+                        quotationdetail.TENDER_NO = tenderNo;
+                        quotationdetail.DOCUMENT_FILE_NAME = file.FileName;
+                        quotationdetail.DOCUMENT_NAME = dbstrMappath;
+                        quotationdetail.SERIAL_NO = serialno;
+                        _quoTemplate.InsertQuotationImage(quotationdetail);
+                        serialno++;
+                    }
+                }
+
+
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json("Error", JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
