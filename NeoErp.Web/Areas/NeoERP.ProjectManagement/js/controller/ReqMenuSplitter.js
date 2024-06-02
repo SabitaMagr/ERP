@@ -331,7 +331,7 @@
             if ($scope.moduleCode == "01")
                 window.location.href = "/ProjectManagement/Home/Index#!DT/FinanceVoucher/" + formCode + "/" + voucherno + ""
             else if ($scope.moduleCode === "02")
-                window.location.href = "/ProjectManagement/Home/Index#!PM/RequisitionEntry?formCode=" + formCode + "&voucherNo=" + encodeURIComponent(voucherno);
+                window.location.href = "/ProjectManagement/Home/RequisitionEntry?formcode=" + formCode + "&vNo=" + voucherno + ""
             else if ($scope.moduleCode == "03")
                 window.location.href = "/ProjectManagement/Home/Index#!DT/Inventory/" + formCode + "/" + voucherno + ""
             else if ($scope.moduleCode == "04")
