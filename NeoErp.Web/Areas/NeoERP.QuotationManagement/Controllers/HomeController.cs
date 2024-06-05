@@ -73,5 +73,17 @@ namespace NeoERP.QuotationManagement.Controllers
         {
             return View();
         }
+        public ActionResult AddQuotation()
+        {
+            return View();
+        }
+        public ActionResult ViewQuotation(string id)
+        {
+            return View();
+        }
+        public ActionResult EditQuotation(string id)
+        {
+            return View();
+        }
     }
 }

@@ -1,16 +1,10 @@
-﻿QMModule.controller('quotationSetup', function ($scope, $rootScope, $http, $filter, $timeout, $location, $window) {
+﻿QMModule.controller('EditQuotation', function ($scope, $rootScope, $http, $filter, $timeout, $location, $httpParamSerializer) {
     $scope.pageName = "Add Quotation";
     $scope.saveAction = "Save";
-    $scope.createPanel = false;
-    $scope.tablePanel = true;
-    $scope.createLink = false;
-    $scope.viewPanel = false;
-    $scope.createEdit = false;
-    $scope.idShowHide = false;
+    var url = new URL(window.location.href);
+    var id = url.searchParams.get("id");
 
-    $scope.AddButtonClickEvent = function () {
-        window.location.href = "/QuotationManagement/Home/Index#!QM/AddQuotation"
-    }
+    $scope.idShowHide = false;
 
     $("#englishdatedocument").kendoDatePicker();
     $("#validDt").kendoDatePicker();
@@ -21,10 +15,7 @@
     $scope.showSpecificationDetail = false;
     $scope.selectedCurrency = "";
 
-    $scope.clear = function () {
-        $scope.pageName = "Add Quotation";
-        $scope.saveAction = "Save";
-    }
+
     $scope.setInitialWidth = function () {
         $(".table-container").css("width", "98%");
     };
@@ -98,7 +89,6 @@
         var date = new Date(dateString);
         return $filter('date')(date, 'dd-MMM-yyyy');
     }
-    $scope.addProduct();
     $scope.updateUnit = function (product) {
         if (product && product.ItemDescription) {
             // Find the item with the matching ItemCode
@@ -153,7 +143,7 @@
                         //$scope.productFormList.splice(index, 1);
                         displayPopupNotification(message, "success");
                     }).catch(function (error) {
-                        var message = 'Error in displaying project!!'; 
+                        var message = 'Error in displaying project!!';
                         displayPopupNotification(message, "error");
                     });
             }
@@ -174,6 +164,8 @@
         $scope.totalQty = totalQty ?? totalQty.toFixed(2);
     };
     $scope.updateQuantity();
+
+    
 
     $scope.saveData = function () {
         var formData = {
@@ -265,7 +257,7 @@
                     }
                 }
             });
-        } 
+        }
     };
 
     function saveFormData(formData) {
@@ -276,8 +268,8 @@
                 $scope.tablePanel = true;
                 displayPopupNotification(message, "success");
                 setTimeout(function () {
-                    window.location.reload();
-                }, 5000);
+                    window.location.href = "/QuotationManagement/Home/Index#!QM/QuotationSetup"
+                }, 2000);
             })
             .catch(function (error) {
                 var message = error;
@@ -314,10 +306,9 @@
         fileInputs.forEach(function (input) {
             input.value = '';
         });
+        window.location.href = "/QuotationManagement/Home/Index#!QM/QuotationSetup"
 
-        $scope.createPanel = false;
-        $scope.tablePanel = true;
-        window.location.reload(); // Reload the page
+
     };
 
 
@@ -334,191 +325,83 @@
                 displayPopupNotification("Error fetching ID", "error");
             });
     };
-//Kendo table 
-    $http.post('/api/QuotationApi/ListAllTenders')
-        .then(function (response) {
-            var tenders = response.data;
-            if (tenders && tenders.length > 0) {
-                $scope.dataSource.data(tenders); // Set the data to the dataSource
-            } else {
-                console.log("No tenders found.");
-            }
-        })
 
-    $scope.dataSource = new kendo.data.DataSource({
-        data: [], // Initially empty
-        pageSize: 10// Optionally, set page size
-    });
-    $("#kGrid").kendoGrid({
-        dataSource: $scope.dataSource,
-        height: 400,
-        sortable: true,
-        pageable: {
-            refresh: true,
-            pageSizes: true
-        },
-        toolbar: ["excel"],
-        excel: {
-            fileName: "Quotation.xlsx",
-            allPages: true
-        },
-        columns: [
-            { field: "TENDER_NO", title: "Tender No", type: "string" },
-            {
-                field: "ISSUE_DATE", title: "Issue Date", type: "string",
-                template: "#=kendo.toString(kendo.parseDate(ISSUE_DATE),'dd MMM yyyy') == null?'':kendo.toString(kendo.parseDate(ISSUE_DATE),'dd MMM yyyy') #",
-            },
-            {
-                field: "VALID_DATE", title: "To be Delivered Date", type: "string",
-                template: "#=kendo.toString(kendo.parseDate(VALID_DATE),'dd MMM yyyy') == null?'':kendo.toString(kendo.parseDate(VALID_DATE),'dd MMM yyyy') #",
-            },
-            {
-                field: "CREATED_DATE", title: "Created Date", type: "string",  
-                template: "#=kendo.toString(kendo.parseDate(CREATED_DATE),'dd MMM yyyy') == null?'':kendo.toString(kendo.parseDate(CREATED_DATE),'dd MMM yyyy') #",
-            },
-            { field: "APPROVED_STATUS", title: "Approved Status", type: "string" },
-            {
-                title: "Actions",
-                width: 120,
-                template: "<a class='btn btn-sm btn-info view-btn' data-id='#= TENDER_NO #'><i class='fa fa-eye'></i></a>&nbsp;<a class='btn btn-sm btn-warning edit-btn' data-id='#= TENDER_NO #'><i class='fa fa-edit'></i></a>&nbsp;<a class='btn btn-sm btn-danger delete-btn' data-id='#= TENDER_NO #'><i class='fa fa-trash'></i></a>"
-            }
-        ]
-    });
+    // Handle click event for the edit button
 
-        // Handle click event for the delete button
-    $("#kGrid").on("click", ".delete-btn", function () {
-        var deleteButton = $(this);
-        var id = $(this).data("id");
+        $http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + id)
+            .then(function (response) {
+                var quotation = response.data[0];
+                $scope.ID = quotation.ID;
+                $scope.TENDER_NO = quotation.TENDER_NO;
+                var issueDate = new Date(quotation.ISSUE_DATE);
+                var validDate = new Date(quotation.VALID_DATE);
+                var issueDate = $filter('date')(new Date(quotation.ISSUE_DATE), 'dd-MMM-yyyy');
+                var validDate = $filter('date')(new Date(quotation.VALID_DATE), 'dd-MMM-yyyy');
 
-        // Create the popover element with custom HTML content
-        var popoverContent = `
-        <div class="popover-delete-confirm">
-            <p>Delete?</p>
-            <div class="popover-buttons">
-                <button type="button" class="btn btn-danger confirm-delete">Yes</button>
-                <button type="button" class="btn btn-secondary cancel-delete">No</button>
-            </div>
-        </div>
-    `;
-        deleteButton.popover({
-            container: 'body',
-            placement: 'bottom',
-            html: true,
-            content: popoverContent
-        });
+                // Set values for input fields with specific IDs
+                $('#englishdatedocument').val(issueDate);
+                $('#nepaliDate').val(quotation.NEPALI_DATE);
+                $("#validDt").val(validDate);
 
-        // Show popover
-        deleteButton.popover('show');
+                $scope.TXT_REMARKS = quotation.REMARKS;
+                var id = 1;
+                $scope.panelMode = 'edit';
+                $scope.saveAction = "Update";
+                $scope.createEdit = true; // Corrected typo here
+                $scope.productFormList = [];
+                if (quotation.Items.length === 0) {
+                    // If there are no items, call addProduct directly
+                    $scope.addProduct();
+                } else {
+                    for (var i = 0; i < quotation.Items.length; i++) {
+                        var itemList = quotation.Items[i];
+                        var imageUrl = window.location.protocol + "//" + window.location.host + "/Areas/NeoERP.QuotationManagement/Image/Items/" + itemList.IMAGE;
+                        $scope.productFormList.push({
+                            TID: itemList.ID,
+                            ID: id,
+                            ItemDescription: itemList.ITEM_CODE,
+                            SPECIFICATION: itemList.SPECIFICATION,
+                            IMAGE: itemList.IMAGE,
+                            IMAGE_NAME: itemList.IMAGE,
+                            IMAGE_LINK: imageUrl,
+                            UNIT: itemList.UNIT,
+                            QUANTITY: itemList.QUANTITY,
+                            CATEGORY: itemList.CATEGORY,
+                            BRAND_NAME: itemList.BRAND_NAME,
+                            INTERFACE: itemList.INTERFACE,
+                            TYPE: itemList.TYPE,
+                            LAMINATION: itemList.LAMINATION,
+                            ITEM_SIZE: itemList.ITEM_SIZE,
+                            THICKNESS: itemList.THICKNESS,
+                            COLOR: itemList.COLOR,
+                            GRADE: itemList.GRADE,
+                            SIZE_LENGTH: itemList.SIZE_LENGTH,
+                            SIZE_WIDTH: itemList.SIZE_WIDTH,
+                        });
+                        id++;
+                    }
+                }
+                $scope.createPanel = true;
+                $scope.tablePanel = false;
 
-        // Handle click event on the "Yes" button
-        $(document).on('click', '.confirm-delete', function () {
-            $http.post('/api/QuotationApi/deleteQuotationId?tenderNo=' + id)
-                .then(function (response) { 
-                var message = response.data.MESSAGE; // Extract message from response
-                    displayPopupNotification(message, "success");
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 5000)
-                }).catch(function (error) {
-                var message = 'Error in displaying project!!'; // Extract message from response
+                // After populating data, trigger select events
+                setTimeout(function () {
+                    for (let i = 0; i < quotation.Items.length; i++) {
+                        var currentItem = quotation.Items[i];
+                        var currentItemCode = currentItem.ITEM_CODE;
+                        // Check if the element exists before attempting to trigger the select event
+                        var dropdownElement = $("#item_" + id).data("kendoDropDownList");
+                        if (dropdownElement) {
+                            dropdownElement.value(currentItemCode);
+                        }
+                        id++;
+                    }
+                }, 200);
+            })
+            .catch(function (error) {
+                var message = 'Error in displaying quotation!!';
                 displayPopupNotification(message, "error");
             });
-            deleteButton.popover('hide');
-        });
-
-        // Handle click event on the "No" button
-        $(document).on('click', '.cancel-delete', function () {
-            // Hide the popover
-            deleteButton.popover('hide');
-        });
-
-    });
-    // Handle click event for the view button
-    $scope.product = {};
-    $("#kGrid").on("click", ".view-btn", function () {
-        var id = $(this).data("id");
-        window.location.href = "/QuotationManagement/Home/ViewQuotation?id=" + id;
-    });
-      // Handle click event for the edit button
-    $("#kGrid").on("click", ".edit-btn", function () {
-        var id = $(this).data("id");
-        window.location.href = "/QuotationManagement/Home/EditQuotation?id=" + id;
-
-        //$http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + id)
-        //    .then(function (response) {
-        //        var quotation = response.data[0];
-        //        $scope.ID = quotation.ID;
-        //        $scope.TENDER_NO = quotation.TENDER_NO;
-        //        var issueDate = new Date(quotation.ISSUE_DATE);
-        //        var validDate = new Date(quotation.VALID_DATE);
-        //        var issueDate = $filter('date')(new Date(quotation.ISSUE_DATE), 'dd-MMM-yyyy');
-        //        var validDate = $filter('date')(new Date(quotation.VALID_DATE), 'dd-MMM-yyyy');
-
-        //        // Set values for input fields with specific IDs
-        //        $('#englishdatedocument').val(issueDate);
-        //        $('#nepaliDate').val(quotation.NEPALI_DATE);
-        //        $("#validDt").val(validDate);
-
-        //        $scope.TXT_REMARKS = quotation.REMARKS;
-        //        var id = 1;
-        //        $scope.panelMode = 'edit';
-        //        $scope.saveAction = "Update";
-        //        $scope.createEdit = true; // Corrected typo here
-        //        $scope.productFormList = [];
-        //        if (quotation.Items.length === 0) {
-        //            // If there are no items, call addProduct directly
-        //            $scope.addProduct();
-        //        } else {
-        //            for (var i = 0; i < quotation.Items.length; i++) {
-        //                var itemList = quotation.Items[i];
-        //                var imageUrl = window.location.protocol + "//" + window.location.host + "/Areas/NeoERP.QuotationManagement/Image/Items/" + itemList.IMAGE;
-        //                $scope.productFormList.push({
-        //                    TID: itemList.ID,
-        //                    ID: id,
-        //                    ItemDescription: itemList.ITEM_CODE,
-        //                    SPECIFICATION: itemList.SPECIFICATION,
-        //                    IMAGE: itemList.IMAGE,
-        //                    IMAGE_NAME: itemList.IMAGE,
-        //                    IMAGE_LINK: imageUrl,
-        //                    UNIT: itemList.UNIT,
-        //                    QUANTITY: itemList.QUANTITY,
-        //                    CATEGORY: itemList.CATEGORY,
-        //                    BRAND_NAME: itemList.BRAND_NAME,
-        //                    INTERFACE: itemList.INTERFACE,
-        //                    TYPE: itemList.TYPE,
-        //                    LAMINATION: itemList.LAMINATION,
-        //                    ITEM_SIZE: itemList.ITEM_SIZE,
-        //                    THICKNESS: itemList.THICKNESS,
-        //                    COLOR: itemList.COLOR,
-        //                    GRADE: itemList.GRADE,
-        //                    SIZE_LENGTH: itemList.SIZE_LENGTH,
-        //                    SIZE_WIDTH: itemList.SIZE_WIDTH,
-        //                });
-        //                id++;
-        //            }
-        //        }
-        //        $scope.createPanel = true;
-        //        $scope.tablePanel = false;
-
-        //        // After populating data, trigger select events
-        //        setTimeout(function () {
-        //            for (let i = 0; i < quotation.Items.length; i++) {
-        //                var currentItem = quotation.Items[i];
-        //                var currentItemCode = currentItem.ITEM_CODE;
-        //                // Check if the element exists before attempting to trigger the select event
-        //                var dropdownElement = $("#item_" + id).data("kendoDropDownList");
-        //                if (dropdownElement) {
-        //                    dropdownElement.value(currentItemCode);
-        //                }
-        //                id++;
-        //            }
-        //        }, 200);
-        //    })
-        //    .catch(function (error) {
-        //        var message = 'Error in displaying quotation!!';
-        //        displayPopupNotification(message, "error");
-        //    });
-    });
 
     $scope.openImage = function (imageUrl) {
         window.open(imageUrl, '_blank');
@@ -535,64 +418,6 @@
             product.Unit = null;
         }
     };
-    $("#itemtxtSearchString").keyup(function () {
-        var val = $(this).val().toLowerCase(); // Get the search input value
-
-        var filters = [];
-
-        // Retrieve columns from the Kendo UI Grid configuration
-        var columns = $("#kGrid").data("kendoGrid").columns;
-
-        // Loop through each column in the grid configuration
-        for (var i = 0; i < columns.length; i++) {
-            var column = columns[i];
-            var field = column.field;
-
-            // Determine the type of data in the column and construct the filter accordingly
-            if (column.type === "string") {
-                filters.push({
-                    field: field,
-                    operator: "contains",
-                    value: val
-                });
-            } else if (column.type === "number") {
-                // Assuming the input value can be parsed into a number
-                filters.push({
-                    field: field,
-                    operator: "eq",
-                    value: parseFloat(val) || null
-                });
-            } else if (column.type === "date") {
-                if (parsedDate) {
-                    filters.push({
-                        field: field,
-                        operator: "eq",
-                        value: new Date(val) || null
-                    });
-                }
-            }
-        }
-
-        // Apply the filters to the Kendo UI Grid data source
-        $scope.dataSource.filter({
-            logic: "or",
-            filters: filters
-        });
-    });
 
 });
-
-
-//QMModule.service('QuotationSetupService', function ($http) {
-
-//    this.GetAllItemsName = function () {
-
-//        var itemResponse = $http({
-//            method: "GET",
-//            url: "/api/QuotationApi/ItemDetails",
-//            dataType: "json"
-//        });
-//        return itemResponse;
-//    }
-//});
 

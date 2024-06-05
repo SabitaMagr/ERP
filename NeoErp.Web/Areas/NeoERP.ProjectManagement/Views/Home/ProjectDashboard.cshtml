@@ -1,4 +1,6 @@
-﻿
+﻿@*@{
+        Layout = null;
+    }*@
 @{
     Layout = "~/Areas/NeoERP.ProjectManagement/Views/Shared/_Layout.cshtml";
 }
@@ -68,6 +70,10 @@
         font-size: 25px;
         font-weight: bold;
         color: #fff;
+    }
+
+    #myPieChart {
+        height: 388px;
     }
 
     .nav-tabs li.active:after {
@@ -140,6 +146,10 @@
         border-bottom-left-radius: 10px !important;
         border-bottom-right-radius: 10px !important;
     }
+
+    .custom-col {
+        width: 20% !important;
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/Scripts/Angular-Module-underscore.js")"></script>
@@ -164,7 +174,7 @@
     </div>
     <div class="portlet-body">
         <div class="row">
-            <div class="col-sm-6 col-lg-3" ng-repeat="projectCount in projectCountList">
+            <div class="col-sm-4 col-lg-3 custom-col" ng-repeat="projectCount in projectCountList">
                 <div class="card" ng-style="{'background-color': projectCount.COLOR}">
                     <div class="card-body pb-0">
                         <div class="font">

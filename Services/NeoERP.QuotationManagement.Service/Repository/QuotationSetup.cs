@@ -288,7 +288,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
                 scs.tel_mobile_no1 as contact_no,scs.EMAIL,QD.CURRENCY,QD.CURRENCY_RATE,QD.DELIVERY_DATE,
                 QD.TOTAL_AMOUNT,QD.TOTAL_DISCOUNT,QD.TOTAL_EXCISE,QD.TOTAL_TAXABLE_AMOUNT,QD.TOTAL_VAT,QD.TOTAL_NET_AMOUNT,
                 CASE 
-                WHEN QD.STATUS = 'AP' THEN 'Approved'
+                WHEN QD.STATUS = 'AP' THEN 'Approved' WHEN QD.STATUS = 'R' THEN 'Reject'
                 WHEN NOT EXISTS (SELECT 1 FROM QUOTATION_DETAILS WHERE TENDER_NO = QD.TENDER_NO AND STATUS = 'AP') THEN 'Pending'
                 ELSE 'Reject' END AS STATUS,QD.DISCOUNT_TYPE FROM  QUOTATION_DETAILS  QD,SA_QUOTATION_SETUP SQS , ip_supplier_setup scs WHERE SQS.TENDER_NO=QD.TENDER_NO and scs.supplier_code=qd.supplier_code and sqs.company_code=scs.company_code AND  QD.QUOTATION_NO='{quotationNo}'";
                 List<Quotation_Details> quotations = this._dbContext.SqlQuery<Quotation_Details>(Query).ToList();
@@ -390,8 +390,8 @@ namespace NeoERP.QuotationManagment.Service.Repository
                 List<Quotation> quotations = this._dbContext.SqlQuery<Quotation>(query).ToList();
                 foreach (var quotation in quotations)
                 {
-                    string vquery = $@"SELECT QD.QUOTATION_NO,scs.supplier_edesc as party_name,ROUND((QDI.TAXABLE_AMOUNT-QDI.EXCISE)/SQI.QUANTITY,2) AS ACTUAL_PRICE,QDI.ITEM_CODE,QD.STATUS FROM QUOTATION_DETAILS QD,QUOTATION_DETAIL_ITEMWISE QDI,SA_QUOTATION_ITEMS SQI,ip_supplier_setup scs
-                    WHERE QD.QUOTATION_NO=QDI.QUOTATION_NO AND SQI.TENDER_NO=QD.TENDER_NO AND QDI.ITEM_CODE=SQI.ITEM_CODE AND scs.supplier_code=qd.supplier_code AND QD.TENDER_NO = '{quotation.TENDER_NO}' AND SCS.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}'";
+                    string vquery = $@"SELECT QD.QUOTATION_NO,scs.supplier_edesc as party_name,ROUND((QDI.TAXABLE_AMOUNT-QDI.EXCISE)/SQI.QUANTITY,2) AS ACTUAL_PRICE,QDI.ITEM_CODE,QD.STATUS,QD.REVISE FROM QUOTATION_DETAILS QD,QUOTATION_DETAIL_ITEMWISE QDI,SA_QUOTATION_ITEMS SQI,ip_supplier_setup scs
+                    WHERE QD.QUOTATION_NO=QDI.QUOTATION_NO AND SQI.TENDER_NO=QD.TENDER_NO AND QDI.ITEM_CODE=SQI.ITEM_CODE AND scs.supplier_code=qd.supplier_code AND QD.TENDER_NO = '{quotation.TENDER_NO}' AND SCS.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' AND SQI.deleted_flag = 'N' order by quotation_no";
                     List<PARTY_DETAIL> partyData = this._dbContext.SqlQuery<PARTY_DETAIL>(vquery).ToList();
                     quotation.PartDetails = partyData;
                     string vQuery = $@"SELECT SQI.*, 
@@ -424,7 +424,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
                 from quotation_details qs ,ip_supplier_setup scs,sa_quotation_items sqi,ip_item_master_setup iims ,sa_quotation_setup sqs,quotation_detail_itemwise qdi
                 where scs.supplier_code=qs.supplier_code and iims.item_code=sqi.item_code and qs.tender_no=sqi.tender_no and sqs.tender_no=qs.tender_no and 
                 sqs.company_code=iims.company_code and sqs.company_code=scs.company_code and qdi.quotation_no=qs.quotation_no
-                and  qs.quotation_no='{quotationNo}'";
+                and  qs.quotation_no='{quotationNo}' and sqi.deleted_flag='N' and sqs.status='E'";
                 List<QuotationDetails> quoteData = _dbContext.SqlQuery<QuotationDetails>(vquery).ToList();
                 InsertQuotesData(quoteData);
                 return true;
@@ -450,7 +450,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
             ) VALUES (
                 '{data.Quotation_No}', TO_DATE('{data.Created_Date.ToString("dd-MMM-yyyy")}', 'DD-MON-YYYY'), null, '{data.Tender_No}', null, '{data.SUPPLIER_Code}',
                 '{data.Address}', NULL, '{data.Contact_No}', {id}, '{data.Item_Code}', '{data.Specification}', '{data.Index_Mu_Code}', {data.Quantity}, '{data.Rate}', '{data.Total_Net_Amount}', null, '1000',
-                '{data.Company_Code}', '{data.Branch_Code}', '{_workContext.CurrentUserinformation.login_code}', '{DateTime.Now.ToString("dd-MMM-yyyy")}',null, '{data.Currency_Rate}', '{data.Brand_Name}', TO_DATE('{data.Delivery_Date.ToString("dd-MMM-yyyy")}', 'DD-MON-YYYY'), 'Y', '{_workContext.CurrentUserinformation.login_code}', '{DateTime.Now.ToString("dd-MMM-yyyy")}'
+                '{data.Company_Code}', '{data.Branch_Code}', '{_workContext.CurrentUserinformation.login_code}', '{DateTime.Now.ToString("dd-MMM-yyyy")}','{data.Currency}', '{data.Currency_Rate}', '{data.Brand_Name}', TO_DATE('{data.Delivery_Date.ToString("dd-MMM-yyyy")}', 'DD-MON-YYYY'), 'Y', '{_workContext.CurrentUserinformation.login_code}', '{DateTime.Now.ToString("dd-MMM-yyyy")}'
             )";
                     _dbContext.ExecuteSqlCommand(insertItemQuery);
                 }
@@ -555,23 +555,23 @@ namespace NeoERP.QuotationManagment.Service.Repository
         {
             try
             {
-                string query = $@"SELECT COUNT(*) AS count, 'Total Quotation Request' AS heading, '#bbbbf0' AS color, 'fa fa-star fa-2x' AS icon, 1 AS sortOrder
+                string query = $@"SELECT COUNT(*) AS count, 'Quotation Request' AS heading, '#bbbbf0' AS color, 'fa fa-star fa-2x' AS icon, 1 AS sortOrder
                                 FROM sa_quotation_setup
                                 WHERE status = 'E'
                                 UNION 
-                                SELECT COUNT(*) AS count, 'Total Quotation Received ' AS heading, '#f0bbee' AS color, 'fa fa-asterisk' AS icon, 2 AS sortOrder
+                                SELECT COUNT(*) AS count, 'Quotation Received ' AS heading, '#f0bbee' AS color, 'fa fa-asterisk' AS icon, 2 AS sortOrder
                                 FROM quotation_details sps 
                                 LEFT JOIN sa_quotation_setup ps ON (ps.tender_no = sps.tender_no)
                                 WHERE  ps.status = 'E' 
                                 UNION 
-                                SELECT COUNT(DISTINCT sps.quotation_no) AS count, 'Total Quotation Approved ' AS heading, '#f0d19c' AS color, 'fa fa-spinner' AS icon, 3 AS sortOrder
+                                SELECT COUNT(DISTINCT sps.quotation_no) AS count, 'Quotation Approved ' AS heading, '#f0d19c' AS color, 'fa fa-spinner' AS icon, 3 AS sortOrder
                                  FROM quotation_details sps 
                                 LEFT JOIN sa_quotation_setup ps ON (ps.tender_no = sps.tender_no)
                                 WHERE  ps.status = 'E' and sps.status='AP'
                                 UNION 
                                 SELECT ((SELECT COUNT(*) FROM sa_quotation_setup WHERE status = 'E') - (SELECT COUNT(DISTINCT sps.tender_no) 
                                  FROM quotation_details sps WHERE sps.status = 'AP' AND sps.tender_no IN (SELECT tender_no FROM sa_quotation_setup WHERE status = 'E'))) AS count, 
-                                'Total Quotation Open' AS heading,  '#d4fa93' AS color,'fa fa-opera' AS icon, 4 AS sortOrder from dual ORDER BY sortOrder";
+                                'Quotation Open' AS heading,  '#d4fa93' AS color,'fa fa-opera' AS icon, 4 AS sortOrder from dual ORDER BY sortOrder";
 
                 List<QuotationCount> entity = this._dbContext.SqlQuery<QuotationCount>(query).ToList();
                 return entity;

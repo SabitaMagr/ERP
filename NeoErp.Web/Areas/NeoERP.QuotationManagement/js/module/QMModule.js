@@ -22,6 +22,10 @@ QMModule.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/QuotationDetail', {
         templateUrl: '/QuotationManagement/Home/QuotationDetail',
     });
+    $routeProvider.when('/AddQuotation', {
+        templateUrl: '/QuotationManagement/Home/AddQuotation',
+    });
+
     $routeProvider.when('/QuotationDetail/:id',
         {
             templateUrl: function (stateParams) {
@@ -46,6 +50,7 @@ QMModule.config(function ($routeProvider, $locationProvider) {
         }
     })
     $locationProvider.html5Mode({ enable: true }).hashPrefix('!QM');
+
 });
 
 QMModule.config.$inject = ['$routeProvider', '$locationProvider'];

@@ -29,6 +29,8 @@ namespace NeoErp.Core.Quotation
         public decimal TOTAL_NET_AMOUNT { get; set; }
         public char STATUS { get; set; }
         public string DISCOUNT_TYPE { get; set; }
+        public string REVISE { get; set; }
+
         public List<Item_details> Item_Detail { get; set; }
         public List<Term_Conditions> TermsCondition { get; set; }
     }
@@ -45,6 +47,7 @@ namespace NeoErp.Core.Quotation
         public decimal TAXABLE_AMOUNT { get; set; }
         public decimal VAT_AMOUNT { get; set; }
         public decimal NET_AMOUNT { get; set; }
+
     }
 
     public class Term_Conditions

@@ -135,11 +135,11 @@ namespace NeoErp.Services
                     var idquery = $@"SELECT COALESCE(MAX(QUOTATION_NO) + 1, 1) AS id FROM QUOTATION_DETAILS";
                      quotationNo = _dbContext.SqlQuery<int>(idquery).FirstOrDefault();
 
-                    string insertQuery = string.Format(@"INSERT INTO QUOTATION_DETAILS(QUOTATION_NO, TENDER_NO, PAN_NO, supplier_code,CURRENCY, CURRENCY_RATE, DELIVERY_DATE, TOTAL_AMOUNT, TOTAL_DISCOUNT, TOTAL_EXCISE, TOTAL_TAXABLE_AMOUNT, TOTAL_VAT, TOTAL_NET_AMOUNT, STATUS, DISCOUNT_TYPE) 
-                                             VALUES({0}, '{1}', '{2}', '{3}', '{4}', {5}, TO_DATE('{6}', 'DD-MON-YYYY'), {7}, {8}, {9}, {10}, {11}, {12}, 'RQ', '{13}')",
+                    string insertQuery = string.Format(@"INSERT INTO QUOTATION_DETAILS(QUOTATION_NO, TENDER_NO, PAN_NO, supplier_code,CURRENCY, CURRENCY_RATE, DELIVERY_DATE, TOTAL_AMOUNT, TOTAL_DISCOUNT, TOTAL_EXCISE, TOTAL_TAXABLE_AMOUNT, TOTAL_VAT, TOTAL_NET_AMOUNT, STATUS, DISCOUNT_TYPE,REVISE) 
+                                             VALUES({0}, '{1}', '{2}', '{3}', '{4}', {5}, TO_DATE('{6}', 'DD-MON-YYYY'), {7}, {8}, {9}, {10}, {11}, {12}, 'RQ', '{13}','{14}')",
                                                          quotationNo, data.TENDER_NO, data.PAN_NO,string.IsNullOrEmpty(data.CUSTOMER_CODE) ? newmaxitemcode : data.CUSTOMER_CODE, data.CURRENCY, data.CURRENCY_RATE,
                                                          data.DELIVERY_DATE.HasValue ? data.DELIVERY_DATE.Value.ToString("dd-MMM-yyyy") : "NULL", data.TOTAL_AMOUNT, data.TOTAL_DISCOUNT,
-                                                         data.TOTAL_EXCISE, data.TOTAL_TAXABLE_AMOUNT, data.TOTAL_VAT, data.TOTAL_NET_AMOUNT, data.DISCOUNT_TYPE);
+                                                         data.TOTAL_EXCISE, data.TOTAL_TAXABLE_AMOUNT, data.TOTAL_VAT, data.TOTAL_NET_AMOUNT, data.DISCOUNT_TYPE,data.REVISE);
 
                     _dbContext.ExecuteSqlCommand(insertQuery);
 
@@ -228,6 +228,12 @@ namespace NeoErp.Services
             var insertitem = $@"INSERT INTO QUOTATION_TRANSACTION(TENDER_NO,SERIAL_NO,QUOTATION_NO,DOCUMENT_NAME,DOCUMENT_FILE_NAME,COMPANY_CODE,BRANCH_CODE,CREATED_BY,CREATED_DATE,DELETED_FLAG,SESSION_ROWID,SYN_ROWID)VALUES('{quotationdetail.TENDER_NO}', '{quotationdetail.SERIAL_NO}','{quotationdetail.QUOTATION_NO}','{quotationdetail.DOCUMENT_FILE_NAME}', '{quotationdetail.DOCUMENT_NAME}','{_workContext.CurrentUserinformation.company_code}', '{_workContext.CurrentUserinformation.branch_code}','{_workContext.CurrentUserinformation.User_id}',SYSDATE,'{'N'}','','')";
             var iteminsert = _dbContext.ExecuteSqlCommand(insertitem);
             return null;
+        }
+        public int? GetSupplierCount(string panNo,string tenderNo)
+        {
+            string query = $@"SELECT COUNT(*) AS MAX FROM QUOTATION_DETAILS WHERE PAN_NO='{panNo}' AND TENDER_NO='{tenderNo}'";
+            int? result = _dbContext.SqlQuery<int?>(query).FirstOrDefault();
+            return result;
         }
     }
 }

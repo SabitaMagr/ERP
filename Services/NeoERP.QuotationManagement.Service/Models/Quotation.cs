@@ -31,6 +31,8 @@ namespace NeoERP.QuotationManagement.Service.Models
         public string ITEM_CODE { get; set; }
         public decimal ACTUAL_PRICE { get; set; }
         public string STATUS { get; set; }
+        public string REVISE { get; set; }
+
     }
     public class Item_Detail
     {

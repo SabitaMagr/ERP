@@ -128,7 +128,7 @@
             $scope.currencyOptions = {
                 dataSource: $scope.currencyData,
                 dataTextField: "name",
-                dataValueField: "name",
+                dataValueField: "code",
                 optionLabel: "Select Currency",
                 filter: "contains",
                 autoClose: true
@@ -324,6 +324,13 @@
             displayPopupNotification("Delivery Date is required", "warning");
         }
         else {
+            $http.get('/api/ApiQuotation/checkPAN?panNo=' + $scope.PAN_NO + '&tenderNo=' + $scope.TENDER_NO)
+                .then(function (response) {
+                    if (response.data > 0) {
+                        var revise = "Revised " + response.data;
+                    } else {
+                        var revise = "";
+                    }
             var formData = {
                 PAN_NO: $scope.PAN_NO,
                 TENDER_NO: $scope.TENDER_NO,
@@ -340,6 +347,7 @@
                 TOTAL_EXCISE: $scope.TOTAL_EXCISE,
                 TOTAL_TAXABLE_AMOUNT: $scope.TOTAL_TAXABLE_AMOUNT,
                 TOTAL_VAT: $scope.TOTAL_VAT,
+                REVISE: revise,
                 TOTAL_NET_AMOUNT: $scope.TOTAL_NET_AMOUNT,
                 DISCOUNT_TYPE: $scope.selectedDiscountType,
                 COMPANY_CODE: $scope.companyCode,
@@ -383,6 +391,7 @@
                 $http.post('/api/ApiQuotation/SaveFormData', formData)
                     .then(function (response) {
                         $scope.Cancel();
+                        $scope.formSubmitted = true;
                         $scope.tenderNo = response.data.data.tenderNo; // Access the TENDER_NO from the response
                         $scope.quotationNo = response.data.data.quotationNo;
                         myInventoryDropzone.processQueue();
@@ -394,7 +403,8 @@
                         var message = error;
                         displayPopupNotification(message, "error");
                     });
-            }
+                    }
+             })
         }
     };
     $scope.addTerm = function () {

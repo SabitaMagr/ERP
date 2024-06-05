@@ -67,25 +67,26 @@
                             if (!ratesByItemCode[party.ITEM_CODE]) {
                                 ratesByItemCode[party.ITEM_CODE] = {};
                             }
-                            ratesByItemCode[party.ITEM_CODE][party.PARTY_NAME] = {
+                            ratesByItemCode[party.ITEM_CODE][party.QUOTATION_NO] = {
                                 rate: party.ACTUAL_PRICE,
                                 status: party.STATUS
                             };
+
                             var vendorExists = uniqueVendors.some(function (item) {
-                                return item.name === party.PARTY_NAME && item.quotationNo === party.QUOTATION_NO && item.status === party.STATUS;
+                                return item.quotationNo === party.QUOTATION_NO;
                             });
 
                             // If the vendor and quotation number do not exist, add them to uniqueVendors
                             if (!vendorExists) {
                                 uniqueVendors.push({
-                                    name: party.PARTY_NAME, quotationNo: party.QUOTATION_NO, status: party.STATUS
+                                    name: party.PARTY_NAME, quotationNo: party.QUOTATION_NO, status: party.STATUS,revise:party.REVISE
                                 });
                             }
                         });
 
                         itemDetails.forEach(function (item) {
                             uniqueVendors.forEach(function (vendor) {
-                                item[vendor.name] = ratesByItemCode[item.ITEM_CODE][vendor.name] || '';
+                                item[vendor.quotationNo] = ratesByItemCode[item.ITEM_CODE][vendor.quotationNo] || '';
                             });
                             item.QUOTATION_NO = $scope.TENDER_NO; // Add quotation number to each item
                         });
@@ -152,23 +153,25 @@
         // Generate vendor columns
         uniqueVendors.forEach(function (vendor) {
             var backgroundColor = vendor.status === 'AP' ? '#9afa84' : 'transparent';
+            console.log(vendor);
+            var displayRevise = vendor.revise ? ` (${vendor.revise})` : '';
 
             var headerTemplate = `
-        <div style="display: flex; align-items: center;">
-            <span class="k-link vendor-title" data-quotation-no="${vendor.quotationNo}">${vendor.name}</span>
-            <i class="fa fa-search vendor-search" style="margin-left: 1rem; cursor: pointer;"></i>
-        </div>`;
+            <div style="display: flex; align-items: center;">
+                <span class="k-link vendor-title" data-quotation-no="${vendor.quotationNo}">${vendor.name}${displayRevise}</span>
+                <i class="fa fa-search vendor-search" style="margin-left: 1rem; cursor: pointer;"></i>
+            </div>`;
 
             var column = {
-                field: vendor.name,
+                field: vendor.quotationNo, // Use quotationNo as the field
                 headerTemplate: headerTemplate,
                 width: 180,
                 template: function (dataItem) {
-                    var rateInfo = dataItem[vendor.name];
-                    return `
-                <div style="display: flex; justify-content: right; cursor: pointer;">
-                    ${rateInfo.rate}
-                </div>`;
+                    var rateInfo = dataItem[vendor.quotationNo]; // Access rate info using quotationNo
+                    return rateInfo ? `
+                    <div style="display: flex; justify-content: right; cursor: pointer;">
+                        ${rateInfo.rate}
+                    </div>` : '';
                 },
                 headerAttributes: { style: `background-color: ${backgroundColor}` }
             };

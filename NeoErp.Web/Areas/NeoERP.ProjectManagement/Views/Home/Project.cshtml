@@ -1,6 +1,7 @@
 ﻿@{
-    Layout =null;
-}
+        Layout = null;
+    }
+
 <style>
     .btnadd {
         margin-top: 2px;
@@ -33,14 +34,14 @@
         color: white;
         border-radius: 5px !important;
     }
-    /*.scrollable-table {
-        max-width: 500px;*/ /* Adjust the maximum width as needed */
-    /*overflow-x: auto;*/ /* Enable horizontal scrolling */
-    /*}*/
+    .topsearch input.form-control, .topsearch input {
+        width: 115%;
+    }
 
 </style>
+
 <div class="col-md-12">
-    <div id="projectTreeCtrl"  ng-controller="projectTreeCtrl">
+    <div id="projectTreeCtrl" ng-controller="projectTreeCtrl">
         @*<div> @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/SetupPartial/projectSetupPartial.cshtml")</div>*@
         <div class="portlet box green-box main">
             <item></item>
@@ -64,7 +65,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="actions text-right">
-                            <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-disabled="treenodeselected" ng-click="showProjectModal()" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Processing..." href="javascript:;" style="margin-left: 81rem;">
+                            <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-disabled="treenodeselected" ng-click="showProjectModal()" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Processing..." href="javascript:;" style="margin-left: 83rem;">
                                 <i class="fa fa-plus"></i> NEW
                             </a>
                         </div>

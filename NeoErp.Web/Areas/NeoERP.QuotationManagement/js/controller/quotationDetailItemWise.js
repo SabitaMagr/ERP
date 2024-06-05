@@ -3,7 +3,8 @@
     // Initialize scope variables
     $scope.productFormList = [];
     $scope.productList = [];
-
+    $scope.currencyData = []; // Declare currencyData on $scope
+    $scope.currencyOptions = {};
     $scope.termList = [];
     $scope.counterProduct = 1;
     $scope.quotationDetails = false;
@@ -32,8 +33,6 @@
         }
     };
 
-
-
     $scope.openImage = function (imageUrl) {
         window.open(imageUrl, '_blank');
     };
@@ -58,7 +57,7 @@
              $scope.CONTACT_NO = quotation.CONTACT_NO;
              $scope.EMAIL = quotation.EMAIL;
              $scope.CURRENCY_RATE = quotation.CURRENCY_RATE;
-             $scope.CURRENCY = quotation.CURRENCY;
+             //$scope.CURRENCY = quotation.CURRENCY;
              $scope.DELIVERY_DATE = formatDate(quotation.DELIVERY_DATE);
              $scope.TENDER_NO = quotation.TENDER_NO;
              $scope.ISSUE_DATE = formatDate(quotation.ISSUE_DATE);
@@ -67,7 +66,18 @@
              $scope.TXT_REMARKS = quotation.REMARKS;
              $scope.STATUS = quotation.STATUS;
              $scope.DISCOUNT_TYPE = quotation.DISCOUNT_TYPE;
+             $http.get("https://gist.githubusercontent.com/aaronhayes/5fef481815ac75f771d37b16d16d35c9/raw/edbec8eea5cc9ace57a79409cc390b7b9bcf24f6/currencies.json")
+                 .then(function (response) {
 
+                     $scope.currencyData = response.data;
+                     var currency = $scope.currencyData.find(function (item) {
+                         return item.code === $scope.CURRENCY;
+                     });
+
+                     if (currency) {
+                         $scope.CURRENCY = currency.name;
+                     } 
+                 })
              $scope.TOTAL_AMOUNT = (quotation.TOTAL_AMOUNT).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
              $scope.TOTAL_DISCOUNT = (quotation.TOTAL_DISCOUNT).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
              $scope.TOTAL_EXCISE = (quotation.TOTAL_EXCISE).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -278,7 +288,7 @@
             .then(function (response) {
                 displayPopupNotification("Quotation Accepted!!", "success");
                 var landingUrl = window.location.protocol + "//" + window.location.host + "/QuotationManagement/Home/Index#!QM/SummaryReport";
-                $window.location.href = landingUrl;
+                //$window.location.href = landingUrl;
                 setTimeout(function () {
                     $window.location.href = landingUrl;
                 }, 1000);
@@ -297,7 +307,7 @@
             .then(function (response) {
                 displayPopupNotification("Quotation Rejected!!", "success");
                 var landingUrl = window.location.protocol + "//" + window.location.host + "/QuotationManagement/Home/Index#!QM/SummaryReport";
-                $window.location.href = landingUrl;
+                //$window.location.href = landingUrl;
                 setTimeout(function () {
                     $window.location.href = landingUrl;
                 }, 1000);

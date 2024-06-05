@@ -14,6 +14,7 @@ namespace NeoErp.Services
         List<Company> GetCompanyDetails(string id);
         int? InsertQuotationDetails(Quotation_Details formDatas);
         int? DocumentIfExists(string tenderNo, string quotationNo);
+        int? GetSupplierCount(string panNo,string tenderNo);
         string InsertQuotationImage(QuotationTranscation quotationdetail);
 
     }

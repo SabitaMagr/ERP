@@ -718,7 +718,7 @@ span.k-widget.k-combobox.k-header.referenceCustomer.ccustumer.cust.custumer.c.ng
 }
 
 .form-control {
-    width: 27rem; /* Adjust the width as needed */
+    width: 25rem; /* Adjust the width as needed */
     padding: .375rem .75rem; /* Adjust the padding as needed */
     font-size: 12px; /* Adjust the font size as needed */
     line-height: 1.5;
@@ -944,8 +944,15 @@ span.k-picker-wrap.k-state-default {
         font-size: 9px;
         line-height: 19px;
 }
+/* Disable the dropzone upload functionality */
 .dropzone.dz-clickable {
-    cursor: default; 
-    pointer-events: none; 
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Enable pointer events for download links inside the dropzone */
+.dropzone a.dropzone-download {
+    pointer-events: auto;
+    cursor: pointer;
 }
 

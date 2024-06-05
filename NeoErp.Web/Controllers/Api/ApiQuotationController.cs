@@ -38,6 +38,12 @@ namespace NeoErp.Controllers.Api
             List<Supplier> supplierDetails = _quoTemplate.GetSupplierDetails(panNo);
             return supplierDetails;
         }
+        [HttpGet]
+        public int? checkPAN(string panNo,string tenderNo)
+        {
+            int? count = _quoTemplate.GetSupplierCount(panNo, tenderNo);
+            return count;
+        }
         public List<Company> GetCompanyDetails(string id)
         {
             List<Company> company = _quoTemplate.GetCompanyDetails(id);
