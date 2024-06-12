@@ -1,4 +1,4 @@
-﻿QMModule.controller('quotationDetail', function ($scope, $rootScope, $http, $filter, $timeout, $window) {
+﻿QMModule.controller('quotationDetail', function ($scope, $rootScope, $http, $filter, $routeParams, $window) {
 
     // Initialize scope variables
     $scope.productFormList = [];
@@ -40,11 +40,15 @@
         pageSize: 10 // Optionally, set page size
     });
 
+    $scope.id = "";
 
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("id");
+    if ($routeParams.id != undefined) {
+        $scope.id = $routeParams.id.split(new RegExp('_', 'i')).join('/');
 
-        $http.get('/api/QuotationApi/ItemDetailsByTender?tenderNo=' + id)
+    }
+    else { $scope.id = "undefined"; }
+
+    $http.get('/api/QuotationApi/ItemDetailsByTender?tenderNo=' + $scope.id)
             .then(function (response) {
                 var quotation = response.data[0];
                 var itemDetails = quotation.Items;
@@ -55,6 +59,7 @@
                 $scope.ISSUE_DATE = formatDate(quotation.ISSUE_DATE);
                 $scope.VALID_DATE = formatDate(quotation.VALID_DATE);
                 $scope.NEPALI_DATE = quotation.NEPALI_DATE;
+                $scope.DELIVERY_DT_BS = quotation.DELIVERY_DT_BS;
                 $scope.TXT_REMARKS = quotation.REMARKS;
                 var id = 1;
 
@@ -153,7 +158,6 @@
         // Generate vendor columns
         uniqueVendors.forEach(function (vendor) {
             var backgroundColor = vendor.status === 'AP' ? '#9afa84' : 'transparent';
-            console.log(vendor);
             var displayRevise = vendor.revise ? ` (${vendor.revise})` : '';
 
             var headerTemplate = `
@@ -183,11 +187,8 @@
     }
 
     function handleTitleClick(quotationNo) {
-        var tenderNo = $scope.TENDER_NO;
-        var landingUrl = window.location.protocol + "//" + window.location.host + "/QuotationManagement/Home/QuotationDetailItemwise?quotation=" + quotationNo + "&tender=" + tenderNo;
-        setTimeout(function () {
-            $window.location.href = landingUrl;
-        }, 1000);
+        var tenderNo = $scope.TENDER_NO.split(new RegExp('/', 'i')).join('_');
+        $window.location.href ="/QuotationManagement/Home/Index#!QM/QuotationDetailItemwise/" + quotationNo + "/" + tenderNo;
     }
 
 
@@ -195,6 +196,4 @@
         var date = new Date(dateString);
         return $filter('date')(date, 'dd-MMM-yyyy');
     }
-
- 
 });

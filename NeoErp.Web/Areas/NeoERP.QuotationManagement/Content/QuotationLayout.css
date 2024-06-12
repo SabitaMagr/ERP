@@ -951,7 +951,7 @@ span.k-picker-wrap.k-state-default {
 }*/
 
 .main input.form-control, .main select {
-    height:24px;
+    height:25px;
     padding:0px 6px;
     /*border:solid #ddd 1px;*/
     font-size:11px;
@@ -2141,4 +2141,10 @@ input.form-control, textarea, select.form-control, textarea.form-control {
 
 span.k-widget.k-combobox.k-header.referenceCustomer.ccustumer.cust.custumer.c.ng-pristine.ng-untouched.ng-valid.k-combobox-clearable.ng-empty {
     margin-top: -20px;
+}
+.calendar-icon-2{
+right:0px !important;
+top: 80% !important;
+transform: translateY(-50%);
+cursor: pointer;
 }

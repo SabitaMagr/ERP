@@ -1,6 +1,8 @@
-﻿
+﻿@using NeoErp.Core;
+@using NeoErp.Core.Infrastructure;
 @{
-    Layout = null;
+    var workingContent = EngineContext.Current.Resolve<IWorkContext>
+    ();
 }
 <link href="~/Areas/NeoERP.ProjectManagement/Content/hotkeys.css" rel="stylesheet" />
 
@@ -844,13 +846,13 @@
     }
 </style>
 
-<div class="col-md-12 bodyController" ng-controller="consumption">
+<div class="col-md-12 bodyController" id="consumption">
     <div class="portlet light form-fit bordered bottomspance">
 
         <div class="portlet">
             <div class="portlet-title">
                 <div class="caption">
-                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/ProjectManagement/Home/ProjectDashboard">
+                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/ProjectManagement/Home/Index#!PM/Dashboard">
                         <i class="fa fa-arrow-circle-left"></i>
                     </a>
                     <i class="fa fa-gift font-green-haze"></i>
@@ -917,7 +919,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li ng-if="OrderNo !== 'undefined'">
-                                <a data-toggle="tooltip" data-placement="top" title="Add Inventory" href="/ProjectManagement/Home/Index#!DT/Inventory?formcode={{formcode}}">
+                                <a data-toggle="tooltip" data-placement="top" title="Add Inventory" href="/ProjectManagement/Home/Index#!PM/ConsumptionEntry?formcode={{formcode}}">
                                     <i class="glyphicon glyphicon-new-window"></i> New
                                 </a>
                             </li>
@@ -936,10 +938,10 @@
                                 </a>
                             </li>
                             @*<li>
-                                <a ng-if="savecontinue==='Save & Continue'" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." id="savedocumentformdata" data-toggle="tooltip" title="Save and continue for new document" ng-click="SaveDocumentFormData(1)" href="javascript:;">
-                                    <i class="fa fa-floppy-o"></i> {{savecontinue}} (Alt + C)
-                                </a>
-                            </li>*@
+                                    <a ng-if="savecontinue==='Save & Continue'" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." id="savedocumentformdata" data-toggle="tooltip" title="Save and continue for new document" ng-click="SaveDocumentFormData(1)" href="javascript:;">
+                                        <i class="fa fa-floppy-o"></i> {{savecontinue}} (Alt + C)
+                                    </a>
+                                </li>*@
                             @*<li>
                                     <a ng-click="SaveDocumentFormData(2)" href="javascript:;">
                                         <i class="fa fa-print"></i>Save & Print (Alt + P)
@@ -948,26 +950,27 @@
                                 </li>*@
                             <li class="divider"> </li>
                             @*<li>
-                                <a id="getDraftItem" ng-click="showDraftModal()" data-toggle="tooltip" title="Get Draft Value" href="javascript:;">
-                                    <i class="fa fa-list"></i> Draft List (Alt+ D )
-                                </a>
-                            </li>*@
+                                    <a id="getDraftItem" ng-click="showDraftModal()" data-toggle="tooltip" title="Get Draft Value" href="javascript:;">
+                                        <i class="fa fa-list"></i> Draft List (Alt+ D )
+                                    </a>
+                                </li>*@
                             @*<li>
-                                <a id="saveasdraft" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." ng-click="SaveAsDraft(1)" href="javascript:;" data-toggle="tooltip" title="Save document as draft">
-                                    <i class="fa fa-file"></i> Save As Draft (Alt +S)
-                                </a>
-                            </li>*@
+                                    <a id="saveasdraft" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." ng-click="SaveAsDraft(1)" href="javascript:;" data-toggle="tooltip" title="Save document as draft">
+                                        <i class="fa fa-file"></i> Save As Draft (Alt +S)
+                                    </a>
+                                </li>*@
                         </ul>
                     </div>
                     @*<a class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="(Alt + P)" ng-click="SaveDocumentFormData(3)" href="javascript:;">
                             <i class="fa fa-print"></i> Save & Print
                         </a>*@
-                    <!--<a ng-if="OrderNo === 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top"--> @*title="(Alt + P)"*@ <!--title="Save and print document" ng-click="SaveDocumentFormData(3)" href="javascript:;">
+                    <!--<a ng-if="OrderNo === 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top"--> @*title="(Alt + P)"*@
+                    <!--title="Save and print document" ng-click="SaveDocumentFormData(3)" href="javascript:;">
                         <i class="fa fa-print"></i> Save & Print
                     </a>-->
-                    <a ng-if="OrderNo!== 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top" @*title="(Alt + P)"*@ title="Update and print document" ng-click="SaveDocumentFormData(4)" href="javascript:;">
+                    <!--<a ng-if="OrderNo!== 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top"--> @*title="(Alt + P)"*@ <!--title="Update and print document" ng-click="SaveDocumentFormData(4)" href="javascript:;">
                         <i class="fa fa-print"></i> Update & Print
-                    </a>
+                    </a>-->
                     <a ng-if="OrderNo!== 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top" @*title="(Alt + P)"*@ title="Delete Document" ng-click="DeleteInvDocument()" href="javascript:;">
                         <i class="fa fa-trash-o"></i> Delete
                     </a>

@@ -433,91 +433,20 @@
         });
 
     });
+    var id;
+    var quoteNo;
     // Handle click event for the view button
     $scope.product = {};
     $("#kGrid").on("click", ".view-btn", function () {
-        var id = $(this).data("id");
-        window.location.href = "/QuotationManagement/Home/ViewQuotation?id=" + id;
+        quoteNo = $(this).data("id");
+        id = quoteNo.split(new RegExp('/', 'i')).join('_');
+        window.location.href = "/QuotationManagement/Home/Index#!QM/ViewQuotation/" + id;
     });
       // Handle click event for the edit button
     $("#kGrid").on("click", ".edit-btn", function () {
-        var id = $(this).data("id");
-        window.location.href = "/QuotationManagement/Home/EditQuotation?id=" + id;
-
-        //$http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + id)
-        //    .then(function (response) {
-        //        var quotation = response.data[0];
-        //        $scope.ID = quotation.ID;
-        //        $scope.TENDER_NO = quotation.TENDER_NO;
-        //        var issueDate = new Date(quotation.ISSUE_DATE);
-        //        var validDate = new Date(quotation.VALID_DATE);
-        //        var issueDate = $filter('date')(new Date(quotation.ISSUE_DATE), 'dd-MMM-yyyy');
-        //        var validDate = $filter('date')(new Date(quotation.VALID_DATE), 'dd-MMM-yyyy');
-
-        //        // Set values for input fields with specific IDs
-        //        $('#englishdatedocument').val(issueDate);
-        //        $('#nepaliDate').val(quotation.NEPALI_DATE);
-        //        $("#validDt").val(validDate);
-
-        //        $scope.TXT_REMARKS = quotation.REMARKS;
-        //        var id = 1;
-        //        $scope.panelMode = 'edit';
-        //        $scope.saveAction = "Update";
-        //        $scope.createEdit = true; // Corrected typo here
-        //        $scope.productFormList = [];
-        //        if (quotation.Items.length === 0) {
-        //            // If there are no items, call addProduct directly
-        //            $scope.addProduct();
-        //        } else {
-        //            for (var i = 0; i < quotation.Items.length; i++) {
-        //                var itemList = quotation.Items[i];
-        //                var imageUrl = window.location.protocol + "//" + window.location.host + "/Areas/NeoERP.QuotationManagement/Image/Items/" + itemList.IMAGE;
-        //                $scope.productFormList.push({
-        //                    TID: itemList.ID,
-        //                    ID: id,
-        //                    ItemDescription: itemList.ITEM_CODE,
-        //                    SPECIFICATION: itemList.SPECIFICATION,
-        //                    IMAGE: itemList.IMAGE,
-        //                    IMAGE_NAME: itemList.IMAGE,
-        //                    IMAGE_LINK: imageUrl,
-        //                    UNIT: itemList.UNIT,
-        //                    QUANTITY: itemList.QUANTITY,
-        //                    CATEGORY: itemList.CATEGORY,
-        //                    BRAND_NAME: itemList.BRAND_NAME,
-        //                    INTERFACE: itemList.INTERFACE,
-        //                    TYPE: itemList.TYPE,
-        //                    LAMINATION: itemList.LAMINATION,
-        //                    ITEM_SIZE: itemList.ITEM_SIZE,
-        //                    THICKNESS: itemList.THICKNESS,
-        //                    COLOR: itemList.COLOR,
-        //                    GRADE: itemList.GRADE,
-        //                    SIZE_LENGTH: itemList.SIZE_LENGTH,
-        //                    SIZE_WIDTH: itemList.SIZE_WIDTH,
-        //                });
-        //                id++;
-        //            }
-        //        }
-        //        $scope.createPanel = true;
-        //        $scope.tablePanel = false;
-
-        //        // After populating data, trigger select events
-        //        setTimeout(function () {
-        //            for (let i = 0; i < quotation.Items.length; i++) {
-        //                var currentItem = quotation.Items[i];
-        //                var currentItemCode = currentItem.ITEM_CODE;
-        //                // Check if the element exists before attempting to trigger the select event
-        //                var dropdownElement = $("#item_" + id).data("kendoDropDownList");
-        //                if (dropdownElement) {
-        //                    dropdownElement.value(currentItemCode);
-        //                }
-        //                id++;
-        //            }
-        //        }, 200);
-        //    })
-        //    .catch(function (error) {
-        //        var message = 'Error in displaying quotation!!';
-        //        displayPopupNotification(message, "error");
-        //    });
+        quoteNo = $(this).data("id");
+        id = quoteNo.split(new RegExp('/', 'i')).join('_');
+        window.location.href = "/QuotationManagement/Home/Index#!QM/EditQuotation/" + id;
     });
 
     $scope.openImage = function (imageUrl) {

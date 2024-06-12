@@ -1,20 +1,10 @@
 ﻿QMModule.controller('AddQuotation', function ($scope, $rootScope, $http, $filter, $timeout, $location, $httpParamSerializer) {
     $scope.pageName = "Add Quotation";
     $scope.saveAction = "Save";
-    $scope.createPanel = false;
-    $scope.tablePanel = true;
-    $scope.createLink = false;
-    $scope.viewPanel = false;
-    $scope.createEdit = false;
+
     $scope.idShowHide = false;
 
-    $scope.AddButtonClickEvent = function () {
-        $scope.clear();
-        $scope.panelMode = 'create';
-        $scope.createPanel = true;
-        $scope.createEdit = true; // Corrected typo here
-        $scope.tablePanel = false;
-    }
+
 
     $("#englishdatedocument").kendoDatePicker();
     $("#validDt").kendoDatePicker();
@@ -46,14 +36,6 @@
     $scope.selectedItem = null;
 
     $scope.ItemSelect = {
-        dataTextField: "ItemDescription",
-        dataValueField: "ItemCode",
-        height: 600,
-        valuePrimitive: true,
-        maxSelectedItems: 1,
-        headerTemplate: '<div class="col-md-offset-3"><strong>Group...</strong></div>',
-        placeholder: "Select Item...",
-        autoClose: true,
         dataSource: {
             transport: {
                 read: {
@@ -61,6 +43,14 @@
                     dataType: "json"
                 }
             }
+        },
+        dataTextField: "ItemDescription",
+        dataValueField: "ItemCode",
+        filter: "contains",
+        autoClose: true,
+        change: function (e) {
+            // Handle change event if needed
+            var selectedItem = this.dataItem();
         }
     };
     $scope.currencySelect = {
@@ -129,19 +119,21 @@
         }
     };
     $scope.addRow = function () {
-        var maxId = Math.max(...$scope.productFormList.map(product => product.ID));
-        $scope.counterProduct = maxId !== -Infinity ? maxId + 1 : 1;
-        $scope.productFormList.push({
-            ID: $scope.counterProduct,
-            ItemDescription: "",
-            UNIT: "",
-            QUANTITY: "",
-            UNIT_PRICE: "",
-            AMOUNT: "",
-            IMAGE: "",
-            REMARKS: ""
-        });
-    };
+    var maxId = Math.max(...$scope.productFormList.map(product => product.ID));
+    $scope.counterProduct = maxId !== -Infinity ? maxId + 1 : 1;
+    $scope.productFormList.push({
+        ID: $scope.counterProduct,
+        ItemDescription: "",
+        UNIT: "",
+        QUANTITY: "",
+        UNIT_PRICE: "",
+        AMOUNT: "",
+        IMAGE: "",
+        REMARKS: ""
+    });
+};
+
+
     $scope.deleteRow = function (index) {
         var itemId = $scope.productFormList[index].TID;
         var tenderNo = $scope.TENDER_NO;
@@ -178,76 +170,6 @@
         $scope.totalQty = totalQty ?? totalQty.toFixed(2);
     };
     $scope.updateQuantity();
-
-    //$scope.saveData = function () {
-    //    var formData = {
-    //        ID: $scope.ID,
-    //        TENDER_NO: $scope.TENDER_NO,
-    //        ISSUE_DATE: $('#englishdatedocument').val(),
-    //        VALID_DATE: $('#validDt').val(),
-    //        REMARKS: $('#remarks').val(),
-    //        Items: []
-    //    };
-
-    //    var count = 0;
-    //    var totalFiles = $scope.productFormList.length;
-    //    angular.forEach($scope.productFormList, function (itemList) {
-    //        var fileInput = document.getElementById('image_' + itemList.ID);
-    //        var file = fileInput.files[0];
-
-    //        if (file) {
-    //            var reader = new FileReader();
-
-    //            reader.onload = function () {
-    //                var itemListData = {
-    //                    ID: itemList.TID,
-    //                    ITEM_CODE: itemList.ItemDescription,
-    //                    SPECIFICATION: itemList.SPECIFICATION,
-    //                    IMAGE: reader.result.split(',')[1],
-    //                    UNIT: itemList.UNIT,
-    //                    QUANTITY: itemList.QUANTITY,
-    //                    CATEGORY: itemList.CATEGORY,
-    //                    BRAND_NAME: itemList.BRAND_NAME,
-    //                    INTERFACE: itemList.INTERFACE,
-    //                    TYPE: itemList.TYPE,
-    //                    LAMINATION: itemList.LAMINATION,
-    //                    ITEM_SIZE: itemList.ITEM_SIZE,
-    //                    THICKNESS: itemList.THICKNESS,
-    //                    COLOR: itemList.COLOR,
-    //                    GRADE: itemList.GRADE,
-    //                    SIZE_LENGTH: itemList.SIZE_LENGTH,
-    //                    SIZE_WIDTH: itemList.SIZE_WIDTH,
-    //                };
-    //                formData.Items.push(itemListData);
-    //                count++;
-
-    //                // Check if all files have been processed
-    //                if (count === totalFiles) {
-    //                    $http.post('/api/QuotationApi/SaveItemData', formData)
-    //                        .then(function (response) {
-    //                            var message = response.data.message;
-    //                            $scope.createPanel = false;
-    //                            $scope.tablePanel = true;
-    //                            displayPopupNotification(message, "success");
-    //                            window.location.reload();
-    //                        })
-    //                        .catch(function (error) {
-    //                            var message = error;
-    //                            displayPopupNotification(message, "error");
-    //                        });
-    //                }
-    //            };
-    //            reader.onerror = function (error) {
-    //                //console.error('Error reading file:', error);
-    //                displayPopupNotification("Error reading file!!", "error");
-    //            };
-
-    //            reader.readAsDataURL(file); // Convert file to base64
-    //        } else {
-    //            //$scope.setPopoverContent('File not selected!!', 'error');
-    //            displayPopupNotification("File not selected!!", "error");
-    //        }
-    //    });
 
     $scope.saveData = function () {
         var formData = {
@@ -363,6 +285,8 @@
         $("#englishdatedocument").data("kendoDatePicker").value(null);
         $("#validDt").data("kendoDatePicker").value(null);
         $("#nepaliDate").val('');
+        $("#issueNep").val('');
+
         // Clear the content of productFormList
         $scope.productFormList.forEach(function (product) {
             product.ItemDescription = '';
@@ -390,8 +314,8 @@
         });
         window.location.href = "/QuotationManagement/Home/Index#!QM/QuotationSetup"
 
-    };
 
+    };
 
     $scope.generatedUrl = '';
 

@@ -842,13 +842,13 @@
     }
 </style>
 
-<div class="col-md-12 bodyController" ng-controller="Requisition">
+<div class="col-md-12 bodyController" id="Requisition">
     <div class="portlet light form-fit bordered bottomspance">
 
         <div class="portlet">
             <div class="portlet-title">
                 <div class="caption">
-                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/ProjectManagement/Home/Dashboard">
+                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/ProjectManagement/Home/Index#!PM/Dashboard">
                         <i class="fa fa-arrow-circle-left"></i>
                     </a>
                     <i class="fa fa-gift font-green-haze"></i>
@@ -915,7 +915,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li ng-if="OrderNo !== 'undefined'">
-                                <a data-toggle="tooltip" data-placement="top" title="Add Inventory" href="/ProjectManagement/Home/Index#!DT/Inventory?formcode={{formcode}}">
+                                <a data-toggle="tooltip" data-placement="top" title="Add Inventory" href="/ProjectManagement/Home/Index#!PM/RequisitionEntry?formcode={{formcode}}">
                                     <i class="glyphicon glyphicon-new-window"></i> New
                                 </a>
                             </li>
@@ -963,9 +963,9 @@
                     <!--<a ng-if="OrderNo === 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top"--> @*title="(Alt + P)"*@ <!--title="Save and print document" ng-click="SaveDocumentFormData(3)" href="javascript:;">
                         <i class="fa fa-print"></i> Save & Print
                     </a>-->
-                    <a ng-if="OrderNo!== 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top" @*title="(Alt + P)"*@ title="Update and print document" ng-click="SaveDocumentFormData(4)" href="javascript:;">
+                    <!--<a ng-if="OrderNo!== 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top"--> @*title="(Alt + P)"*@ <!--title="Update and print document" ng-click="SaveDocumentFormData(4)" href="javascript:;">
                         <i class="fa fa-print"></i> Update & Print
-                    </a>
+                    </a>-->
                     <a ng-if="OrderNo!== 'undefined'" class="btn btn-primary" data-toggle="tooltip" data-placement="top" @*title="(Alt + P)"*@ title="Delete Document" ng-click="DeleteInvDocument()" href="javascript:;">
                         <i class="fa fa-trash-o"></i> Delete
                     </a>

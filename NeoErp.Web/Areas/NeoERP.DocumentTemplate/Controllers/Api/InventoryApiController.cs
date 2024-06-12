@@ -1166,7 +1166,10 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                         {
                             for (int i = 0; i < budgetTransaction.Count ; i++)
                             {
-                                budgetTransaction[i].SUB_PROJECT_CODE = childColumn[i].SUB_PROJECT_CODE;
+                                if (budgetTransaction[i].BUDGET != null)
+                                {
+                                    budgetTransaction[i].SUB_PROJECT_CODE = childColumn[i].SUB_PROJECT_CODE;
+                                }
                             }
 
                             _inventoryvoucher.SaveBudgetTransactionColumnValue(budgetTransaction, commonValue, _objectEntity);

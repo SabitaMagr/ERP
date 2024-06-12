@@ -1,7 +1,5 @@
 ﻿TMModule.controller('quotationDetails', function ($scope, $rootScope, $http, $routeParams, $http, $filter, $timeout) {
-    $("#deliveryDt").kendoDatePicker({
-        format: "dd-MMM-yyyy"
-    });
+    $("#englishdatedocument").kendoDatePicker();
     $scope.productFormList = [];
     $scope.termList = [];
     $scope.counterProduct = 1;
@@ -12,10 +10,8 @@
     $scope.branchCode = "";
     $scope.customerCode = "";
     $scope.createdBy = "";
+    $scope.CURRENCY_RATE = 1;
 
-
-    $scope.showCustomerDetails = false;
-    $scope.showSpecificationDetail = false;
     $scope.selectedCurrency = "";
     $scope.company = {};
     $scope.selectedDiscountType = "";
@@ -55,6 +51,8 @@
             $scope.TENDER_NO = quotation.TENDER_NO;
             $scope.ISSUE_DATE = formatDate(quotation.ISSUE_DATE);
             $scope.VALID_DATE = formatDate(quotation.VALID_DATE);
+            $scope.NEPALI_DATE = quotation.NEPALI_DATE;
+            $scope.DELIVERY_DT_BS = quotation.DELIVERY_DT_BS;
             $scope.TXT_REMARKS = quotation.REMARKS;
             $scope.companyCode = quotation.COMPANY_CODE;
             $scope.createdBy = quotation.CREATED_BY;
@@ -119,24 +117,51 @@
             }
         }
     };
-
+    // Fetch the currency data
     $http.get("https://gist.githubusercontent.com/aaronhayes/5fef481815ac75f771d37b16d16d35c9/raw/edbec8eea5cc9ace57a79409cc390b7b9bcf24f6/currencies.json")
         .then(function (response) {
             // On successful data retrieval, assign the data to $scope
             $scope.currencyData = response.data;
+
+            // Set the default currency rate to 1
+            $scope.currencyRate = 1;
+
             // Initialize the Kendo DropDownList options
             $scope.currencyOptions = {
                 dataSource: $scope.currencyData,
                 dataTextField: "name",
                 dataValueField: "code",
+                height: 600,
                 optionLabel: "Select Currency",
                 filter: "contains",
-                autoClose: true
+                autoClose: true,
+                dataBound: function (e) {
+                    var current = this.value();
+                    this._savedOld = current.slice(0);
+                    $("#" + e.sender.element[0].id + "_listbox").slimScroll({ 'height': '190px', 'scroll': 'scroll' });
+
+                    // Automatically select Nepali Rupee (NPR) on load
+                    var nepaliRupee = $scope.currencyData.find(currency => currency.code === 'NPR');
+                    if (nepaliRupee) {
+                        this.value(nepaliRupee.code);
+                        $scope.selectedCurrency = nepaliRupee.code;
+                    }
+                },
+                change: function (e) {
+                    // Handle change event if needed
+                    var selectedCurrency = this.value();
+                    if (selectedCurrency === 'NPR') {
+                        $scope.CURRENCY_RATE = 1; // Assuming rate for NPR is always 1
+                    } else {
+                        $scope.CURRENCY_RATE = "";
+                    }
+                                }
             };
         })
         .catch(function (error) {
             console.error("Error fetching currency data:", error);
         });
+
     $scope.addProduct = function () {
         $http.get("/api/QuotationApi/ItemDetails")
             .then(function (response) {
@@ -341,7 +366,7 @@
                 EMAIL: $scope.EMAIL,
                 CURRENCY: $scope.selectedCurrency,
                 CURRENCY_RATE: $scope.CURRENCY_RATE,
-                DELIVERY_DATE: $('#deliveryDt').val(),
+                DELIVERY_DATE: $('#englishdatedocument').val(),
                 TOTAL_AMOUNT: $scope.TOTAL_AMOUNT,
                 TOTAL_DISCOUNT: $scope.TOTAL_DISCOUNT,
                 TOTAL_EXCISE: $scope.TOTAL_EXCISE,
@@ -423,7 +448,7 @@
         }
     };
     $scope.Cancel = function () {
-        $("#deliveryDt").data("kendoDatePicker").value(null);
+        $("#englishdatedocument").data("kendoDatePicker").value(null);
         $scope.PAN_NO = "";
         $scope.TENDER_NO = "";
         $scope.PARTY_NAME = "";

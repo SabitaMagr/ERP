@@ -240,7 +240,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
             try
             {
                 // Fetch project data
-                string Query = $@"SELECT TENDER_NO,ISSUE_DATE,VALID_DATE,CREATED_DATE,bs_date(ISSUE_DATE) as NEPALI_DATE,REMARKS,ID,
+                string Query = $@"SELECT TENDER_NO,ISSUE_DATE,VALID_DATE,CREATED_DATE,bs_date(ISSUE_DATE) as NEPALI_DATE,bs_date(VALID_DATE) as DELIVERY_DT_BS,REMARKS,ID,
                 (CASE WHEN APPROVED_STATUS='Y' THEN 'Approved' else 'Pending' END) AS APPROVED_STATUS FROM sa_quotation_setup WHERE TENDER_NO = '{tenderNo}' AND STATUS = 'E'";
                 List<Quotation_setup> quotations = this._dbContext.SqlQuery<Quotation_setup>(Query).ToList();
                 foreach (var quotation in quotations)
@@ -284,26 +284,21 @@ namespace NeoERP.QuotationManagment.Service.Repository
         {
             try
             {
-                string Query = $@"SELECT SQS.ISSUE_DATE,SQS.VALID_DATE,BS_DATE(SQS.ISSUE_DATE) AS NEPALI_DATE,QD.QUOTATION_NO,QD.TENDER_NO,QD.PAN_NO,scs.supplier_edesc as party_name,scs.regd_office_eaddress as address,
-                scs.tel_mobile_no1 as contact_no,scs.EMAIL,QD.CURRENCY,QD.CURRENCY_RATE,QD.DELIVERY_DATE,
+                string Query = $@"SELECT SQS.ISSUE_DATE,SQS.VALID_DATE,BS_DATE(SQS.ISSUE_DATE) AS NEPALI_DATE,BS_DATE(SQS.VALID_DATE) AS DELIVERY_DT_BS,QD.QUOTATION_NO,QD.TENDER_NO,QD.PAN_NO,scs.supplier_edesc as party_name,scs.regd_office_eaddress as address,
+                scs.tel_mobile_no1 as contact_no,scs.EMAIL,QD.CURRENCY,QD.CURRENCY_RATE,QD.DELIVERY_DATE,BS_DATE(QD.DELIVERY_DATE) as DELIVERY_DT_NEP,
                 QD.TOTAL_AMOUNT,QD.TOTAL_DISCOUNT,QD.TOTAL_EXCISE,QD.TOTAL_TAXABLE_AMOUNT,QD.TOTAL_VAT,QD.TOTAL_NET_AMOUNT,
                 CASE 
                 WHEN QD.STATUS = 'AP' THEN 'Approved' WHEN QD.STATUS = 'R' THEN 'Reject'
                 WHEN NOT EXISTS (SELECT 1 FROM QUOTATION_DETAILS WHERE TENDER_NO = QD.TENDER_NO AND STATUS = 'AP') THEN 'Pending'
-                ELSE 'Reject' END AS STATUS,QD.DISCOUNT_TYPE FROM  QUOTATION_DETAILS  QD,SA_QUOTATION_SETUP SQS , ip_supplier_setup scs WHERE SQS.TENDER_NO=QD.TENDER_NO and scs.supplier_code=qd.supplier_code and sqs.company_code=scs.company_code AND  QD.QUOTATION_NO='{quotationNo}'";
+                ELSE 'Reject' END AS STATUS,QD.DISCOUNT_TYPE,SQS.REMARKS  FROM  QUOTATION_DETAILS  QD,SA_QUOTATION_SETUP SQS , ip_supplier_setup scs WHERE SQS.TENDER_NO=QD.TENDER_NO and scs.supplier_code=qd.supplier_code and sqs.company_code=scs.company_code AND  QD.QUOTATION_NO='{quotationNo}'";
                 List<Quotation_Details> quotations = this._dbContext.SqlQuery<Quotation_Details>(Query).ToList();
                 foreach (var quotation in quotations)
                 {
-                    //string query = $@"SELECT SQI.ITEM_CODE,SQI.SPECIFICATION, SQI.IMAGE,SQI.UNIT,SQI.QUANTITY,SQI.CATEGORY, SQI.BRAND_NAME,SQI.INTERFACE,
-                    //    SQI.TYPE, SQI.LAMINATION, SQI.ITEM_SIZE,SQI.THICKNESS,SQI.COLOR,SQI.GRADE,SQI.SIZE_LENGTH, SQI.SIZE_WIDTH,QDI.RATE,
-                    //    QDI.AMOUNT, QDI.DISCOUNT, QDI.DISCOUNT_AMOUNT,QDI.EXCISE,QDI.TAXABLE_AMOUNT, QDI.VAT_AMOUNT,QDI.NET_AMOUNT
-                    //    FROM   SA_QUOTATION_ITEMS SQI,QUOTATION_DETAIL_ITEMWISE QDI WHERE SQI.ITEM_CODE = QDI.ITEM_CODE AND
-                    //    QDI.QUOTATION_NO = '{quotationNo}' AND SQI.DELETED_FLAG='N' ORDER BY SQI.ID";
                     string query =$@"SELECT IIMS.ITEM_CODE,SQI.SPECIFICATION, SQI.IMAGE,SQI.UNIT,SQI.QUANTITY,SQI.CATEGORY, SQI.BRAND_NAME,SQI.INTERFACE,
                         SQI.TYPE, SQI.LAMINATION, SQI.ITEM_SIZE,SQI.THICKNESS,SQI.COLOR,SQI.GRADE,SQI.SIZE_LENGTH, SQI.SIZE_WIDTH,QDI.RATE,
                         QDI.AMOUNT, QDI.DISCOUNT, QDI.DISCOUNT_AMOUNT,QDI.EXCISE,QDI.TAXABLE_AMOUNT, QDI.VAT_AMOUNT,QDI.NET_AMOUNT
-                        FROM   SA_QUOTATION_ITEMS SQI, QUOTATION_DETAIL_ITEMWISE QDI,ip_item_master_setup iims, sa_quotation_setup sqs WHERE SQI.ITEM_CODE = QDI.ITEM_CODE AND
-                        IIMS.ITEM_CODE = SQI.ITEM_CODE AND SQS.TENDER_NO = SQI.TENDER_NO AND IIMS.COMPANY_CODE = SQS.COMPANY_CODE AND
+                        FROM   SA_QUOTATION_ITEMS SQI, QUOTATION_DETAIL_ITEMWISE QDI,ip_item_master_setup iims, sa_quotation_setup sqs,quotation_details qd  WHERE SQI.ITEM_CODE = QDI.ITEM_CODE AND
+                        IIMS.ITEM_CODE = SQI.ITEM_CODE AND SQS.TENDER_NO = SQI.TENDER_NO AND IIMS.COMPANY_CODE = SQS.COMPANY_CODE AND qd.tender_no = sqi.tender_no and qdi.quotation_no=qd.quotation_no AND
                         QDI.QUOTATION_NO = '{quotationNo}' AND SQI.DELETED_FLAG = 'N' ORDER BY SQI.ID";
                     List<Item_details> itemData = this._dbContext.SqlQuery<Item_details>(query).ToList();
                     quotation.Item_Detail = itemData;
@@ -386,7 +381,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
         {
             try
             {
-                string query = $@"SELECT TENDER_NO, ISSUE_DATE, VALID_DATE, CREATED_DATE, bs_date(ISSUE_DATE) as NEPALI_DATE, COMPANY_CODE FROM SA_QUOTATION_SETUP WHERE STATUS='E' AND TENDER_NO='{tenderNo}'";
+                string query = $@"SELECT TENDER_NO, ISSUE_DATE, VALID_DATE, CREATED_DATE, bs_date(ISSUE_DATE) as NEPALI_DATE,bs_date(VALID_DATE) as DELIVERY_DT_BS, COMPANY_CODE FROM SA_QUOTATION_SETUP WHERE STATUS='E' AND TENDER_NO='{tenderNo}'";
                 List<Quotation> quotations = this._dbContext.SqlQuery<Quotation>(query).ToList();
                 foreach (var quotation in quotations)
                 {

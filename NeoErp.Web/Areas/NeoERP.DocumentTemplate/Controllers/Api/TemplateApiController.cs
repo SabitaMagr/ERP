@@ -3222,6 +3222,16 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             return result;
         }
         [HttpPost]
+        public List<COMMON_COLUMN> GetVoucherDetailReferenceEdit(VoucherRefrence model)
+        {
+            var userid = _workContext.CurrentUserinformation.User_id;
+            var company_code = _workContext.CurrentUserinformation.company_code;
+            var branch_code = _workContext.CurrentUserinformation.branch_code;
+            var response = new List<COMMON_COLUMN>();
+            var result = this._FormTemplateRepo.VoucherDetailReferenceForTemplate(model);
+            return result;
+        }
+        [HttpPost]
         public List<COMMON_COLUMN> GetVoucherDetailForPRoduction(ProductionRefrence model)
         {
             var userid = _workContext.CurrentUserinformation.User_id;

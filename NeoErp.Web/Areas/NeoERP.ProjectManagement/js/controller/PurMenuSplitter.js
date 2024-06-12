@@ -29,7 +29,7 @@
 
 
     $scope.BackFromMenu = function () {
-        $window.location.href = '/ProjectManagement/Home/Dashboard';
+        $window.location.href = '/ProjectManagement/Home/Index#!PM/Dashboard';
     }
 
     $scope.BindDetailGrid = function (formcode, tableName, formname) {
@@ -56,9 +56,9 @@
             $scope.modulename = "Financial Accounting"
         }
         else if ($scope.moduleCode == "02") {
-            formcode = $scope.subMenuList[10]['FORM_CODE'];
-            tableName = $scope.subMenuList[10]['TABLE_NAME'];
-            formname = $scope.subMenuList[10]['FORM_EDESC'];
+            formcode = $scope.subMenuList[2]['FORM_CODE'];
+            tableName = $scope.subMenuList[2]['TABLE_NAME'];
+            formname = $scope.subMenuList[2]['FORM_EDESC'];
             $scope.BindDetailGrid(formcode, tableName, formname);
         }
         else if ($scope.moduleCode == "04") {
@@ -323,14 +323,13 @@
         $scope.doSomething = function (orderNo) {
             debugger;
 
-            showloader();
-            var voucherno = orderNo;
-            //var voucherno = orderNo.split(new RegExp('/', 'i')).join('_'); done previously
+            //showloader();
+            var voucherno = orderNo.split(new RegExp('/', 'i')).join('_'); 
 
             if ($scope.moduleCode == "01")
                 window.location.href = "/ProjectManagement/Home/Index#!DT/FinanceVoucher/" + formCode + "/" + voucherno + ""
             else if ($scope.moduleCode === "02")
-                window.location.href = "/ProjectManagement/Home/PurchaseEntry?formcode=" + formCode + "&vNo=" + voucherno + ""
+                window.location.href = "/ProjectManagement/Home/Index#!PM/PurchaseEntry/" + formCode + "/" + voucherno + ""
             else if ($scope.moduleCode == "03")
                 window.location.href = "/ProjectManagement/Home/Index#!DT/Inventory/" + formCode + "/" + voucherno + ""
             else if ($scope.moduleCode == "04")

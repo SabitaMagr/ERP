@@ -841,13 +841,13 @@
         padding-right: 0;
     }
 </style>
-<div class="col-md-12 bodyController" ng-controller="consumption">
+<div class="col-md-12 bodyController" id="consumption">
     <div class="portlet light form-fit bordered bottomspance">
 
         <div class="portlet">
             <div class="portlet-title">
                 <div class="caption">
-                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/ProjectManagement/Home/Dashboard">
+                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/ProjectManagement/Home/Index#!PM/Dashboard">
                         <i class="fa fa-arrow-circle-left"></i>
                     </a>
                     <i class="fa fa-gift font-green-haze"></i>
@@ -914,7 +914,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li ng-if="OrderNo !== 'undefined'">
-                                <a data-toggle="tooltip" data-placement="top" title="Add Inventory" href="/ProjectManagement/Home/Index#!DT/Inventory?formcode={{formcode}}">
+                                <a data-toggle="tooltip" data-placement="top" title="Add Inventory" href="/ProjectManagement/Home/Index#!PM/AuxiliaryEntry?formcode={{formcode}}">
                                     <i class="glyphicon glyphicon-new-window"></i> New
                                 </a>
                             </li>

@@ -1787,6 +1787,270 @@ select
 
             return entity;
         }
+        //done for project management sub project code
+        public List<COMMON_COLUMN> VoucherDetailReferenceForTemplate(VoucherRefrence model)
+        {
+            int FormCode = 0;
+            int.TryParse(model.FormCode, out FormCode);
+            string FormCodeFilter = string.Empty;
+            var RunableQuery = string.Empty;
+            var primarycolname = GetPrimaryColumnByTableName(model.TableName);
+            if (model.TableName != "SA_LOADING_SLIP_DETAIL")
+            {
+                if (FormCode > 0)
+                {
+                    FormCodeFilter = $@" FORM_CODE='{model.FormCode}'";
+                }
+                else
+                {
+                    FormCodeFilter = $@" table_name='{model.TableName}'";
+                }
+                //string columname = $@"SELECT COLUMN_NAME, TABLE_NAME FROM FORM_DETAIL_SETUP WHERE FORM_CODE='{model.FormCode}' and company_code='{_workContext.CurrentUserinformation.company_code}' and display_flag='Y' ORDER BY SERIAL_NO ASC";
+                string columname = $@"SELECT COLUMN_NAME, TABLE_NAME FROM FORM_PROJECT_SETUP WHERE {FormCodeFilter} and company_code='{_workContext.CurrentUserinformation.company_code}' and display_flag='Y' group by COLUMN_NAME, TABLE_NAME";
+                List<FORM_DETAIL_SETUP_COLUMN> columnameentity = this._dbContext.SqlQuery<FORM_DETAIL_SETUP_COLUMN>(columname).ToList();
+                var tableNameMain = "";
+                StringBuilder sb = new StringBuilder();
+                foreach (var item in columnameentity)
+                {
+                    sb.Append("SO.").Append(item.COLUMN_NAME).Append(",");
+                }
+                sb.Append("SO.FORM_CODE");
+
+                //var columns = sb.ToString().TrimEnd(',');
+                var columnsMain = sb.ToString();
+                string Query = string.Empty;
+                StringBuilder condition;
+                tableNameMain = model.TableName + " SO";
+
+                if (model.checkList.Count() > 0)
+                {
+                    var voucherCount = model.checkList.Count();
+                    if (model.INCLUDE_CHARGE == "True")
+                    {
+                        var ChareInclusiveVoucherNo = model.checkList.First().VOUCHER_NO;
+                        var columns = columnsMain;
+                        condition = new StringBuilder();
+                        var tableName = tableNameMain;
+
+                        Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{ChareInclusiveVoucherNo}'";
+
+                        if (Query.Contains("SO.CUSTOMER_CODE"))
+                        {
+                            columns = columns + ",CS.CUSTOMER_EDESC";
+                            tableName = tableName + ",SA_CUSTOMER_SETUP CS";
+                            condition.Append("AND CS.CUSTOMER_CODE=SO.CUSTOMER_CODE AND CS.COMPANY_CODE=SO.COMPANY_CODE AND  CS.DELETED_FLAG='N'");
+
+                            Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{ChareInclusiveVoucherNo}' {condition.ToString()}";
+                        }
+                        if (Query.Contains("SO.ITEM_CODE"))
+                        {
+                            columns = columns + ",IMS.ITEM_EDESC";
+                            tableName = tableName + ", IP_ITEM_MASTER_SETUP IMS";
+                            condition.Append("AND IMS.ITEM_CODE=SO.ITEM_CODE AND IMS.COMPANY_CODE=SO.COMPANY_CODE AND  IMS.DELETED_FLAG='N'");
+
+                            Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{ChareInclusiveVoucherNo}' {condition.ToString()}";
+                        }
+                        RunableQuery += Query;
+
+                    }
+                    else
+                    {
+                        foreach (var union in model.checkList)
+                        {
+                            var columns = columnsMain;
+                            condition = new StringBuilder();
+                            var tableName = tableNameMain;
+
+                            Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{union.VOUCHER_NO}' and SO.SERIAL_NO IN ('{union.SERIAL_NO}') UNION ALL";
+
+                            if (Query.Contains("SO.CUSTOMER_CODE"))
+                            {
+                                columns = columns + ",CS.CUSTOMER_EDESC";
+                                tableName = tableName + ",SA_CUSTOMER_SETUP CS";
+                                condition.Append("AND CS.CUSTOMER_CODE=SO.CUSTOMER_CODE AND CS.COMPANY_CODE=SO.COMPANY_CODE AND  CS.DELETED_FLAG='N'");
+
+                                Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{union.VOUCHER_NO}' and SO.SERIAL_NO IN ('{union.SERIAL_NO}') {condition.ToString()} UNION ALL";
+
+                                //Query = $@"SELECT {columns} FROM {tableName} WHERE SO.FORM_CODE ='{formCode}' and SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{orderno}' {condition.ToString()}";
+                            }
+                            if (Query.Contains("SO.SUB_PROJECT_CODE"))
+                            {
+                                columns = columns + ",SPS.SUB_PROJECT_NAME";
+                                tableName = tableName + ", SUB_PROJECT_SETUP SPS";
+                                tableName = tableName + ", PROJECT_SETUP PS";
+                                condition.Append("AND SO.SUB_PROJECT_CODE=SPS.SUB_PROJECT_ID  AND SPS.DELETED_FLAG='N'");
+                                condition.Append("AND PS.ID=SPS.PROJECT_ID  AND PS.STATUS='E'");
+                                Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{union.VOUCHER_NO}' and SO.SERIAL_NO IN ('{union.SERIAL_NO}') {condition.ToString()} UNION ALL";
+
+                                //Query = $@"SELECT {columns} FROM {tableName} WHERE SO.FORM_CODE ='{formCode}' and SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{orderno}' {condition.ToString()}";
+                            }
+                            if (Query.Contains("SO.ITEM_CODE"))
+                            {
+                                columns = columns + ",IMS.ITEM_EDESC";
+                                tableName = tableName + ", IP_ITEM_MASTER_SETUP IMS";
+                                condition.Append("AND IMS.ITEM_CODE=SO.ITEM_CODE AND IMS.COMPANY_CODE=SO.COMPANY_CODE AND  IMS.DELETED_FLAG='N'");
+                                if (Query.Contains("IP_PURCHASE_INVOICE"))
+                                {
+                                    columns = columns + ",SO.COMPLETED_QUANTITY";
+                                }
+                                if (Query.Contains("IP_GOODS_REQUISITION"))
+                                {
+                                    columns = columns + ",SO.SUPPLIER_CODE";
+                                }
+                                Query = $@" SELECT {columns} FROM {tableName} WHERE SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{union.VOUCHER_NO}' and SO.SERIAL_NO IN ('{union.SERIAL_NO}') {condition.ToString()} UNION ALL";
+
+                                //Query = $@"SELECT {columns} FROM {tableName} WHERE SO.FORM_CODE ='{formCode}' and SO.COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and SO.{primarycolname}='{orderno}' {condition.ToString()}";
+                            }
+                            // Query = Query;
+                            RunableQuery += Query;
+                            // voucherCount--;
+
+                        }
+                    }
+
+
+                }
+                if (RunableQuery.EndsWith("UNION ALL"))
+                {
+                    RunableQuery = RunableQuery.Remove(RunableQuery.Length - 10);
+                }
+            }
+            else
+            {
+                foreach (var union in model.checkList)
+                {
+                    var Query = $@"  SELECT DISTINCT SA.SHIPPING_ADDRESS SHIPPING_ADDRESS,
+       SA.MU_CODE,
+       SO.QUANTITY,
+       SO.UNIT_PRICE,
+       SA.ORDER_DATE ORDER_DATE,
+       SA.SHIPPING_CONTACT_NO SHIPPING_CONTACT_NO,
+      SO.QUANTITY*  SO.UNIT_PRICE  TOTAL_PRICE,
+       SO.ITEM_CODE,
+       SA.STOCK_BLOCK_FLAG STOCK_BLOCK_FLAG,
+       SA.QUANTITY CALC_QUANTITY,
+       SO.CUSTOMER_CODE,
+       SO.REFERENCE_NO,
+       SA.MANUAL_NO,
+       SA.UNIT_PRICE CALC_UNIT_PRICE,
+       SA.SALES_TYPE_CODE,
+      SO.QUANTITY*  SO.UNIT_PRICE as  CALC_TOTAL_PRICE,
+       SO.REFERENCE_FORM_CODE FORM_CODE,
+       CS.CUSTOMER_EDESC,
+       IMS.ITEM_EDESC,
+       SA.EXCHANGE_RATE,
+       SA.CURRENCY_CODE,
+       SA.DELIVERY_DATE,
+       SA.PARTY_TYPE_CODE,
+       SA.PRIORITY_CODE,
+       SA.EMPLOYEE_CODE,
+       SA.AGENT_CODE,
+       SA.AREA_CODE,
+       SA.SECOND_QUANTITY,
+       SA.ORDER_NO
+  FROM SA_LOADING_SLIP_DETAIL SO, SA_CUSTOMER_SETUP CS, IP_ITEM_MASTER_SETUP IMS,SA_SALES_ORDER SA
+ WHERE     SO.COMPANY_CODE = '{_workContext.CurrentUserinformation.company_code}'
+     AND SO.REFERENCE_NO = '{union.VOUCHER_NO}'
+       AND SO.SERIAL_NO IN ('{union.SERIAL_NO}')
+       AND CS.CUSTOMER_CODE = SO.CUSTOMER_CODE
+       AND CS.COMPANY_CODE = SO.COMPANY_CODE
+       AND CS.DELETED_FLAG = 'N'
+       AND IMS.ITEM_CODE = SO.ITEM_CODE
+       AND IMS.COMPANY_CODE = SO.COMPANY_CODE
+       AND IMS.DELETED_FLAG = 'N'
+       AND SO.REFERENCE_NO=SA.ORDER_NO
+       AND SO.COMPANY_CODE=SA.COMPANY_CODE
+       --AND SO.SERIAL_NO=SA.SERIAL_NO
+       AND SO.ITEM_CODE=SA.ITEM_CODE
+       AND SO.CUSTOMER_CODE=SA.CUSTOMER_CODE
+       AND SA.CUSTOMER_CODE=CS.CUSTOMER_CODE
+       AND  SA.ITEM_CODE=IMS.ITEM_CODE
+       AND SA.COMPANY_CODE=CS.COMPANY_CODE
+       AND SA.COMPANY_CODE=IMS.COMPANY_CODE UNION ALL";
+                    RunableQuery += Query;
+                }
+                if (RunableQuery.EndsWith("UNION ALL"))
+                {
+                    RunableQuery = RunableQuery.Remove(RunableQuery.Length - 10);
+                }
+            }
+
+            var entity = this._dbContext.SqlQuery<COMMON_COLUMN>(RunableQuery).ToList();
+            if (entity.Count() > 0)
+            {
+                if (!string.IsNullOrEmpty(model.ROW) && model.ROW == "incomplete")
+                {
+                    for (int i = 0; i < entity.Count(); i++)
+                    {
+                        var referenceNo = entity[i].GetType().GetProperty(primarycolname).GetValue(entity[i], null);
+
+                        var incompleteRefQry = $@"SELECT SUM(REFERENCE_QUANTITY) REFERENCE_QUANTITY ,SUM(REFERENCE_UNIT_PRICE) REFERENCE_UNIT_PRICE, SUM(REFERENCE_TOTAL_PRICE)REFERENCE_TOTAL_PRICE FROM REFERENCE_DETAIL WHERE REFERENCE_NO =('{referenceNo}')  AND REFERENCE_ITEM_CODE IN('{entity[i].ITEM_CODE}')
+                                 GROUP BY REFERENCE_NO, REFERENCE_ITEM_CODE";
+                        var incRefResult = this._dbContext.SqlQuery<REFERENCE_DETAIL_MODEL>(incompleteRefQry).FirstOrDefault();
+                        if (incRefResult != null)
+                        {
+                            entity[i].QUANTITY = Convert.ToDecimal(entity[i].QUANTITY) - Convert.ToDecimal(incRefResult.REFERENCE_QUANTITY);
+                            entity[i].UNIT_PRICE = Convert.ToDecimal(entity[i].UNIT_PRICE);
+                            entity[i].TOTAL_PRICE = entity[i].QUANTITY * entity[i].UNIT_PRICE;
+                            entity[i].CALC_QUANTITY = Convert.ToDecimal(entity[i].CALC_QUANTITY) - Convert.ToDecimal(incRefResult.REFERENCE_QUANTITY);
+                            entity[i].CALC_UNIT_PRICE = entity[i].UNIT_PRICE;
+                            entity[i].CALC_TOTAL_PRICE = entity[i].CALC_UNIT_PRICE * entity[i].CALC_QUANTITY;
+                        }
+                    }
+                }
+            }
+            if (model.TableName == "FA_PAY_ORDER" || model.TableName == "FA_JOB_ORDER" || model.TableName == "FA_ADVICE_VOUCHER")
+            {
+                entity = entity.ToList();
+
+            }
+            else
+            {
+                entity = entity.Where(x => x.QUANTITY > 0).ToList();
+            }
+
+            List<DocumentTransaction> imagelist = new List<DocumentTransaction>();
+            if (entity.Count > 0)
+            {
+
+                if (model.checkList.Count() > 1)
+                {
+                    foreach (var ch in model.checkList)
+                    {
+                        string imagequery = $@"SELECT * FROM DOCUMENT_TRANSACTION WHERE FORM_CODE ='{model.FormCode}' and COMPANY_CODE='{_workContext.CurrentUserinformation.company_code}' and VOUCHER_NO='{ch.VOUCHER_NO}'";
+                        imagelist = this._dbContext.SqlQuery<DocumentTransaction>(imagequery).ToList();
+                        entity[0].IMAGES_LIST = imagelist;
+                    }
+                }
+            }
+            try
+            {
+                if (model.TableName.Trim().ToLower() == "sa_sales_order")
+                {
+                    foreach (var ent in entity)
+                    {
+                        var queryorder = $@"select nvl(CANCEL_QUANTITY,0) CALCEL_QTY, NVL(ADJUST_QUANTITY,0) ADJUST_QUANTITY from sa_sales_order  where order_no='{ent.ORDER_NO}'  and item_code='{ent.ITEM_CODE}' and deleted_flag='N'  ";
+                        var DataCancle = _dbContext.SqlQuery<CancleSalesOrder>(queryorder).FirstOrDefault();
+                        if (DataCancle == null)
+                        {
+                            continue;
+                        }
+
+                        ent.QUANTITY = ent.QUANTITY + DataCancle.ADJUST_QUANTITY - DataCancle.CALCEL_QTY;
+                        ent.TOTAL_PRICE = ent.QUANTITY * ent.UNIT_PRICE;
+                        ent.CALC_QUANTITY = ent.CALC_QUANTITY + DataCancle.ADJUST_QUANTITY - DataCancle.CALCEL_QTY;
+                        ent.CALC_TOTAL_PRICE = ent.CALC_UNIT_PRICE * ent.CALC_QUANTITY;
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return entity;
+        }
         public List<COMMON_COLUMN> getReferenceGridData(REFERENCE_MODEL model)
         {
             var column = getColName(model);

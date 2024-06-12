@@ -76,7 +76,7 @@ namespace NeoERP.ProjectManagement.Service.Repository
             {
                 foreach (var materialPlanning in materialPlannings)
                 {
-                    var materialquery = $@"SELECT COALESCE(MAX(ID) + 1, 1) AS materialId FROM MATERIAL_PLANNING_SETUP WHERE SUB_PROJECT_ID = {subProjectId}";
+                    var materialquery = $@"SELECT COALESCE(MAX(ID) + 1, 1) AS materialId FROM MATERIAL_PLANNING_SETUP";
                     int materialId = _dbContext.SqlQuery<int>(materialquery).FirstOrDefault();
                     string insertMaterialQuery = string.Format(@"INSERT INTO MATERIAL_PLANNING_SETUP(ID, SUB_PROJECT_ID, DESCRIPTION, QUANTITY, RATE,AMOUNT) 
                              VALUES({0}, '{1}',  '{2}', '{3}', '{4}','{5}')",
@@ -97,7 +97,7 @@ namespace NeoERP.ProjectManagement.Service.Repository
             {
                 foreach (var labourPlanning in labourPlannings)
                 {
-                    var labourquery = $@"SELECT COALESCE(MAX(ID) + 1, 1) AS labourId FROM LABOUR_PLANNING_SETUP WHERE SUB_PROJECT_ID = {subProjectId}";
+                    var labourquery = $@"SELECT COALESCE(MAX(ID) + 1, 1) AS labourId FROM LABOUR_PLANNING_SETUP";
                     int labourId = _dbContext.SqlQuery<int>(labourquery).FirstOrDefault();
                     string insertLabourQuery = string.Format(@"INSERT INTO LABOUR_PLANNING_SETUP(ID, SUB_PROJECT_ID, DESCRIPTION, QUANTITY, RATE,AMOUNT) 
                              VALUES({0}, '{1}',  '{2}', '{3}', '{4}','{5}')",
@@ -137,7 +137,7 @@ namespace NeoERP.ProjectManagement.Service.Repository
         WHERE 
             PS.STATUS = 'E' AND SPS.DELETED_FLAG='N'
         GROUP BY 
-            PS.ID, PS.PROJECT_NAME,PS.CREATED_DT";
+            PS.ID, PS.PROJECT_NAME,PS.CREATED_DT order by id desc";
                 List<ProjectCount> entity = this._dbContext.SqlQuery<ProjectCount>(Query).ToList();
                 return entity;
             }
@@ -174,7 +174,7 @@ namespace NeoERP.ProjectManagement.Service.Repository
                     ISS.SUPPLIER_EDESC AS CONTRACTOR,SPS.START_DT,SPS.END_DT, CASE WHEN EXISTS ( SELECT 1  FROM MATERIAL_PLANNING_SETUP MS  WHERE MS.SUB_PROJECT_ID = SPS.SUB_PROJECT_ID) 
                     THEN 'PLANNED' ELSE 'N/A'  END AS MaterialPlanningData, CASE  WHEN EXISTS ( SELECT 1  FROM LABOUR_PLANNING_SETUP LS  WHERE LS.SUB_PROJECT_ID = SPS.SUB_PROJECT_ID) 
                     THEN 'PLANNED'  ELSE 'N/A' END AS LabourPlanningData FROM SUB_PROJECT_SETUP SPS LEFT JOIN HR_EMPLOYEE_SETUP HE ON (HE.EMPLOYEE_CODE=SPS.PROJECT_MANAGER)
-                    LEFT JOIN IP_SUPPLIER_SETUP ISS ON (ISS.SUPPLIER_CODE=SPS.CONTRACTOR) WHERE SPS.PROJECT_ID ='{project.ID}' AND ISS.DELETED_FLAG='N' AND HE.DELETED_FLAG='N'";
+                    LEFT JOIN IP_SUPPLIER_SETUP ISS ON (ISS.SUPPLIER_CODE=SPS.CONTRACTOR) WHERE SPS.PROJECT_ID ='{project.ID}' AND ISS.DELETED_FLAG='N' AND HE.DELETED_FLAG='N' and iss.company_code='{_workContext.CurrentUserinformation.company_code}'";
                     List<SubProjectData> subProjectData = this._dbContext.SqlQuery<SubProjectData>(subProjectQuery).ToList();
                     foreach (var subProject in subProjectData)
                     {
@@ -300,7 +300,7 @@ namespace NeoERP.ProjectManagement.Service.Repository
             try
             {
                 string query = $@"SELECT PS.PROJECT_NAME,SPS.SUB_PROJECT_NAME AS SUB_PROJECTNAME,SPS.END_DT FROM PROJECT_SETUP PS LEFT JOIN SUB_PROJECT_SETUP
-                                SPS ON (SPS.PROJECT_ID=PS.ID) WHERE SPS.STATUS='C' AND PS.STATUS='E' AND SPS.STATUS IS NOT NULL";
+                                SPS ON (SPS.PROJECT_ID=PS.ID) WHERE SPS.STATUS='C' AND PS.STATUS='E' AND SPS.STATUS IS NOT NULL AND SPS.START_DT >= TRUNC(SYSDATE, 'MM') AND SPS.START_DT < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1)";
                 List<SubProjectData> entity = this._dbContext.SqlQuery<SubProjectData>(query).ToList();
                 return entity;
             }
@@ -315,7 +315,7 @@ namespace NeoERP.ProjectManagement.Service.Repository
             try
             {
                 string query = $@"SELECT PS.PROJECT_NAME,SPS.SUB_PROJECT_NAME AS SUB_PROJECTNAME,SPS.START_DT FROM PROJECT_SETUP PS LEFT JOIN SUB_PROJECT_SETUP
-                                SPS ON (SPS.PROJECT_ID=PS.ID) WHERE SPS.STATUS='R' AND PS.STATUS='E' AND SPS.STATUS IS NOT NULL";
+                                SPS ON (SPS.PROJECT_ID=PS.ID) WHERE SPS.STATUS='R' AND PS.STATUS='E' AND SPS.STATUS IS NOT NULL AND SPS.START_DT >= TRUNC(SYSDATE, 'MM') AND SPS.START_DT < ADD_MONTHS(TRUNC(SYSDATE, 'MM'), 1)";
                 List<SubProjectData> entity = this._dbContext.SqlQuery<SubProjectData>(query).ToList();
                 return entity;
             }

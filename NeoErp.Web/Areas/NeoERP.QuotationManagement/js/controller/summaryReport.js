@@ -92,13 +92,9 @@
 
     // Handle click event on view button
     $("#kGrid").on("click", ".view-btn", function () {
-        var id = $(this).data("id");
-        $scope.tableData = false;
-
-        var landingUrl = window.location.protocol + "//" + window.location.host + "/QuotationManagement/Home/QuotationDetail?id=" +id;
-        setTimeout(function () {
-            $window.location.href = landingUrl;
-        }, 1000);
+        var quoteNo = $(this).data("id");
+        var id = quoteNo.split(new RegExp('/', 'i')).join('_');
+        window.location.href="/QuotationManagement/Home/Index#!QM/QuotationDetail/" +id;
     });
 
 

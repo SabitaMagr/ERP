@@ -4039,10 +4039,10 @@
                 $scope.showRefTab = false;
                 //myInventoryDropzone.processQueue();
                 var host = $window.location.host;
-                var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/PurMenuSplitter/" + $scope.ModuleCode; /*done previously*/
-                setTimeout(function () {
-                    $window.location.href = landingUrl;
-                }, 1000);
+                $window.location.href = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/PurMenuSplitter/" + $scope.ModuleCode; /*done previously*/
+                //setTimeout(function () {
+                //    $window.location.href = landingUrl;
+                //}, 1000);
             }
             else if (data.data.MESSAGE == "SAVEANDPRINT") {
 
@@ -4379,12 +4379,11 @@
                 $scope.dzformcode = data.data.FormCode;
                 //myInventoryDropzone.processQueue();
                 $scope.showRefTab = false;
-                var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/PurMenuSplitter/" + $scope.ModuleCode; /*done previously*/
-                //var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/SplitterIndex#!DT/MenuSplitter/" + $scope.ModuleCode;
-                //$window.location.href = landingUrl;
-                setTimeout(function () {
-                    $window.location.href = landingUrl;
-                }, 1000);
+                $window.location.href = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/PurMenuSplitter/" + $scope.ModuleCode; /*done previously*/
+
+                //setTimeout(function () {
+                //    $window.location.href = landingUrl;
+                //}, 1000);
             }
             else {
                 hideloader();
@@ -4428,11 +4427,10 @@
                         if (dRes.data.MESSAGE === "DELETED") {
 
                             displayPopupNotification("Data succesfully deleted ", "success");
-                            var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/SplitterIndex#!DT/MenuSplitter/02";
-                            //$window.location.href = landingUrl;
-                            setTimeout(function () {
-                                $window.location.href = landingUrl;
-                            }, 1000);
+                            $window.location.hrefl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/PurMenuSplitter/" + $scope.ModuleCode; /*done previously*/
+                            //setTimeout(function () {
+                            //    $window.location.href = landingUrl;
+                            //}, 1000);
                         }
                         else if (dRes.data.MESSAGE === "POSTED") {
 

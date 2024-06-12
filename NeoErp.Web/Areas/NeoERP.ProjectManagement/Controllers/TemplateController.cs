@@ -87,9 +87,8 @@ namespace NeoERP.ProjectManagement.Controllers
         {
             return View();
         }
-        public ActionResult MenuSplitter(string moduleCode)
+        public ActionResult MenuSplitter(string module)
         {
-            // Your code here
             return View();
         }
         public ActionResult ReqMenuSplitter(string moduleCode)

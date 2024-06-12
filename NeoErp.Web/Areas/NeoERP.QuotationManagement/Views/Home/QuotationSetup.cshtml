@@ -22,15 +22,15 @@
         </div>
 
         <div class="portlet-body light bg-inverse" ng-show="tablePanel">
-            <div class="row" style="margin-top: 2rem; margin-bottom: 0.3rem;">
-                <div class="col-md-3">
+            <div class="row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                <div class="col-md-3" style="flex: 1;">
                     <div class="topsearch" style="display: block;">
-                        <input class="k-textbox txtSearchString" type="text" id="itemtxtSearchString" ng-model="txtSearchString" name="search" placeholder="Search...." />
+                        <input class="k-textbox txtSearchString" type="text" id="itemtxtSearchString" ng-model="txtSearchString" name="search" placeholder="Search...." style="width: 35%;" />
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" style="flex: none;">
                     <div class="actions text-right">
-                        <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-disabled="treenodeselected" ng-click="AddButtonClickEvent()" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Processing..." href="javascript:;" style="margin-left: 81rem;">
+                        <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-disabled="treenodeselected" ng-click="AddButtonClickEvent()" data-loading-text="<i class='fa fa-spinner fa-spin'></i> Processing..." href="javascript:;" style="margin-left: 0;">
                             <i class="fa fa-plus"></i> NEW
                         </a>
                     </div>

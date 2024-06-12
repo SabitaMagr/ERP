@@ -333,5 +333,19 @@ namespace NeoERP.QuotationManagement.Controllers.Api
                 throw new Exception(ex.StackTrace);
             }
         }
+        public List<Quotation_Details> QuotationById(string quotationNo, string tenderNo)
+        {
+            List<Quotation_Details> response = new List<Quotation_Details>();
+            try
+            {
+                response = _quotRepo.QuotationDetailsById(quotationNo, tenderNo);
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.StackTrace);
+            }
+        }
     }
 }

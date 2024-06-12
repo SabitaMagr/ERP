@@ -166,7 +166,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DocumentDateField.cshtml", true)
+                                        @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/DocumentDateField.cshtml", true)
                                     </div>
 
                                     <div class="col-md-4" radio_button">
@@ -193,7 +193,7 @@
                                                         </td>
                                                         <td ng-show="$index=='0'" width="15%"></td>
                                                         <td width="35%">
-                                                            @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_tableWiseColumn_reference.cshtml", true)
+                                                            @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/PartialView/_tableWiseColumn_reference.cshtml", true)
                                                         </td>
                                                         <td width="35%"><input type="text" ng-model="col.COLUMN_VALUE" class="form-control colValue" />{{col.COLUMN_VALUE}}</td>
 
@@ -214,7 +214,7 @@
                                         <div class="form-group">
                                             <div class="col-md-12">
                                                 <label class="control-label">  Consignee Name @*<i class="fa fa-info-circle font-green" data-toggle="tooltip" title="Cosignee Name"></i>*@</label>
-                                                @*@Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DropDownPartialView/_refrencecustomerCodePartial.cshtml")*@
+                                                @*@Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/DropDownPartialView/_refrencecustomerCodePartial.cshtml")*@
                                                 @*<input id="referenceCustomer" ng-model="DocumentReference.NAME" name="customer" class="form-control referenceCustomer ccustumer cust custumer c" style="width: 100%;" kendo-combo-box
                                                        k-placeholder="'Select Name'"
                                                        k-data-text-field="'CustomerName'"
@@ -230,14 +230,14 @@
                                         <div class="form-group">
                                             <div class="col-md-12">
                                                 <label class="control-label">Item Desc @*<i class="fa fa-info-circle font-green" data-toggle="tooltip" title="Item Desc"></i>*@</label>
-                                                @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DropDownPartialView/_productCodePartial.cshtml")
+                                                @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/DropDownPartialView/_productCodePartial.cshtml")
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-md-12">
                                                 @*<label class="control-label">Voucher No</label>
                                                     <input type="text" ng-model="DocumentReference.VOUCHER_NO" class="form-control" />*@
-                                                @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/DropDownPartialView/_voucherNoPartial.cshtml")
+                                                @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/DropDownPartialView/_voucherNoPartial.cshtml")
                                             </div>
                                         </div>
                                     </div>
@@ -255,7 +255,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_GridToolbar.cshtml")
+                            @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/PartialView/_GridToolbar.cshtml")
                             <kendo-grid id="referenceGrid" options="referenceGridOptions" k-rebind="referenceGridOptions" class="search-grid" style="width:100%;">
                             </kendo-grid>
                         </div>
@@ -289,7 +289,7 @@
             <div class="modal-body modal-dialogbox-body1 form-horizontal">
                 <div class="row">
                     <div class="col-md-12">
-                        @Html.Partial("~/Areas/NeoERP.DocumentTemplate/Views/Shared/PartialView/_GridToolbar.cshtml")
+                        @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/PartialView/_GridToolbar.cshtml")
                         <kendo-grid id="custReferenceGrid" options="custReferenceGridOptions" k-rebind="custReferenceGridOptions" class="search-grid" style="width:100%;">
                         </kendo-grid>
                     </div>

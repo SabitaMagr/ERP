@@ -25,7 +25,7 @@ namespace NeoErp.Services
             try
             {
                 // Fetch project data
-                string Query = $@"SELECT * FROM sa_quotation_setup WHERE ID = '{id}' AND STATUS = 'E'";
+                string Query = $@"SELECT TENDER_NO, ISSUE_DATE, VALID_DATE, CREATED_DATE, CREATED_BY,bs_date(ISSUE_DATE) as NEPALI_DATE,bs_date(VALID_DATE) as DELIVERY_DT_BS, COMPANY_CODE,BRANCH_CODE FROM sa_quotation_setup WHERE ID = '{id}' AND STATUS = 'E'";
                 List<Quotation> quotations = _dbContext.SqlQuery<Quotation>(Query).ToList();
                 foreach (var quotation in quotations)
                 {

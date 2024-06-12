@@ -4039,10 +4039,12 @@
                 $scope.showRefTab = false;
                 //myInventoryDropzone.processQueue();
                 var host = $window.location.host;
-                var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/MenuSplitter/" + $scope.ModuleCode; /*done previously*/
-                setTimeout(function () {
-                    $window.location.href = landingUrl;
-                }, 1000);
+                //var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/MenuSplitter/" + $scope.ModuleCode; /*done previously*/
+
+                $window.location.href = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/MenuSplitter/" + $scope.ModuleCode; /*done previously*/
+                //setTimeout(function () {
+                //    $window.location.href = landingUrl;
+                //}, 800);
             }
             else if (data.data.MESSAGE == "SAVEANDPRINT") {
 
@@ -4379,12 +4381,11 @@
                 $scope.dzformcode = data.data.FormCode;
                 //myInventoryDropzone.processQueue();
                 $scope.showRefTab = false;
-                var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/MenuSplitter/" + $scope.ModuleCode; /*done previously*/
-                //var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/SplitterIndex#!DT/MenuSplitter/" + $scope.ModuleCode;
-                //$window.location.href = landingUrl;
-                setTimeout(function () {
-                    $window.location.href = landingUrl;
-                }, 1000);
+                //var landingUrl
+                $window.location.href= window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/MenuSplitter/" + $scope.ModuleCode; /*done previously*/
+                //setTimeout(function () {
+                //    $window.location.href = landingUrl;
+                //}, 1000);
             }
             else {
                 hideloader();
@@ -4428,11 +4429,8 @@
                         if (dRes.data.MESSAGE === "DELETED") {
 
                             displayPopupNotification("Data succesfully deleted ", "success");
-                            var landingUrl = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Template/SplitterIndex#!DT/MenuSplitter/02";
-                            //$window.location.href = landingUrl;
-                            setTimeout(function () {
-                                $window.location.href = landingUrl;
-                            }, 1000);
+                            $window.location.href = window.location.protocol + "//" + window.location.host + "/ProjectManagement/Home/Index#!PM/MenuSplitter/" + $scope.ModuleCode; /*done previously*/
+                          
                         }
                         else if (dRes.data.MESSAGE === "POSTED") {
 
@@ -4781,7 +4779,7 @@
     //$scope.ShowInventoryRefrence = function () {
     $scope.ShowInventoryRef = function () {
         if ($scope.havRefrence == 'Y') {
-            $('#RefrenceModelShow').modal('show');
+            $('#RefrenceModel').modal('show');
 
         }
     }

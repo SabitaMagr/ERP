@@ -929,3 +929,124 @@ input[type=checkbox], input[type=radio] {
     background-color: white !important;
     z-index: 1 !important;
 }
+.dateclass {
+    width: 13.5rem;
+}
+
+.itemSelect {
+    width: 37rem;
+}
+.currencySelect {
+    width: 25rem;
+    margin-right: 20px;
+}
+.remarks {
+    width: 27rem !important;
+    height: 24px !important;
+}
+
+.termsCondition {
+    width: 35.8rem
+}
+@media screen and (max-width: 1290px) {
+    .form-control {
+        width: 18rem;
+    }
+    .currencySelect {
+        width: 16rem;
+        margin-right: 20px;
+    }
+    .itemSelect {
+        width: 25rem;
+    }
+    .remarks {
+        width: 18rem !important;
+        height: 24px !important; 
+    }
+    .dateclass {
+        width:9rem !important;
+    }
+    .termsCondition {
+        width: 26rem !important;
+    }
+    .dropzone {
+        width: 20rem;
+    }
+    .col-md-3 {
+        width: 20%;
+    }
+
+    .col-md-4 {
+        width: 32%;
+    }
+
+    .col-md-1 {
+        width: 18%;
+    }
+}
+@media screen and (max-width: 1496px) {
+    .dropzone {
+        width: 35rem;
+    }
+/*    .termsCondition {
+        width: 30rem
+    }*/
+}
+@media screen and (max-width: 1474px) {
+        .termsCondition {
+        width: 30rem
+    }
+}
+@media screen and (max-width: 1432px) {
+    .col-md-3 {
+        width: 20%;
+    }
+
+    .col-md-4 {
+        width: 32%;
+    }
+
+    .col-md-1 {
+        width: 18%;
+    }
+}
+@media screen and (max-width: 1275px) {
+    .dropzone {
+        width: 20rem;
+    }
+    .termsCondition {
+        width: 25rem !important;
+    }
+}
+@media screen and (max-width: 1242px) {
+    .termsCondition {
+        width: 23rem!important;
+    }
+}
+@media screen and (max-width: 1137px) {
+    .termsCondition {
+        width: 20rem !important;
+    }
+}
+@media screen and (max-width: 1040px) {
+    .termsCondition {
+        width: 15rem !important;
+    }
+}
+@media screen and (max-width: 992px) {
+    .card-container {
+        display: flex;
+        justify-content: space-between;
+    }
+    .col-md-10 {
+        width:90%;
+    }
+    .col-md-2 {
+        width: 10%;
+    }
+    .logo-default {
+        margin: 4px 0 0 !important;
+        max-width: 70%;
+    }
+}
+

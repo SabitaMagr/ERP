@@ -1,14 +1,18 @@
-﻿QMModule.controller('EditQuotation', function ($scope, $rootScope, $http, $filter, $timeout, $location, $httpParamSerializer) {
+﻿QMModule.controller('EditQuotation', function ($scope, $rootScope, $http, $filter, $timeout, $routeParams) {
     $scope.pageName = "Add Quotation";
     $scope.saveAction = "Save";
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("id");
+    $scope.id = "";
+
+    if ($routeParams.id != undefined) {
+        $scope.id = $routeParams.id.split(new RegExp('_', 'i')).join('/');
+
+    }
+    else { $scope.id = "undefined"; }
 
     $scope.idShowHide = false;
 
     $("#englishdatedocument").kendoDatePicker();
     $("#validDt").kendoDatePicker();
-    $("#deliveryDt").kendoDatePicker();
     $scope.productFormList = [];
     $scope.counterProduct = 1;
     $scope.showCustomerDetails = false;
@@ -33,23 +37,23 @@
     $scope.selectedItem = null;
 
     $scope.ItemSelect = {
-        dataTextField: "ItemDescription",
-        dataValueField: "ItemCode",
-        height: 600,
-        valuePrimitive: true,
-        maxSelectedItems: 1,
-        headerTemplate: '<div class="col-md-offset-3"><strong>Group...</strong></div>',
-        placeholder: "Select Item...",
-        autoClose: true,
-        dataSource: {
+        dataSource: new kendo.data.DataSource({
             transport: {
                 read: {
                     url: window.location.protocol + "//" + window.location.host + "/api/QuotationApi/ItemDetails",
                     dataType: "json"
                 }
             }
+        }),
+        dataTextField: "ItemDescription",
+        dataValueField: "ItemCode",
+        filter: "contains",
+        autoClose: true,
+        change: function (e) {
+            var selectedItem = this.dataItem();
         }
     };
+
     $scope.currencySelect = {
         dataTextField: "name",
         dataValueField: "name",
@@ -85,25 +89,24 @@
                 displayPopupNotification("Error fetching item details", "error");
             });
     };
-    function formatDate(dateString) {
-        var date = new Date(dateString);
-        return $filter('date')(date, 'dd-MMM-yyyy');
-    }
     $scope.updateUnit = function (product) {
         if (product && product.ItemDescription) {
-            // Find the item with the matching ItemCode
-            var selectedItem = $scope.ItemSelect.dataSource.data.find(function (item) {
-                return item.ItemCode === product.ItemDescription;
+            $scope.ItemSelect.dataSource.fetch(function () {
+                var data = $scope.ItemSelect.dataSource.data();
+
+                var selectedItem = data.find(function (item) {
+                    return item.ItemCode === product.ItemDescription;
+                });
+
+                if (selectedItem) {
+                    product.UNIT = selectedItem.ItemUnit;
+                    product.SPECIFICATION = selectedItem.SPECIFICATION;
+                } else {
+                    product.UNIT = ""; 
+                }
             });
-
-            // If a matching item is found, set the UNIT to the ItemUnit of the selected item
-            if (selectedItem) {
-                product.UNIT = selectedItem.ItemUnit;
-                product.SPECIFICATION = selectedItem.SPECIFICATION;
-
-            }
         } else {
-            product.UNIT = ""; // Set UNIT to empty string if product or ItemCode is not provided
+            product.UNIT = "";
         }
     };
 
@@ -281,6 +284,8 @@
         $("#englishdatedocument").data("kendoDatePicker").value(null);
         $("#validDt").data("kendoDatePicker").value(null);
         $("#nepaliDate").val('');
+        $("#issueNep").val('');
+
         // Clear the content of productFormList
         $scope.productFormList.forEach(function (product) {
             product.ItemDescription = '';
@@ -328,7 +333,7 @@
 
     // Handle click event for the edit button
 
-        $http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + id)
+    $http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + $scope.id)
             .then(function (response) {
                 var quotation = response.data[0];
                 $scope.ID = quotation.ID;
@@ -340,7 +345,8 @@
 
                 // Set values for input fields with specific IDs
                 $('#englishdatedocument').val(issueDate);
-                $('#nepaliDate').val(quotation.NEPALI_DATE);
+                $('#issueNep').val(quotation.NEPALI_DATE);
+                $('#nepaliDate').val(quotation.DELIVERY_DT_BS);
                 $("#validDt").val(validDate);
 
                 $scope.TXT_REMARKS = quotation.REMARKS;
@@ -381,8 +387,6 @@
                         id++;
                     }
                 }
-                $scope.createPanel = true;
-                $scope.tablePanel = false;
 
                 // After populating data, trigger select events
                 setTimeout(function () {

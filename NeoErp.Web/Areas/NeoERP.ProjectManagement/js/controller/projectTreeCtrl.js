@@ -14,6 +14,7 @@
         if ($scope.projectFormList.length === 0) {
             $scope.addProject();
         }
+        //window.location.href = "/ProjectManagement/Home/Index#!PM/AddProject"
 
     };
     //Material Model Form
@@ -35,35 +36,6 @@
         checked: false
     };
 
-    //$scope.formatStartDate = function (dateField, project) {
-    //    // Split the date string by '/'
-    //    console.log(dateField);
-    //    var dateParts = dateField.split('/');
-
-    //    var day = parseInt(dateParts[1]);
-    //    var month = parseInt(dateParts[0]);
-    //    var year = parseInt(dateParts[2]);
-
-    //    var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    //    var formattedDate = day + '-' + monthNames[month - 1] + '-' + year;
-
-    //    $('#startDt' + '_' + project.subProjectId).val(formattedDate);
-    //};
-    //$scope.formatEndDate = function (dateField, project) {
-    //    // Split the date string by '/'
-    //    var dateParts = dateField.split('/');
-
-    //    var day = parseInt(dateParts[1]);
-    //    var month = parseInt(dateParts[0]);
-    //    var year = parseInt(dateParts[2]);
-
-    //    var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    //    var formattedDate = day + '-' + monthNames[month - 1] + '-' + year;
-
-    //    $('#endDt' + '_' + project.subProjectId).val(formattedDate);
-    //};
     $scope.addProject = function () {
         var req = "/api/InventoryApi/GetAllEmployees"
         $http.get(req).then(function (results) {
@@ -155,7 +127,7 @@
     //Material Planning
     $scope.openMaterialPlanningModal = function (subProjectId) {
         $("#materialPlanningModal_" + subProjectId).modal('show');
-        //    $scope.addMaterial(subProjectId);
+    //        $scope.addMaterial(subProjectId);
     };
 
 
@@ -299,12 +271,7 @@
         $scope.labourFormLists[modelId] = $scope.labourPlanningData;
         $("#labourPlanningModal_" + modelId).modal('hide');
     };
-    //$scope.ItemCancel = function () {
-    //    $scope.materialFormTemplate = null;
-    //    $scope.labourFormTemplate = null;
-    //    $scope.projectFormTemplate = null;
-    //}
-    //End of Labour planning
+
     $scope.saveNewitem = function () {
         var projectName = $scope.project.PROJECT_EDESC;
         var formData = {
@@ -338,14 +305,15 @@
         $http.post('/api/ProjectApi/SaveProjectFormData', formData)
             .then(function (response) {
                 $scope.projectFormList.splice(0, $scope.projectFormList.length);
-                window.location.reload(); // Reload the page
+                window.location.reload();
+                $scope.ItemCancel();
                 $("#projectModal").modal('hide');
                 var message = response.data.MESSAGE;
-                $scope.setPopoverContent(message, 'success');
+                displayPopupNotification(message, 'success');
             })
             .catch(function (error) {
                 var message = error;
-                $scope.setPopoverContent(message, 'error');
+                displayPopupNotification(message, 'error');
             });
     };
     function transformMaterialPlanningData(subProjectId) {
@@ -366,28 +334,12 @@
         return $filter('date')(date, 'dd-MMM-yyyy');
     }
 
-    $scope.setPopoverContent = function (message, type) {
-        // Set the message
-        var popMessage = $('.popMessage');
-        popMessage.html('<h5>' + message + '</h5>');
-
-        // Set the background color based on the type
-        if (type === 'success') {
-            popMessage.css('background-color', 'green');
-        } else if (type === 'error') {
-            popMessage.css('background-color', 'red');
-        }
-
-        setTimeout(function () {
-            $('.popContainer').hide();
-        }, 4000);
-    };
-
     $http.post('/api/ProjectApi/ListAllProjects')
         .then(function (response) {
             var projects = response.data; // Assuming the response contains an array of project objects
             projects.forEach(function (project) {
                 project.CREATED_DT = formatDate(project.CREATED_DT);
+                project.TOTAL_BUDGET = (project.TOTAL_BUDGET).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 project.START_DATE = formatDate(project.START_DATE);
                 project.END_DATE = formatDate(project.END_DATE);
             });
@@ -395,7 +347,7 @@
         })
         .catch(function (error) {
             var message = error.data.message || 'Error loading projects!!!'; // Assuming the error response contains a message
-            $scope.setPopoverContent(message, 'error');
+            displayPopupNotification(message, 'error');
         });
 
     // Define the dataSource for the Kendo Grid
@@ -413,6 +365,7 @@
             refresh: true,
             pageSizes: true
         },
+        resizable: true, // Enable column resizing
         toolbar: ["excel"/*, "pdf"*/],
         excel: {
             fileName: "Projects.xlsx",
@@ -423,22 +376,22 @@
         //    allPages: true
         //},
         columns: [
-            { field: "PROJECT_NAME", title: "Project Name" },
-            { field: "SUB_PROJECT_COUNT", title: "Total SubProject" },
-            { field: "TOTAL_AREA", title: "Total Area" },
-            //{ field: "TOTAL_BUDGET", title: "Total Budget" },
-            { field: "TOTAL_BUDGET", title: "Total Budget" },
-            { field: "LABOUR_COUNT", title: "Total Labour Planning" },
-            { field: "MATERIAL_COUNT", title: "Total Material Planning" },
-            { field: "START_DATE", title: "Start Date" },
-            { field: "END_DATE", title: "End Date" },
-            { field: "CREATED_DT", title: "Created Date" },
+            { field: "PROJECT_NAME", title: "Project Name", type: "string" },
+            { field: "SUB_PROJECT_COUNT", title: "Total SubProject", style: "text-align:right", template: "<div style='text-align:right;'>#= SUB_PROJECT_COUNT #</div>" },
+            { field: "TOTAL_AREA", title: "Total Area", style: "text-align:right", type: "number", template: "<div style='text-align:right;'>#= TOTAL_AREA #</div>" },
+            { field: "TOTAL_BUDGET", title: "Total Budget", style: "text-align:right", type: "number", template: "<div style='text-align:right;'>#= kendo.toString(TOTAL_BUDGET, 'n2') #</div>" },
+            { field: "LABOUR_COUNT", title: "Total Labour Planning", style: "text-align:right", type: "number", template: "<div style='text-align:right;'>#= LABOUR_COUNT #</div>" },
+            { field: "MATERIAL_COUNT", title: "Total Material Planning", style: "text-align:right", type: "number", template: "<div style='text-align:right;'>#= MATERIAL_COUNT #</div>" },
+            { field: "START_DATE", title: "Start Date", type: "string" },
+            { field: "END_DATE", title: "End Date", type: "string" },
+            { field: "CREATED_DT", title: "Created Date", type: "string" },
             {
                 title: "Actions",
                 width: 120,
                 template: "<a class='btn btn-sm btn-info view-btn' data-id='#= ID #'><i class='fa fa-eye'></i></a>&nbsp;<a class='btn btn-sm btn-warning edit-btn' data-id='#= ID #'><i class='fa fa-edit'></i></a>&nbsp;<a class='btn btn-sm btn-danger delete-btn' data-id='#= ID #'><i class='fa fa-trash'></i></a>"
             }
         ]
+
     });
     // Handle click event for the edit button
     $("#kGrid").on("click", ".edit-btn", function () {
@@ -516,7 +469,7 @@
             };
         }).catch(function (error) {
             var message = 'Error in displaying project!!'; // Extract message from response
-            $scope.setPopoverContent(message, 'error');
+            displayPopupNotification(message, 'error');
         });
     });
 
@@ -590,7 +543,7 @@
             };
         }).catch(function (error) {
             var message = 'Error in displaying project!!'; // Extract message from response
-            $scope.setPopoverContent(message, 'error');
+            displayPopupNotification(message, 'error');
         });
     });
 
@@ -623,12 +576,12 @@
             var responseList = ProjectSetupService.DeleteProjectById(id);
             responseList.then(function (response) {
                 var message = response.data.MESSAGE; // Extract message from response
-                $scope.setPopoverContent(message, 'success');
+                displayPopupNotification(message, 'success');
                 window.location.reload(); // Reload the page
             }).catch(function (error) {
                 var message = 'Error in displaying project!!'; // Extract message from response
                 //$('#popoverMessage').text(message);
-                $scope.setPopoverContent(message, 'error');
+                displayPopupNotification(message, 'error');
             });
             deleteButton.popover('hide');
         });
@@ -641,25 +594,49 @@
 
     });
 
-    // Function to filter data
+    
     $("#itemtxtSearchString").keyup(function () {
         var val = $(this).val().toLowerCase(); // Get the search input value
-        $scope.dataSource.filter({
-            logic: "or",
-            filters: [
-                {
-                    field: "PROJECT_NAME",
+        var filters = [];
+        var columns = $("#kGrid").data("kendoGrid").columns;
+        for (var i = 0; i < columns.length; i++) {
+            var column = columns[i];
+            var field = column.field;
+            if (column.type === "string") {
+                filters.push({
+                    field: field,
                     operator: "contains",
                     value: val
-                },
-                {
-                    field: "CREATED_DT",
+                });
+            } else if (column.type === "number") {
+                filters.push({
+                    field: field,
                     operator: "eq",
-                    value: new Date(val) || null // Assuming the input value is in date format
+                    value: parseFloat(val) || null
+                });
+            } else if (column.type === "date") {
+                // Assuming you have a parsedDate variable defined somewhere in your code
+                if (parsedDate) {
+                    filters.push({
+                        field: field,
+                        operator: "eq",
+                        value: new Date(val) || null
+                    });
                 }
-            ]
+            }
+        }
+        $scope.dataSource.filter({
+            logic: "or",
+            filters: filters
         });
     });
+    $scope.ItemCancel = function () {
+        $scope.project = {}; // Clear the main project object
+        $scope.projectFormList = []; // Clear the subprojects list
+        $scope.materialFormLists = {}; // Clear the material planning data
+        $scope.labourFormLists = {}; // Clear the labour planning data
+        // You can reset other variables here as needed
+    };
 
 
 });

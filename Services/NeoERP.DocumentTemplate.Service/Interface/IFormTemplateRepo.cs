@@ -59,6 +59,7 @@ namespace NeoERP.DocumentTemplate.Service.Interface
         List<COMMON_COLUMN> getReferenceGridData(REFERENCE_MODEL model);
 
         List<COMMON_COLUMN> VoucherDetailByReferenceForTemplate(VoucherRefrence model);
+        List<COMMON_COLUMN> VoucherDetailReferenceForTemplate(VoucherRefrence model);
 
         string NewTransactionNo(string companycode, string formcode, string transactiondate);
         string getBudgetCodeCountByAccCode(string accCode);

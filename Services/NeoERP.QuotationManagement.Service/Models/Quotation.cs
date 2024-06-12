@@ -15,6 +15,7 @@ namespace NeoERP.QuotationManagement.Service.Models
         public DateTime? CREATED_DATE { get; set; }
         public string CREATED_BY { get; set; }
         public string NEPALI_DATE { get; set; }
+        public string DELIVERY_DT_BS { get; set; }
         public string COMPANY_CODE { get; set; }
         public string REMARKS { get; set; }
         public char STATUS { get; set; }

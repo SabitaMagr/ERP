@@ -1,9 +1,13 @@
-﻿QMModule.controller('ViewQuotation', function ($scope, $rootScope, $http, $filter, $timeout, $location, $httpParamSerializer) {
+﻿QMModule.controller('ViewQuotation', function ($scope, $rootScope, $http, $filter, $timeout, $routeParams) {
     $scope.pageName = "Add Quotation";
     $scope.saveAction = "Save";
     $scope.createPanel = false;
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("id");
+    $scope.id = "";
+    if ($routeParams.id != undefined) {
+        $scope.id = $routeParams.id.split(new RegExp('_', 'i')).join('/');
+
+    }
+    else { $scope.id = "undefined"; }
     $scope.productFormList = [];
     $scope.counterProduct = 1;
     $scope.showCustomerDetails = false;
@@ -118,13 +122,14 @@
 
     // Handle click event for the view button
 
-        $http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + id)
+    $http.get('/api/QuotationApi/GetQuotationById?tenderNo=' + $scope.id)
             .then(function (response) {
                 var quotation = response.data[0];
                 $scope.TENDER_NO = quotation.TENDER_NO;
                 $scope.ISSUE_DATE = formatDate(quotation.ISSUE_DATE);
                 $scope.VALID_DATE = formatDate(quotation.VALID_DATE);
                 $scope.NEPALI_DATE = quotation.NEPALI_DATE;
+                $scope.DELIVERY_DT_BS = quotation.DELIVERY_DT_BS;
                 $scope.TXT_REMARKS = quotation.REMARKS;
                 $scope.APPROVED_STATUS = quotation.APPROVED_STATUS;
                 var id = 1;

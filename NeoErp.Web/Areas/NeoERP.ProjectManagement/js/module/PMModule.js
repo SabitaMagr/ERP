@@ -19,6 +19,9 @@ PMModule.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/ProjectSetup', {
         templateUrl: '/ProjectManagement/Home/ProjectSetup',
     });
+    $routeProvider.when('/AddProject', {
+        templateUrl: '/ProjectManagement/Home/AddProject',
+    });
     $routeProvider.when('/Project', {
         templateUrl: '/ProjectManagement/Home/Project',
     });
@@ -28,11 +31,6 @@ PMModule.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/RequisitionEntry', {
         templateUrl: '/ProjectManagement/Home/RequisitionEntry',
         controller: 'Requisition',
-
-    });
-    $routeProvider.when('/ConsumptionEntry', {
-        templateUrl: '/ProjectManagement/Home/ConsumptionEntry',
-        controller: 'consumption',
 
     });
     $routeProvider.when('/RequisitionEntry/:formcode/:orderno', {
@@ -49,6 +47,80 @@ PMModule.config(function ($routeProvider, $locationProvider) {
         }
 
     });
+    $routeProvider.when('/MenuSplitter/',
+        {
+            templateUrl: '/ProjectManagement/Home/MenuSplitter',
+            controller: 'consumptionMenuSplitter',
+
+        });
+
+    $routeProvider.when('/MenuSplitter/:module',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/ProjectManagement/Home/MenuSplitter?module=' + stateParams.module;
+            },
+            controller: 'consumptionMenuSplitter',
+            resolve: {
+                module: function ($route) { return $route.current.params.module; }
+            }
+
+        });
+    $routeProvider.when('/ReqMenuSplitter/:module',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/ProjectManagement/Home/ReqMenuSplitter?module=' + stateParams.module;
+            },
+            controller: 'ReqMenuSplitter',
+            resolve: {
+                module: function ($route) { return $route.current.params.module; }
+            }
+
+        });
+    $routeProvider.when('/PurMenuSplitter/:module',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/ProjectManagement/Home/PurMenuSplitter?module=' + stateParams.module;
+            },
+            controller: 'PurMenuSplitter',
+            resolve: {
+                module: function ($route) { return $route.current.params.module; }
+            }
+
+        });
+    $routeProvider.when('/AuxMenuSplitter/:module',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/ProjectManagement/Home/AuxMenuSplitter?module=' + stateParams.module;
+            },
+            controller: 'consumptionMenuSplitter',
+            resolve: {
+                module: function ($route) { return $route.current.params.module; }
+            }
+
+        });
+    $routeProvider.when('/ConsumptionEntry', {
+        templateUrl: '/ProjectManagement/Home/ConsumptionEntry',
+        controller: 'consumption',
+
+    });
+    $routeProvider.when('/ConsumptionEntry/:formcode/:orderno', {
+
+        templateUrl: function (stateParams) {
+
+            return '/ProjectManagement/Home/ConsumptionEntry?formCode=' + stateParams.formcode + '&voucherNo=' + stateParams.orderno;
+        },
+        controller: 'consumption',
+        resolve:
+        {
+            formcode: function ($route) { return $route.current.params.formcode; },
+            OrderNo: function ($route) { return $route.current.params.orderno; }
+        }
+
+    });
     $routeProvider.when('/AuxiliaryEntry', {
         templateUrl: '/ProjectManagement/Home/AuxiliaryEntry',
         controller: 'consumption',
@@ -57,6 +129,20 @@ PMModule.config(function ($routeProvider, $locationProvider) {
     $routeProvider.when('/PurchaseEntry', {
         templateUrl: '/ProjectManagement/Home/PurchaseEntry',
         controller: 'Purchase',
+
+    });
+    $routeProvider.when('/PurchaseEntry/:formcode/:orderno', {
+
+        templateUrl: function (stateParams) {
+
+            return '/ProjectManagement/Home/PurchaseEntry?formCode=' + stateParams.formcode + '&voucherNo=' + stateParams.orderno;
+        },
+        controller: 'Purchase',
+        resolve:
+        {
+            formcode: function ($route) { return $route.current.params.formcode; },
+            OrderNo: function ($route) { return $route.current.params.orderno; }
+        }
 
     });
     $routeProvider.when('/RequisitionReport', {

@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace NeoERP.ProjectManagement.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController :   Controller
     {
         private readonly ILogErp _logErp;
         private DefaultValueForLog _defaultValueForLog;
@@ -98,7 +98,7 @@ namespace NeoERP.ProjectManagement.Controllers
         }
         public ActionResult ConsumptionEntry()
         {
-            return View();
+            return PartialView();
         }
         public ActionResult AuxiliaryEntry()
         {
@@ -122,6 +122,30 @@ namespace NeoERP.ProjectManagement.Controllers
         }
         public ActionResult PurchaseReport()
         {
+            return View();
+        }
+        public ActionResult MenuSplitter(string module)
+        {
+            return View();
+        }
+        public ActionResult ReqMenuSplitter(string moduleCode)
+        {
+            // Your code here
+            return View();
+        }
+        public ActionResult PurMenuSplitter(string moduleCode)
+        {
+            // Your code here
+            return View();
+        }
+        public ActionResult AuxMenuSplitter(string moduleCode)
+        {
+            // Your code here
+            return View();
+        }
+        public ActionResult AddProject()
+        {
+            // Your code here
             return View();
         }
         public ActionResult WebErpConfig()

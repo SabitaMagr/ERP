@@ -536,9 +536,6 @@ h1 {
         border-bottom: none !important;
     }
 
-.k-widget.k-datepicker {
-    width: 97%;
-}
 
 #subledgermodal.modal-dialog select {
     height: 21px;
@@ -752,10 +749,15 @@ span.k-widget.k-combobox.k-header.referenceCustomer.ccustumer.cust.custumer.c.ng
 }
 
 .k-widget.k-datepicker {
-    width: 118%;
+    width: 118% !important;
 }
-.small-width{
-    width:11.5rem ;
+.k-header {
+    background-color: #f9f9f900;
+    padding:0;
+}
+
+.small-width {
+    width: 11.5rem;
 }
 .large-width {
     width: 14rem;
@@ -956,3 +958,128 @@ span.k-picker-wrap.k-state-default {
     cursor: pointer;
 }
 
+.dateclass {
+    width: 12.5rem;
+}
+.itemSelect {
+width:37rem;
+}
+.viewSelect {
+    width: 43rem;
+}
+.termsCondition {
+  width:35.8rem
+}
+.k-list.k-reset {
+   overflow: auto;
+   height:179px !important;
+
+}
+@media screen and (max-width: 1222px) {
+    .form-control {
+        width: 15rem; 
+    }
+    .dateclass {
+        width: 7.5rem;
+    }
+}
+@media screen and (max-width: 1442px) {
+    .col-md-3 {
+        width: 20%;
+    }
+    .col-md-4 {
+        width: 35%;
+    }
+    .col-md-1{
+        width:11%;
+    }
+    .dropzone {
+        width: 30rem;
+    }
+}
+@media screen and (max-width: 1296px) {
+    .col-md-3 {
+        width: 20%;
+    }
+
+    .col-md-4 {
+        width: 32%;
+    }
+
+    .col-md-1 {
+        width: 11%;
+    }
+
+    .dropzone {
+        width: 30rem;
+    }
+}
+@media screen and (max-width: 1235px) {
+    .dropzone {
+        width: 25rem;
+    }
+
+}
+@media screen and (max-width: 1167px) {
+    .dropzone {
+        width: 20rem;
+    }
+
+}
+@media screen and (max-width: 890px) {
+    .col-md-3 {
+        width: 20%;
+    }
+
+    .col-md-4 {
+        width: 32%;
+    }
+
+    .col-md-1 {
+        width: 18%;
+    }
+
+    .dropzone {
+        width: 20rem;
+    }
+}
+@media screen and (max-width:1100px) {
+    .col-md-3 {
+        width: 20%;
+    }
+    .col-sm-4 {
+        width: 18% !important;
+    }
+    .col-md-4 {
+        width: 32%;
+    }
+
+    .col-md-1 {
+        width: 15%;
+    }
+
+    .dropzone {
+        width: 20rem;
+    }
+}
+@media screen and (max-width: 1437px) {
+    .buttons-container {
+        margin-top: 1.5rem;
+        width: 100%;
+        text-align: right; /* Aligns the buttons to the right side */
+        clear: both;
+    }
+
+        .buttons-container .row {
+            justify-content: flex-end; /* Aligns the buttons within the row to the right */
+        }
+
+        .buttons-container .col-xs-12 {
+            display: inline-block; /* Allows the buttons to be displayed inline */
+            width: auto; /* Adjust the width as needed */
+            margin-left: 0.5rem; /* Optional: Add some spacing between buttons */
+        }
+    .col-sm-4 {
+        width:11% !important;
+    }
+}

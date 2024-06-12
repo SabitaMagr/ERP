@@ -888,7 +888,7 @@
             //formCode: $scope.FormCode,
             //tableName: $("#refrenceTypeMultiSelect").val().toString()
         }
-        var url = window.location.protocol + "//" + window.location.host + "/api/TemplateApi/GetVoucherDetailForReferenceEdit";
+        var url = window.location.protocol + "//" + window.location.host + "/api/TemplateApi/GetVoucherDetailReferenceEdit";
 
         var response = $http({
             method: "POST",

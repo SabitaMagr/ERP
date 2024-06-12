@@ -1,11 +1,9 @@
 ﻿@{
-    Layout = "~/Areas/NeoERP.QuotationManagement/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
-<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/hotkeys.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/js/module/QMModule.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/js/controller/ViewQuotation.js")"></script>
 
 <link href="@Styles.Url("~/Areas/NeoERP.QuotationManagement/Content/quotationSetup.css")" rel="stylesheet" />
+
 
 <div class="col-md-12 bodyController" ng-controller="ViewQuotation">
     <div class="portlet light form-fit bordered bottomspance">
@@ -16,7 +14,7 @@
                         <i class="fa fa-arrow-circle-left"></i>
                     </a>
                     <i class="fa fa-gift font-white-haze"></i>
-                    <span class="caption-subject font-white-haze bold uppercase">Add Quotation</span>
+                    <span class="caption-subject font-white-haze bold uppercase">View Quotation</span>
                 </div>
             </div>
             <div class="portlet-body">
@@ -28,21 +26,25 @@
                                 <label for="address">Tender No </label>
                                 <input type="text" id="tenderNo" placeholder="" ng-model="TENDER_NO" name="quoteNo" class="form-control" required readonly />
                             </div>
-                  
-                            <div class="form-group" >
+
+                            <div class="form-group">
                                 <label>Date/Miti</label>
                                 <div style="display:flex;">
-                                    <input type="text" class="form-control" readonly ng-model="ISSUE_DATE" style="width: 14rem;" />
-                                    @*<input id="englishdatedocument" class="englishdate" onchange="setNepaliDateFromEnglish(this)" required ng-model="ISSUE_DATE" />*@
-                                    <input type="text" id="nepaliDate" data-checkfor="englishdatedocument" ng-model="NEPALI_DATE" style="width: 14rem;" class="nepali-calendar form-control" readonly />
+                                    <input type="text" class="form-control dateclass" readonly ng-model="ISSUE_DATE" />
+                                    <input type="text" id="nepaliDate" data-checkfor="englishdatedocument" ng-model="NEPALI_DATE" class="nepali-calendar form-control dateclass" readonly />
                                 </div>
                             </div>
 
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <label for="validDt">To be Delivery Date</label><br />
-                                <input type="text" ng-model="VALID_DATE" class="form-control" id="validDt" readonly />
+                                <div style="display:flex;">
+                                    <input type="text" ng-model="VALID_DATE" class="form-control dateclass" id="validDt" readonly />
+                                    <input type="text" id="nepaliDate" data-checkfor="englishdatedocument" ng-model="DELIVERY_DT_BS" class="nepali-calendar form-control dateclass" readonly />
+                                </div>
                             </div>
-                            <div class="form-group" >
+                        </div>
+                        <div style="display:flex;" class="col-md-12">
+                            <div class="form-group">
                                 <label for="validDt">Status</label><br />
                                 <input type="text" ng-model="APPROVED_STATUS" class="form-control" id="approvedStatus" readonly />
                             </div>
@@ -88,55 +90,54 @@
                                             <td class="sticky">
                                                 <select id="itemSelected" name="item_{{product.ID}}" kendo-drop-down-list
                                                         k-options="{dataSource: ItemSelect.dataSource,dataTextField: 'ItemDescription', dataValueField: 'ItemCode',filter: 'contains', autoClose: true }"
-                                                        slim-scroll ng-change="updateUnit(product)"
-                                                        ng-model="product.ItemDescription" style="width: 39rem; "
-                                                        >
+                                                        slim-scroll ng-change="updateUnit(product)" readonly
+                                                        ng-model="product.ItemDescription" class="viewSelect">
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="text" name="specification_{{product.ID}}" id="specification_{{product.ID}}" ng-model="product.SPECIFICATION" required="required" class="form-control" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="specification_{{product.ID}}" id="specification_{{product.ID}}" ng-model="product.SPECIFICATION" required="required" class="form-control" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="category_{{product.ID}}" min="0" id="category_{{product.ID}}" ng-model="product.CATEGORY" class="form-control small-width" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="category_{{product.ID}}" min="0" id="category_{{product.ID}}" ng-model="product.CATEGORY" class="form-control small-width" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="brandName_{{product.ID}}" id="brandName_{{product.ID}}" ng-model="product.BRAND_NAME" class="form-control small-width" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="brandName_{{product.ID}}" id="brandName_{{product.ID}}" ng-model="product.BRAND_NAME" class="form-control small-width" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="interface_{{product.ID}}" id="interface_{{product.ID}}" ng-model="product.INTERFACE" class="form-control small-width" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="interface_{{product.ID}}" id="interface_{{product.ID}}" ng-model="product.INTERFACE" class="form-control small-width" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="type_{{product.ID}}" id="type_{{product.ID}}" ng-model="product.TYPE" class="form-control small-width" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="type_{{product.ID}}" id="type_{{product.ID}}" ng-model="product.TYPE" class="form-control small-width" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="lamination_{{product.ID}}" id="lamination_{{product.ID}}" ng-model="product.LAMINATION" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="lamination_{{product.ID}}" id="lamination_{{product.ID}}" ng-model="product.LAMINATION" class="form-control small-width right-align" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="itemSize_{{product.ID}}" min="0" id="itemSize_{{product.ID}}" ng-model="product.ITEM_SIZE" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="itemSize_{{product.ID}}" min="0" id="itemSize_{{product.ID}}" ng-model="product.ITEM_SIZE" class="form-control small-width right-align" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="thickness_{{product.ID}}" min="0" id="thickness_{{product.ID}}" ng-model="product.THICKNESS" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="thickness_{{product.ID}}" min="0" id="thickness_{{product.ID}}" ng-model="product.THICKNESS" class="form-control small-width right-align" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="color_{{product.ID}}" id="color_{{product.ID}}" ng-model="product.COLOR" class="form-control small-width" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="color_{{product.ID}}" id="color_{{product.ID}}" ng-model="product.COLOR" class="form-control small-width" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="text" name="lamination_{{product.ID}}" id="lamination_{{product.ID}}" ng-model="product.GRADE" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="text" name="lamination_{{product.ID}}" id="lamination_{{product.ID}}" ng-model="product.GRADE" class="form-control small-width right-align" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="number" name="sizeLength_{{product.ID}}" min="0" id="sizeLength_{{product.ID}}" ng-model="product.SIZE_LENGTH" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="number" name="sizeLength_{{product.ID}}" min="0" id="sizeLength_{{product.ID}}" ng-model="product.SIZE_LENGTH" class="form-control small-width right-align" readonly>
                                             </td>
                                             <td ng-show="showSpecificationDetail">
-                                                <input type="number" name="sizeHeight_{{product.ID}}" min="0" id="sizeHeight_{{product.ID}}" ng-model="product.SIZE_WIDTH" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="number" name="sizeHeight_{{product.ID}}" min="0" id="sizeHeight_{{product.ID}}" ng-model="product.SIZE_WIDTH" class="form-control small-width right-align" readonly>
                                             </td>
-                                            <td >
+                                            <td>
                                                 <img name="image_{{product.ID}}" id="image_{{product.ID}}" ng-src="{{product.IMAGE_LINK}}" ng-model="product.IMAGE" class="form-control large-width" ng-click="openImage(product.IMAGE_LINK)" />
                                             </td>
                                             <td>
                                                 <input type="text" name="unit_{{product.ID}}" id="unit_{{product.ID}}" ng-model="product.UNIT" readonly class="form-control small-width" value="">
                                             </td>
                                             <td>
-                                                <input type="number" name="quantity_{{product.ID}}" min="0" id="quantity_{{product.ID}}" ng-model="product.QUANTITY" ng-change="updateAmount(product);updateTotal();updateQuantity()" class="form-control small-width right-align" ng-readonly="panelMode === 'view'">
+                                                <input type="number" name="quantity_{{product.ID}}" min="0" id="quantity_{{product.ID}}" ng-model="product.QUANTITY" ng-change="updateAmount(product);updateTotal();updateQuantity()" class="form-control small-width right-align" readonly>
                                             </td>
                                         </tr>
                                     </table>
@@ -146,14 +147,14 @@
                         <div class="col-xs-6 col-sm-3 col-md-3">
                             <div>
                                 <label class="control-label">Remarks</label>
-                                <textarea id="remarks" ng-model="TXT_REMARKS" class="form-control salestype" type="textarea" style="width:90%; height:29px;" ng-readonly="panelMode === 'view'"></textarea>
+                                <textarea id="remarks" ng-model="TXT_REMARKS" class="form-control salestype" type="textarea" style="width:90%; height:29px;" readonly></textarea>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div style="display:flex;">
                                 <div class="col-md-8 text-right">
                                 </div>
-                                <div class="col-md-2"  @*ng-show="APPROVED_STATUS=='Approved'"*@>
+                                <div class="col-md-2" @*ng-show="APPROVED_STATUS=='Approved'"*@>
                                     <button type="button" class="btn btn-info" ng-click="generateLink()">Generate Link</button>
                                 </div>
                                 <div class="col-md-1 text-right">
@@ -164,7 +165,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="generatedLink"  @*ng-show="APPROVED_STATUS=='Approved'"*@>
+                <div class="generatedLink" @*ng-show="APPROVED_STATUS=='Approved'"*@>
                     Generated Link: <a href="{{ generatedUrl }}" target="_blank">{{ generatedUrl }}</a>
                 </div>
             </div>

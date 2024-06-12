@@ -38,6 +38,47 @@ QMModule.config(function ($routeProvider, $locationProvider) {
             }
 
         });
+
+    $routeProvider.when('/QuotationDetailItemwise/:quotationNo/:tenderNo', {
+
+        templateUrl: function (stateParams) {
+
+            return '/QuotationManagement/Home/QuotationDetailItemwise?id=' + stateParams.quotationNo + '&tenderNo=' + stateParams.tenderNo;
+        },
+        controller: 'quotationDetailItemWise',
+        resolve:
+
+        {
+            quotationNo: function ($route) { return $route.current.params.quotationNo; },
+            tenderNo: function ($route) { return $route.current.params.tenderNo; }
+
+        }
+
+    })
+    $routeProvider.when('/ViewQuotation/:id',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/QuotationManagement/Home/ViewQuotation?id=' + stateParams.id;
+            },
+            controller: 'ViewQuotation',
+            resolve: {
+                module: function ($route) { return $route.current.params.id; }
+            }
+
+        });
+    $routeProvider.when('/EditQuotation/:id',
+        {
+            templateUrl: function (stateParams) {
+
+                return '/QuotationManagement/Home/EditQuotation?id=' + stateParams.id;
+            },
+            controller: 'EditQuotation',
+            resolve: {
+                module: function ($route) { return $route.current.params.id; }
+            }
+
+        });
     $routeProvider.when('/SummaryReport', {
         templateUrl: '/QuotationManagement/Home/SummaryReport',
     });

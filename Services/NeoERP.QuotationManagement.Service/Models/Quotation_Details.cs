@@ -17,6 +17,9 @@ namespace NeoERP.QuotationManagement.Service.Models
         public DateTime? ISSUE_DATE { get; set; }
         public DateTime? VALID_DATE { get; set; }
         public string NEPALI_DATE { get; set; }
+        public string DELIVERY_DT_BS { get; set; }
+        public string DELIVERY_DT_NEP { get; set; }
+
         public string EMAIL { get; set; }
         public string CURRENCY { get; set; }
         public decimal CURRENCY_RATE { get; set; }
@@ -29,6 +32,8 @@ namespace NeoERP.QuotationManagement.Service.Models
         public decimal TOTAL_NET_AMOUNT { get; set; }
         public string DISCOUNT_TYPE { get; set; }
         public string STATUS { get; set; }
+        public string REMARKS { get; set; }
+
         public List<Item_details> Item_Detail { get; set; }
         public List<Term_Conditions> TermsCondition { get; set; }
         public List<QuotationTransaction> IMAGES_LIST { get; set; }

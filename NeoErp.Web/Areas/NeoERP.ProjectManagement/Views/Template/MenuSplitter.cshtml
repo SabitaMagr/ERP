@@ -1,19 +1,15 @@
-﻿@{
-    Layout = "~/Areas/NeoERP.ProjectManagement/Views/Shared/_Layout.cshtml";
+﻿
+@{
+    Layout = null;
+
+
 }
+
 <link href="@Styles.Url(" ~/Content/MainTheme/assets/admin/layout/css/themes/blue.min.css")" title="blue" rel="alternate stylesheet" />
 <link href="@Styles.Url(" ~/Content/MainTheme/assets/admin/layout/css/themes/darkblue.css")" title="darkblue" rel="alternate stylesheet" />
 <link href="@Styles.Url(" ~/Content/MainTheme/assets/admin/layout/css/themes/light2.css")" title="light2" rel="alternate stylesheet" />
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/js/module/PMModule.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/Scripts/Angular-Module-underscore.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/Scripts/handsontable.full.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/Scripts/ngHandsontable.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/Scripts/angularjs-dropdown-multiselect.min.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/Scripts/hotkeys.js")"></script>
-<script src="@Scripts.Url("~/Areas/NeoERP.ProjectManagement/js/controller/consumptionMenuSplitter.js")"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.js"></script>
-
 <style>
     .k-splitbar.k-splitbar-horizontal {
         width: 5px; /*specify the width of the horizontal splitbar*/
@@ -56,7 +52,7 @@
         margin-top:1px;
     }*/
 </style>
-<div class="col-md-12 bodyController" id="SplitterMenuCtrl" ng-controller="consumptionMenuSplitter">
+<div class="col-md-12 bodyController" id="consumptionMenuSplitter">
 
     <div class="portlet light form-fit bordered bottomspance">
 
@@ -85,8 +81,8 @@
                      k-rebind="orientation">
                     @*<div>
 
-                        @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/PartialView/_salesSubMenuList.cshtml")
-                    </div>*@
+                            @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/PartialView/_salesSubMenuList.cshtml")
+                        </div>*@
                     <div>
 
                         @Html.Partial("~/Areas/NeoERP.ProjectManagement/Views/Shared/PartialView/_salesSubMenuDetail.cshtml")
