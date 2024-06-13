@@ -977,10 +977,10 @@ width:37rem;
 }
 @media screen and (max-width: 1222px) {
     .form-control {
-        width: 15rem; 
+        width: 18rem; 
     }
     .dateclass {
-        width: 7.5rem;
+        width: 9rem !important;
     }
 }
 @media screen and (max-width: 1442px) {

@@ -41,14 +41,30 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Quotation Details'
+                            text: 'Quotation Details',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: '10px'
+                            }
                         }
                     },
                     y: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Percentage'
+                            text: 'Percentage',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: '10px'
+                            }
                         }
                     }
                 },
@@ -56,6 +72,7 @@
                 maintainAspectRatio: false
             }
         });
+
     }
 
     function createPieChart() {

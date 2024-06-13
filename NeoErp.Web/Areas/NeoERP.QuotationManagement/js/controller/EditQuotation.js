@@ -270,9 +270,7 @@
                 $scope.createPanel = false;
                 $scope.tablePanel = true;
                 displayPopupNotification(message, "success");
-                setTimeout(function () {
                     window.location.href = "/QuotationManagement/Home/Index#!QM/QuotationSetup"
-                }, 2000);
             })
             .catch(function (error) {
                 var message = error;

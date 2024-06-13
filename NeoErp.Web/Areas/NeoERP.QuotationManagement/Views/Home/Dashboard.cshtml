@@ -6,128 +6,6 @@
     Layout = "~/Areas/NeoERP.QuotationManagement/Views/Shared/_Layout.cshtml";
 }
 
-<style>
- 
-    .simpleDemo ul[dnd-list] {
-        min-height: 42px;
-        padding-left: 0px;
-    }
-
-    .portlet {
-        padding: 3px !important;
-    }
-    .simpleDemo ul[dnd-list] .dndDraggingSource {
-        display: none;
-    }
-
-    .simpleDemo ul[dnd-list] .dndPlaceholder {
-        background-color: #ddd;
-        display: block;
-        min-height: 42px;
-    }
-
-    .simpleDemo ul[dnd-list] li {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-top-right-radius: 4px;
-        border-top-left-radius: 4px;
-        display: block;
-        padding: 10px 15px;
-        margin-bottom: -1px;
-    }
-
-        /**
-    * Show selected elements in green
-    */
-        .simpleDemo ul[dnd-list] li.selected {
-            background-color: #dff0d8;
-            color: #3c763d;
-        }
-
-
-    .rightallign {
-        font-weight: bold;
-        font-size: 8px !important;
-        float: right;
-    }
-
-    .comboBoxedescName {
-        width: 65% !important;
-        display: inline-block !important;
-    }
-
-    .portlet.portlet-sortable {
-        min-height: 0px !important;
-    }
-
-    .page-content {
-        padding: 7px 20px 10px !important;
-        min-height: 5000px !important;
-        height: auto !important;
-    }
-
-    /*.DistMenuHeight {
-        height: 1400px !important;
-    }*/
-    .icon-button a {
-        height: auto !important;
-        display: inline-block !important;
-        margin-right: 3px;
-    }
-
-    .icon-button {
-        /*width: auto !important;
-        margin-top: -10% !important;*/
-    }
-
-        .icon-button a {
-            display: none !important;
-            color: #fff;
-            border-radius: 3px !important;
-        }
-
-    .erp-iconlist ul li:hover .icon-button a {
-        display: inline-block !important;
-        -moz-transition: all 2s;
-        -webkit-transition: all 2s;
-        transition: all 2s;
-        color: #fff !important;
-        transform: translate(-50%, -50%);
-    }
-
-
-    /*li.k-item.k-state-default.k-last {
-        width: 102px;
-    }*/
-
-    .modal_dialog_custom {
-        width: 195px;
-    }
-
-    #ResetFolder {
-        width: 76px;
-    }
-
-    .toggle {
-        width: 81px !important;
-        height: 28px !important;
-        margin-top: 4px;
-    }
-
-    .toggle-handle {
-        padding: 0px !important;
-    }
-
-    .toggle-off.btn, .toggle-on.btn {
-        padding: 4px 0px 0px 0px !important;
-    }
-
-    .toggle-off {
-        background-color: #3c763d !important;
-        color: white !important;
-    }
-
-</style>
 
 <link href="~/Areas/NeoERP.QuotationManagement/Content/hotkeys.css" rel="stylesheet" />
 
@@ -174,7 +52,7 @@
                     </div>
                     <div class="margin-top-10 portlet col-md-12  light border portlet_bg_dm">
                         <div class="margin-top-10 ">
-                            <div class="col-sm-6 col-lg-3 " ng-repeat="quotationCount in quotationCountList">
+                            <div class="col-sm-6 col-lg-3" ng-repeat="quotationCount in quotationCountList">
                                 <div class="card" ng-style="{'background-color': quotationCount.COLOR}">
                                     <div class="card-body pb-0">
                                         <div class="font">
@@ -188,12 +66,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" style="display: flex; flex-wrap: wrap;margin-top:25rem;">
-                            <div class="margin-top-10" style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center;">
-                                <canvas class="chart" id="myChart" width="400" height="400"></canvas>
+                        <div class="pieBarDiv">
+                            <div class="margin-top-10 pieBar">
+                                <canvas class="chart" id="myChart"></canvas>
                             </div>
-                            <div class="margin-top-10" style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center;">
-                                <canvas class="chart" id="myPieChart" width="400" height="400"></canvas>
+                            <div class="margin-top-10 pieBar">
+                                <canvas class="chart" id="myPieChart"></canvas>
                             </div>
                         </div>
                     </div>

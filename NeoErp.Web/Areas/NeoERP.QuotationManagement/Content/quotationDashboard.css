@@ -32,32 +32,6 @@
     padding: 15px;
 }
 
-.project-card {
-    border: 1px solid #ccc;
-    border-radius: 10px !important;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-}
-
-    .project-card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-.project-card-body {
-    padding: 20px;
-}
-
-.project-card h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-.project-card p {
-    margin: 0;
-    line-height: 1.5;
-}
 
 /* CSS for the card header */
 .card-header {
@@ -139,4 +113,151 @@
 .chart {
     height: 400px !important;
     width: 600px !important;
+}
+.simpleDemo ul[dnd-list] {
+    min-height: 42px;
+    padding-left: 0px;
+}
+
+.portlet {
+    padding: 3px !important;
+}
+
+.simpleDemo ul[dnd-list] .dndDraggingSource {
+    display: none;
+}
+
+.simpleDemo ul[dnd-list] .dndPlaceholder {
+    background-color: #ddd;
+    display: block;
+    min-height: 42px;
+}
+
+.simpleDemo ul[dnd-list] li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+}
+
+    .simpleDemo ul[dnd-list] li.selected {
+        background-color: #dff0d8;
+        color: #3c763d;
+    }
+
+
+.rightallign {
+    font-weight: bold;
+    font-size: 8px !important;
+    float: right;
+}
+
+.comboBoxedescName {
+    width: 65% !important;
+    display: inline-block !important;
+}
+
+.portlet.portlet-sortable {
+    min-height: 0px !important;
+}
+
+.page-content {
+    padding: 7px 20px 10px !important;
+    min-height: 5000px !important;
+    height: auto !important;
+}
+
+.icon-button a {
+    height: auto !important;
+    display: inline-block !important;
+    margin-right: 3px;
+}
+
+
+    .icon-button a {
+        display: none !important;
+        color: #fff;
+        border-radius: 3px !important;
+    }
+
+.erp-iconlist ul li:hover .icon-button a {
+    display: inline-block !important;
+    -moz-transition: all 2s;
+    -webkit-transition: all 2s;
+    transition: all 2s;
+    color: #fff !important;
+    transform: translate(-50%, -50%);
+}
+
+
+.modal_dialog_custom {
+    width: 195px;
+}
+
+
+.toggle {
+    width: 81px !important;
+    height: 28px !important;
+    margin-top: 4px;
+}
+
+.toggle-handle {
+    padding: 0px !important;
+}
+
+.toggle-off.btn, .toggle-on.btn {
+    padding: 4px 0px 0px 0px !important;
+}
+
+.toggle-off {
+    background-color: #3c763d !important;
+    color: white !important;
+}
+.pieBarDiv {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 25rem;
+}
+.pieBar {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#myChart{
+    width: 400px;
+    height: 400px;
+}
+#myPieChart {
+    width: 400px;
+    height: 400px;
+}
+@media screen and (max-width: 1200px) {
+    .pieBarDiv {
+        flex-direction: column;
+    }
+    .col-lg-3 {
+        width: 24%;
+    }
+    #myChart {
+        width:72rem !important;
+    }
+    #myPieChart {
+        height:370px !important;
+        width: 80rem !important;
+    }
+}
+@media screen and (max-width: 1110px) {
+    .card-body p {
+        font-size:12px !important;
+    }
+}
+@media screen and (max-width: 1065px) {
+    .card-body p {
+        font-size: 10px !important;
+    }
 }

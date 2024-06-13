@@ -416,9 +416,7 @@
                 .then(function (response) { 
                 var message = response.data.MESSAGE; // Extract message from response
                     displayPopupNotification(message, "success");
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 5000)
+                     window.location.reload();
                 }).catch(function (error) {
                 var message = 'Error in displaying project!!'; // Extract message from response
                 displayPopupNotification(message, "error");
