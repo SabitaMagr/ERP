@@ -1129,54 +1129,62 @@ DTModule.controller('refrenceCodeCtrl', function ($scope, $rootScope, $http, $ro
 
             ];
         }
-        //else if (tableName == "SA_SALES_INVOICE") {
-        //    colName = [
-        //        {
-        //            field: "VOUCHER_NO",
-        //            title: "Voucher No"
-        //        },
-        //        {
-        //            field: "VOUCHER_DATE",
-        //            title: "Voucher Date",
-        //            template: "#= SALES_DATE == null ? '' :kendo.toString(kendo.parseDate(SALES_DATE),'M/dd/yyyy') #",
-        //        },
-        //        {
-        //            field: "CUSTOMER_EDESC",
-        //            title: "Customer"
-        //        }
-        //        ,
-        //        {
-        //            field: "ITEM_EDESC",
-        //            title: "Item"
-        //        }
-        //        ,
-        //        {
-        //            field: "MU_CODE",
-        //            title: "Unit"
-        //        }
-        //        ,
-        //        {
-        //            field: "QUANTITY",
-        //            title: "Quantity"
-        //        }
-        //        ,
-        //        {
-        //            field: "UNIT_PRICE",
-        //            title: "Unit Price"
-        //        }
-        //        ,
-        //        {
-        //            field: "TOTAL_PRICE",
-        //            title: "Total Price"
-        //        }
-        //        ,
-        //        {
-        //            field: "REMARKS",
-        //            title: "Remarks"
-        //        }
+        else if (tableName == "IP_QUOTATION_INQUIRY") {
+            colName = [
+                {
+                    //title: 'Select All',
+                    //headerTemplate: "<input type='checkbox' id='header-chb' class='checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                    template: function (dataItem) {
+                        return "<input type='checkbox' id='${dataItem.VOUCHER_NO}' class='checkbox row-checkbox'><label class='k-checkbox-label' for='${dataItem.VOUCHER_NO}'></label>"
+                    },
+                    width: 50
+                },
+                {
+                    field: "VOUCHER_NO",
+                    title: "Voucher No"
+                },
+                {
+                    field: "VOUCHER_DATE",
+                    title: "Voucher Date",
+                    template: "#= SALES_DATE == null ? '' :kendo.toString(kendo.parseDate(VOUCHER_DATE),'M/dd/yyyy') #",
+                },
+                {
+                    field: "SUPPLIER_EDESC",
+                    title: "Supplier"
+                }
+                ,
+                {
+                    field: "ITEM_EDESC",
+                    title: "Item"
+                }
+                ,
+                {
+                    field: "MU_CODE",
+                    title: "Unit"
+                }
+                ,
+                {
+                    field: "QUANTITY",
+                    title: "Quantity"
+                }
+                ,
+                {
+                    field: "UNIT_PRICE",
+                    title: "Unit Price"
+                }
+                ,
+                {
+                    field: "TOTAL_PRICE",
+                    title: "Total Price"
+                }
+                ,
+                {
+                    field: "REMARKS",
+                    title: "Remarks"
+                }
 
-        //    ];
-        //}
+            ];
+        }
         else if (tableName == "SA_SALES_CHALAN") {
             colName = [
                 {

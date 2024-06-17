@@ -76,8 +76,14 @@ namespace NeoERP.QuotationManagment.Service.Repository
         public List<Quotation_setup> GetQuotationId()
         {
             //string query = $@"select FN_NEW_TENDERNO('{_workContext.CurrentUserinformation.company_code}','{_workContext.CurrentUserinformation.branch_code}') as TENDER_NO from dual";
-            string query = $@"select GENERATE_TENDER_NO('{_workContext.CurrentUserinformation.company_code}') as TENDER_NO from dual";
-
+            //string query = $@"select GENERATE_TENDER_NO('{_workContext.CurrentUserinformation.company_code}') as TENDER_NO from dual";
+            //List<Quotation_setup> id = _dbContext.SqlQuery<Quotation_setup>(query).ToList();
+            string fQuery = $@"select FORM_CODE from form_setup where form_edesc ='Quotation Enquiry' and  company_code= '{_workContext.CurrentUserinformation.company_code}'";
+            string formcode = _dbContext.SqlQuery<string>(fQuery).FirstOrDefault();
+            var companycode = _workContext.CurrentUserinformation.company_code;
+            string tablename = "IP_QUOTATION_INQUIRY";
+            string transactiondate = DateTime.Now.ToString("dd-MMM-yyyy");
+            string query = string.Format(@"select FN_NEW_VOUCHER_NO('{0}','{1}','{2}','{3}') as TENDER_NO FROM DUAL", companycode, formcode, transactiondate, tablename);
             List<Quotation_setup> id = _dbContext.SqlQuery<Quotation_setup>(query).ToList();
             return id;
         }
@@ -411,17 +417,34 @@ namespace NeoERP.QuotationManagment.Service.Repository
         {
             try
             {
+                bool insertedData = false;
+
                 var UPDATE_QUERY = $@"UPDATE quotation_details SET status ='{status}',approved_by='{_workContext.CurrentUserinformation.login_code}',approved_date='{DateTime.Now.ToString("dd - MMM - yyyy")}' WHERE QUOTATION_NO='{quotationNo}'";
                 _dbContext.ExecuteSqlCommand(UPDATE_QUERY);
+
+
+                string fQuery = $@"select FORM_CODE from form_setup where form_edesc ='Quotation Enquiry' and  company_code= '{_workContext.CurrentUserinformation.company_code}'";
+                string formCode = _dbContext.SqlQuery<string>(fQuery).FirstOrDefault();
 
                 string vquery = $@"select qs.quotation_no,qs.tender_no,qs.created_date,qs.supplier_code,scs.regd_office_eaddress as address,scs.tel_mobile_no1 as contact_no ,iims.item_code,sqi.specification,
                 iims.index_mu_code,sqi.quantity,qdi.rate,qs.total_net_amount,sqs.company_code,sqs.branch_code,qs.currency,qs.currency_rate,qs.delivery_date
                 from quotation_details qs ,ip_supplier_setup scs,sa_quotation_items sqi,ip_item_master_setup iims ,sa_quotation_setup sqs,quotation_detail_itemwise qdi
                 where scs.supplier_code=qs.supplier_code and iims.item_code=sqi.item_code and qs.tender_no=sqi.tender_no and sqs.tender_no=qs.tender_no and 
-                sqs.company_code=iims.company_code and sqs.company_code=scs.company_code and qdi.quotation_no=qs.quotation_no
+                sqs.company_code=iims.company_code and sqs.company_code=scs.company_code and qdi.quotation_no=qs.quotation_no and  sqi.item_code=qdi.item_code
                 and  qs.quotation_no='{quotationNo}' and sqi.deleted_flag='N' and sqs.status='E'";
                 List<QuotationDetails> quoteData = _dbContext.SqlQuery<QuotationDetails>(vquery).ToList();
-                InsertQuotesData(quoteData);
+                quoteData.ForEach(q => q.Form_Code = formCode);
+
+                insertedData = InsertQuotesData(quoteData);
+                if (insertedData)
+                {
+                    string query = $@"SELECT qs.tender_no,  qs.created_date,  qs.supplier_code,  qs.total_net_amount, sqs.company_code,
+                      sqs.branch_code,  qs.currency, qs.currency_rate,  qs.delivery_date FROM  quotation_details qs,
+                       sa_quotation_setup sqs WHERE qs.tender_no =sqs.tender_no  AND qs.quotation_no = '{quotationNo}' AND sqs.status = 'E'";
+                    List<QuotationDetails> masterData = _dbContext.SqlQuery<QuotationDetails>(vquery).ToList();
+                    masterData.ForEach(q => q.Form_Code = formCode);
+                    SaveMasterColumnValue(masterData);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -435,18 +458,25 @@ namespace NeoERP.QuotationManagment.Service.Repository
             {
                 foreach (var data in quoteData)
                 {
-                    var idquery = @"SELECT COALESCE(MAX(SERIAL_NO) + 1, 1) AS id FROM ip_quotation_inquiry";
+                    var idquery = $@"SELECT COALESCE(MAX(SERIAL_NO) + 1, 1) AS id FROM ip_quotation_inquiry where QUOTE_NO='{data.Tender_No}'";
                     int id = _dbContext.SqlQuery<int>(idquery).FirstOrDefault();
+                    //var date=data.Created_Date-data.Delivery_Date;
+                    TimeSpan dateDifference = data.Delivery_Date.Date - data.Created_Date.Date;
+                    int deliveryDays = (int)dateDifference.TotalDays;
+                    string sQuery = $@"SELECT MYSEQUENCE.NEXTVAL FROM DUAL";
+                    var sessionRowId =_dbContext.SqlQuery<int>(sQuery).FirstOrDefault();
+
+
                     string insertItemQuery = $@"
-            INSERT INTO ip_quotation_inquiry (
-                QUOTE_NO, QUOTE_DATE, ORDER_NO, REQUEST_NO, MANUAL_NO, SUPPLIER_CODE, ADDRESS, CONTACT_PERSON, PHONE_NO, SERIAL_NO, ITEM_CODE,
-                SPECIFICATION, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, CURRENCY_CODE, EXCHANGE_RATE,
-                BRAND_NAME, DELIVERY_DATE, APPROVED_FLAG, APPROVED_BY, APPROVED_DATE
-            ) VALUES (
-                '{data.Quotation_No}', TO_DATE('{data.Created_Date.ToString("dd-MMM-yyyy")}', 'DD-MON-YYYY'), null, '{data.Tender_No}', null, '{data.SUPPLIER_Code}',
-                '{data.Address}', NULL, '{data.Contact_No}', {id}, '{data.Item_Code}', '{data.Specification}', '{data.Index_Mu_Code}', {data.Quantity}, '{data.Rate}', '{data.Total_Net_Amount}', null, '1000',
+                    INSERT INTO ip_quotation_inquiry (
+                    QUOTE_NO, QUOTE_DATE, ORDER_NO, REQUEST_NO, MANUAL_NO, SUPPLIER_CODE, ADDRESS, CONTACT_PERSON, PHONE_NO, SERIAL_NO, ITEM_CODE,
+                    SPECIFICATION, MU_CODE, QUANTITY, UNIT_PRICE, TOTAL_PRICE, REMARKS, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, CREATED_DATE, CURRENCY_CODE, EXCHANGE_RATE,
+                    BRAND_NAME, DELIVERY_DATE, APPROVED_FLAG, APPROVED_BY, APPROVED_DATE,SESSION_ROWID,DELETED_FLAG,DELIVERY_DAYS
+                    ) VALUES (
+                '{data.Tender_No}', TO_DATE('{data.Created_Date.ToString("dd-MMM-yyyy")}', 'DD-MON-YYYY'), null,null, '{id}', '{data.SUPPLIER_Code}',
+                '{data.Address}', NULL, '{data.Contact_No}', {id}, '{data.Item_Code}', '{data.Specification}', '{data.Index_Mu_Code}', {data.Quantity}, '{data.Rate}', '{data.Total_Net_Amount}', null, '{data.Form_Code}',
                 '{data.Company_Code}', '{data.Branch_Code}', '{_workContext.CurrentUserinformation.login_code}', '{DateTime.Now.ToString("dd-MMM-yyyy")}','{data.Currency}', '{data.Currency_Rate}', '{data.Brand_Name}', TO_DATE('{data.Delivery_Date.ToString("dd-MMM-yyyy")}', 'DD-MON-YYYY'), 'Y', '{_workContext.CurrentUserinformation.login_code}', '{DateTime.Now.ToString("dd-MMM-yyyy")}'
-            )";
+                ,'{sessionRowId}','N',{deliveryDays} )";
                     _dbContext.ExecuteSqlCommand(insertItemQuery);
                 }
                 return true;
@@ -457,6 +487,28 @@ namespace NeoERP.QuotationManagment.Service.Repository
 
             }
 
+        }
+        public bool SaveMasterColumnValue(List<QuotationDetails> quodata)
+        {
+            try
+            {
+                foreach (var data in quodata)
+                {
+                    string sQuery = $@"SELECT MYSEQUENCE.NEXTVAL FROM DUAL";
+                    var sessionRowId = _dbContext.SqlQuery<int>(sQuery).FirstOrDefault();
+
+                    string insertmasterQuery = $@"INSERT INTO MASTER_TRANSACTION(VOUCHER_NO, VOUCHER_AMOUNT, FORM_CODE, COMPANY_CODE, BRANCH_CODE, CREATED_BY, DELETED_FLAG, CURRENCY_CODE, CREATED_DATE, VOUCHER_DATE, SESSION_ROWID, SYN_ROWID, EXCHANGE_RATE, IS_SYNC_WITH_IRD, IS_REAL_TIME) 
+            VALUES ('{data.Tender_No}', '{data.Total_Net_Amount}', '{data.Form_Code}', '{_workContext.CurrentUserinformation.company_code}', '{_workContext.CurrentUserinformation.branch_code}', '{_workContext.CurrentUserinformation.login_code.ToUpper()}', 'N', '{data.Currency}', '{DateTime.Now.ToString("dd-MMM-yyyy")}',
+            '{DateTime.Now.ToString("dd-MMM-yyyy")}', '{sessionRowId}', '1', '{data.Currency_Rate}', 'N', 'N')";
+                    _dbContext.ExecuteSqlCommand(insertmasterQuery);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //throw new Exception(ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
         }
         public bool rejectQuotation(string quotationNo, string status)
         {

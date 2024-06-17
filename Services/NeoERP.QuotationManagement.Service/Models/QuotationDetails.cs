@@ -10,6 +10,7 @@ namespace NeoERP.QuotationManagement.Service.Models
     {
         public int Quotation_No { get; set; }
         public string Tender_No { get; set; }
+        public string Form_Code { get; set; }
         public DateTime Created_Date { get; set; }
         public string SUPPLIER_Code { get; set; }
         public string Address { get; set; }
