@@ -88,6 +88,8 @@ namespace NeoERP.DocumentTemplate.Service.Interface
         string InsertSalesImage(DocumentTransaction documentdetail);
         int? DocumentIfExists(string voucherno, string formcode);
         List<ChargeOnSales> GetChargesData(string formCode, string voucherNo);
+        List<ChargeOnSales> GetQuotationChargesData(string formCode, string voucherNo,string itemCode);
+
         List<ChargeOnSales> GetChargesData(string formCode);
         List<CustomerModels> getAllCustomer();
         List<SupplierModels> getAllSupplier();

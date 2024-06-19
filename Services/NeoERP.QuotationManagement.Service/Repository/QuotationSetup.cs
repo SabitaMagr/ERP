@@ -427,7 +427,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
                 string formCode = _dbContext.SqlQuery<string>(fQuery).FirstOrDefault();
 
                 string vquery = $@"select qs.quotation_no,qs.tender_no,qs.created_date,qs.supplier_code,scs.regd_office_eaddress as address,scs.tel_mobile_no1 as contact_no ,iims.item_code,sqi.specification,
-                iims.index_mu_code,sqi.quantity,qdi.rate,qs.total_net_amount,sqs.company_code,sqs.branch_code,qs.currency,qs.currency_rate,qs.delivery_date
+                iims.index_mu_code,sqi.quantity,qdi.rate,qdi.net_amount as total_net_amount,sqs.company_code,sqs.branch_code,qs.currency,qs.currency_rate,qs.delivery_date
                 from quotation_details qs ,ip_supplier_setup scs,sa_quotation_items sqi,ip_item_master_setup iims ,sa_quotation_setup sqs,quotation_detail_itemwise qdi
                 where scs.supplier_code=qs.supplier_code and iims.item_code=sqi.item_code and qs.tender_no=sqi.tender_no and sqs.tender_no=qs.tender_no and 
                 sqs.company_code=iims.company_code and sqs.company_code=scs.company_code and qdi.quotation_no=qs.quotation_no and  sqi.item_code=qdi.item_code
@@ -441,7 +441,7 @@ namespace NeoERP.QuotationManagment.Service.Repository
                     string query = $@"SELECT qs.tender_no,  qs.created_date,  qs.supplier_code,  qs.total_net_amount, sqs.company_code,
                       sqs.branch_code,  qs.currency, qs.currency_rate,  qs.delivery_date FROM  quotation_details qs,
                        sa_quotation_setup sqs WHERE qs.tender_no =sqs.tender_no  AND qs.quotation_no = '{quotationNo}' AND sqs.status = 'E'";
-                    List<QuotationDetails> masterData = _dbContext.SqlQuery<QuotationDetails>(vquery).ToList();
+                    List<QuotationDetails> masterData = _dbContext.SqlQuery<QuotationDetails>(query).ToList();
                     masterData.ForEach(q => q.Form_Code = formCode);
                     SaveMasterColumnValue(masterData);
                 }

@@ -535,12 +535,7 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
         $scope.BUDGET_MODAL.push({ ACC_CODE: "", BUDGET_FLAG: "", BUDGET: [] });
         $scope.BUDGET_CHILD_MODAL.push({ BUDGET_VAL: "", AMOUNT: "", NARRATION: "" });
 
-
-        //$scope.BATCH_MODAL.push({ ITEM_CODE: "", ITEM_EDESC: "", MU_CODE: "", LOCATION_CODE: "", QUANTITY: "", TRACK: [] });
-        //$scope.BATCH_CHILD_MODAL.push({ SERIAL_NO: 1, TRACKING_SERIAL_NO: ""});
-
         if (rows.length > 0) {
-
             var imageurl = [];
             var imageslistcount = "";
             if (rows[0].IMAGES_LIST != null || rows[0].IMAGES_LIST != undefined) {
@@ -583,29 +578,6 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
 
             //to solve problem in suppliercode binding for update purpose
             suppliercodeforupdate = $scope.masterModels.SUPPLIER_CODE;
-
-            //for mrr_date in goods receipt note -store and spare
-            //if ($scope.RefTableName === "IP_PURCHASE_MRR" && $scope.DocumentName==="IP_PURCHASE_INVOICE") {
-            //    if ($scope.masterModels.hasOwnProperty("INVOICE_DATE")) {
-            //        $scope.masterModels.INVOICE_DATE = response.data[0].MRR_DATE;
-            //    }
-            //}
-            //if ($scope.RefTableName === "IP_PURCHASE_INVOICE" && $scope.DocumentName === "IP_PURCHASE_RETURN") {
-            //    if ($scope.masterModels.hasOwnProperty("RETURN_DATE")) {
-            //        $scope.masterModels.RETURN_DATE = response.data[0].INVOICE_DATE;
-            //    }
-            //}
-            //if ($scope.RefTableName === "IP_GOODS_REQUISITION" && $scope.DocumentName === "IP_GOODS_ISSUE") {
-            //    if ($scope.masterModels.hasOwnProperty("ISSUE_DATE")) {
-            //        $scope.masterModels.ISSUE_DATE = response.data[0].REQUISITION_DATE;
-            //    }
-            //}
-            //if ($scope.RefTableName === "IP_GOODS_ISSUE" && $scope.DocumentName === "IP_GOODS_ISSUE_RETURN") {
-            //    if ($scope.masterModels.hasOwnProperty("RETURN_DATE")) {
-            //        $scope.masterModels.RETURN_DATE = response.data[0].ISSUE_DATE;
-            //    }
-            //}
-            //$scope.masterModels.MRR_DATE = response.data[0].ORDER_DATE;
 
             $scope.ChildFormElement = [];
             $scope.childModels = [];
@@ -656,44 +628,9 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
                 if ($scope.RefTableName === "IP_PURCHASE_REQUEST") {
                     $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.REQUEST_NO;
                 }
-                //var switch_on = $scope.DocumentName;
-                //switch (switch_on) {
-                //    case 'IP_PURCHASE_ORDER':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.ORDER_NO;
-                //        break;
-                //    case 'IP_GOODS_REQUISITION':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.REQUISITION_NO;
-                //        break;
-                //    case 'IP_TRANSFER_ISSUE':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.ISSUE_NO;      
-                //        break;
-                //    case 'IP_GATE_PASS_ENTRY':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.ISSUE_NO;
-                //        break;
-                //    case 'IP_PURCHASE_RETURN':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.RETURN_NO;
-                //        break;
-                //    case 'IP_RETURNABLE_GOODS_RETURN':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.ISSUE_NO;
-                //        break;
-                //    case 'IP_GOODS_ISSUE':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.ISSUE_NO;
-                //        break;
-                //    case 'IP_PURCHASE_MRR':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.MRR_NO;
-                //        break;
-                //    case 'IP_PURCHASE_INVOICE':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.INVOICE_NO;
-                //        break;
-                //    case 'IP_GOODS_ISSUE_RETURN':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.RETURN_NO;
-                //        break;
-                //    case 'IP_PURCHASE_REQUEST':
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.REQUEST_NO;
-                //        break;
-                //    default:
-                //        $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.VOUCHER_NO;
-                //}
+                if ($scope.RefTableName === "IP_QUOTATION_INQUIRY") {
+                    $scope.referenceDataDisplay1[refrenkey].REFERENCE_NO = refrencerow.QUOTE_NO;
+                }
 
                 $scope.referenceDataDisplay1[refrenkey].ITEM_EDESC = refrencerow.ITEM_EDESC;
                 $scope.referenceDataDisplay1[refrenkey].REFERENCE_QUANTITY = refrencerow.QUANTITY;
@@ -704,68 +641,83 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
                 $scope.referenceDataDisplay1[refrenkey].CALC_TOTAL_PRICE = refrencerow.TOTAL_PRICE;
                 $scope.referenceDataDisplay1[refrenkey].REFERENCE_REMARKS = refrencerow.REMARKS;
             });
-            $scope.refBGridOptions = {
-                dataSource: {
-                    type: "json",
-                    //transport: {
-                    //    read: $scope.referenceDataDisplay1,
-                    //},
-                    data: $scope.referenceDataDisplay1,
-                    pageSize: 5,
-                    serverPaging: true,
-                    serverSorting: true
-                },
-                sortable: true,
-                pageable: true,
-                dataBound: function () {
-                    this.expandRow(this.tbody.find("tr.k-master-row").first());
-                },
-                columns: [{
-                    field: "REFERENCE_NO",
-                    title: "Document No",
-                    width: "120px"
-                }, {
-                    field: "ITEM_EDESC",
-                    title: "Item",
-                    width: "120px"
-                }, {
-                    field: "REFERENCE_QUANTITY",
-                    title: "Quantity",
-                    width: "120px"
-                }, {
-                    field: "REFERENCE_MU_CODE",
-                    title: "Unit",
-                    width: "120px"
-                },
-                {
-                    field: "REFERENCE_UNIT_PRICE",
-                    title: "Unit Price",
-                    width: "120px"
-                },
-                {
-                    field: "REFERENCE_TOTAL_PRICE",
-                    title: "Total Price",
-                    width: "120px"
-                },
-                {
-                    field: "REFERENCE_CALC_UNIT_PRICE",
-                    title: " Calc Unit Price",
-                    width: "120px"
-                },
-                {
-                    field: "REFERENCE_CALC_TOTAL_PRICE",
-                    title: " Calc Total Price",
-                    width: "120px"
-                },
-                {
-                    field: "REFERENCE_REMARKS",
-                    title: "Remarks",
-                    width: "120px"
-                }
-                ]
-            };
+
+            // Ensure changes are detected
+
+            $scope.$applyAsync(function () {
+                $scope.refBGridOptions = {
+                    dataSource: {
+                        type: "json",
+                        data: $scope.referenceDataDisplay1,
+                        pageSize: 5,
+                        serverPaging: true,
+                        serverSorting: true
+                    },
+                    sortable: true,
+                    pageable: true,
+                    dataBound: function () {
+                        this.expandRow(this.tbody.find("tr.k-master-row").first());
+                    },
+                    columns: [{
+                        field: "REFERENCE_NO",
+                        title: "Document No",
+                        width: "120px"
+                    }, {
+                        field: "ITEM_EDESC",
+                        title: "Item",
+                        width: "120px"
+                    }, {
+                        field: "REFERENCE_QUANTITY",
+                        title: "Quantity",
+                        width: "120px"
+                    }, {
+                        field: "REFERENCE_MU_CODE",
+                        title: "Unit",
+                        width: "120px"
+                    },
+                    {
+                        field: "REFERENCE_UNIT_PRICE",
+                        title: "Unit Price",
+                        width: "120px"
+                    },
+                    {
+                        field: "REFERENCE_TOTAL_PRICE",
+                        title: "Total Price",
+                        width: "120px"
+                    },
+                    {
+                        field: "REFERENCE_CALC_UNIT_PRICE",
+                        title: "Calc Unit Price",
+                        width: "120px"
+                    },
+                    {
+                        field: "REFERENCE_CALC_TOTAL_PRICE",
+                        title: "Calc Total Price",
+                        width: "120px"
+                    },
+                    {
+                        field: "REFERENCE_REMARKS",
+                        title: "Remarks",
+                        width: "120px"
+                    }]
+                };
+                // Force grid refresh
+                setTimeout(function () {
+                    var grid = $("#grid").data("kendoGrid");
+                    if (grid) {
+                        var dataSource = new kendo.data.DataSource({
+                            data: $scope.referenceDataDisplay1,
+                            pageSize: 5
+                        });
+                        grid.setDataSource(dataSource);
+                    } else {
+                        console.error("Grid not found or not initialized yet.");
+                    }
+                }, 100);
+            });
+   
             $scope.ChildSumOperations(0);
-            if ($rootScope.IncludeCharge === "True") {
+                if ($rootScope.IncludeCharge === "True") {
                 var reforderno = response.data[0][primarycolumnname];
                 var chargeUrlForEdit = "/api/TemplateApi/GetChargeDataForEdit?formCode=" + rows[0].FORM_CODE + "&&voucherNo=" + reforderno;
                 $http.get(chargeUrlForEdit).then(function (res) {
@@ -807,7 +759,20 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
                 });
             }
             $scope.showRefTab = true;
-
+            //Added for the quotation module
+            var itemCodes = [];
+            for (var i = 0; i < rows.length; i++) {
+                itemCodes.push(rows[i].ITEM_CODE);
+            }
+            var allItemCodes = itemCodes.join(',');
+            if ($scope.RefTableName === 'IP_QUOTATION_INQUIRY') {
+                var reforderno=response.data[0][primarycolumnname];
+                $http.get("/api/TemplateApi/GetQuotationData?formCode=" + rows[0].FORM_CODE + "&&voucherNo=" + reforderno + "&&itemCode=" + allItemCodes)
+                    .then(function (response) {
+                        $scope.calculateChargeAmountrefrence(response.data, true);
+                    //    $scope.ItemSelect.dataSource.data = response.data;
+                    })
+            }
         }
 
         function setDataOnModal(rows, i) {
@@ -817,7 +782,7 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
             $scope.childModels.push($scope.getObjWithKeysFromOtherObj(tempCopy, rows[i]));
             setTimeout(function () {
                 $("#products_" + i).data('kendoComboBox').dataSource.data([{ ItemCode: rows[i].ITEM_CODE, ItemDescription: rows[i].ITEM_EDESC, Type: "code" }]);
-                console.log("value of productCode from kendo===================>>>>" + JSON.stringify($("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode));
+                //console.log("value of productCode from kendo===================>>>>" + JSON.stringify($("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode));
                 $scope.childModels[i].ITEM_CODE = $("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode;
             },0);
             var rowsObj = rows[i];
@@ -1049,7 +1014,7 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
             $scope.childModels.push($scope.getObjWithKeysFromOtherObj(tempCopy, rows[i]));
             setTimeout(function () {
                 $("#products_" + i).data('kendoComboBox').dataSource.data([{ ItemCode: rows[i].ITEM_CODE, ItemDescription: rows[i].ITEM_EDESC, Type: "code" }]);
-                console.log("value of productCode from kendo===================>>>>" + JSON.stringify($("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode));
+                //console.log("value of productCode from kendo===================>>>>" + JSON.stringify($("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode));
                 $scope.childModels[i].ITEM_CODE = $("#products_" + i).data('kendoComboBox').dataSource.data()[0].ItemCode;
             },0);
             var rowsObj = rows[i];
@@ -1145,7 +1110,7 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
     var formDetail = inventoryservice.getFormDetail_ByFormCode($scope.formcode, d1);
     $.when(d1).done(function (result) {
         $scope.formDetail = result.data;
-        console.log($scope.formDetail);
+        //console.log($scope.formDetail);
         if ($scope.formDetail.length > 0) {
             debugger;
             $scope.DocumentName = $scope.formDetail[0].TABLE_NAME;

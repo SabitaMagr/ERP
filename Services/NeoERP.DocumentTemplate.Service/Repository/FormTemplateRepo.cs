@@ -3561,7 +3561,45 @@ IM.ITEM_CODE=AM.ITEM_CODE
                 throw ex;
             }
         }
-
+        public List<ChargeOnSales> GetQuotationChargesData(string formCode, string voucherNo,string itemCode)
+        {
+            try
+            {
+                string query = string.Empty;
+                var result = new List<ChargeOnSales>();
+                if (voucherNo != "undefined")
+                {
+                    string query1 = $@"select count(*) as count from quotation_details where tender_no='{voucherNo}'";
+                    int count = _dbContext.SqlQuery<int>(query1).FirstOrDefault();
+                    if (count > 0)
+                    {
+                        query = $@"SELECT DISTINCT cs.charge_code, ic.charge_edesc,cs.charge_type_flag,cs.value_percent_flag,
+                            CASE WHEN cs.charge_code = 'VT' THEN ROUND(qdi.vat_amount, 2)
+                            WHEN cs.charge_code = 'ED' THEN ROUND(qdi.excise, 2)
+                            WHEN cs.charge_code = 'DC' THEN ROUND(qdi.discount_amount, 2)
+                             ELSE 0 END AS charge_amount,0 AS value_percent_amount,cs.priority_index_no,cs.acc_code,
+                            cs.apply_on,cs.gl_flag,cs.non_gl_flag FROM
+                            charge_setup cs,ip_charge_code ic,ip_quotation_inquiry iqi, quotation_details qd,quotation_detail_itemwise qdi 
+                            WHERE cs.form_code = iqi.form_code and cs.charge_code = ic.charge_code AND cs.company_code = ic.company_code and qd.quotation_no = qdi.quotation_no AND iqi.item_code = qdi.item_code and 
+                             cs.form_code = '{formCode}' AND qd.tender_no = '{voucherNo}' AND IQI.ITEM_CODE in ({itemCode}) AND cs.company_code = '{_workContext.CurrentUserinformation.company_code}'   AND qd.status = 'AP'
+                             and qd.tender_no = iqi.quote_no  AND cs.apply_on = 'D' AND cs.charge_code IN ('VT', 'ED', 'DC')
+                             AND cs.priority_index_no IS NOT NULL ORDER BY cs.priority_index_no ASC";
+                        _logErp.InfoInFile("Query to get charges on sales data contains:  " + query);
+                        result = _dbContext.SqlQuery<ChargeOnSales>(query).ToList();
+                    }
+                    else
+                    {
+                       result= GetChargesData(formCode, voucherNo);
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logErp.ErrorInDB("Error while getting charges data : " + ex.Message);
+                throw ex;
+            }
+        }
         //subin changes due to APPLY_FROM_DATE AND APPLY_TO_DATE problem on filsca year end
         //public List<ChargeOnSales> GetChargesData(string formCode)
         //{

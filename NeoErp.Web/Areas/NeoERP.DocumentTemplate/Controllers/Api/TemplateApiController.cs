@@ -3648,6 +3648,14 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
             return response;
         }
         [HttpGet]
+        public List<ChargeOnSales> GetQuotationData(string formCode, string voucherNo,string itemCode)
+        {
+            var response = new List<ChargeOnSales>();
+            var ChargeDataForEdit = this._FormTemplateRepo.GetQuotationChargesData(formCode, voucherNo, itemCode);
+            response = ChargeDataForEdit;
+            return response;
+        }
+        [HttpGet]
         public List<ChargeOnSales> GetItemChargeDataSavedValueWise(string voucherNo, string itemcode)
         {
             var userid = _workContext.CurrentUserinformation.User_id;

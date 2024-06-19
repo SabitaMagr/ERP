@@ -1135,7 +1135,8 @@ DTModule.controller('refrenceCodeCtrl', function ($scope, $rootScope, $http, $ro
                     //title: 'Select All',
                     //headerTemplate: "<input type='checkbox' id='header-chb' class='checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
                     template: function (dataItem) {
-                        return "<input type='checkbox' id='${dataItem.VOUCHER_NO}' class='checkbox row-checkbox'><label class='k-checkbox-label' for='${dataItem.VOUCHER_NO}'></label>"
+                        return "<input type='checkbox' id='${dataitem.voucher_no}' class='checkbox row-checkbox'></label>"
+                    //    return "<input type='checkbox' id='${dataItem.VOUCHER_NO}' class='checkbox row-checkbox'><label class='k-checkbox-label' for='${dataItem.VOUCHER_NO}'></label>"
                     },
                     width: 50
                 },
@@ -1146,7 +1147,7 @@ DTModule.controller('refrenceCodeCtrl', function ($scope, $rootScope, $http, $ro
                 {
                     field: "VOUCHER_DATE",
                     title: "Voucher Date",
-                    template: "#= SALES_DATE == null ? '' :kendo.toString(kendo.parseDate(VOUCHER_DATE),'M/dd/yyyy') #",
+                    template: "#= VOUCHER_DATE == null ? '' :kendo.toString(kendo.parseDate(VOUCHER_DATE),'M/dd/yyyy') #",
                 },
                 {
                     field: "SUPPLIER_EDESC",
