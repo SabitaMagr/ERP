@@ -377,25 +377,11 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
         {
             try
             {
-                //string query = $@"SELECT EMPLOYEE_CODE,EMPLOYEE_EDESC,EMPLOYEE_NDESC,GROUP_SKU_FLAG,MASTER_EMPLOYEE_CODE,PRE_EMPLOYEE_CODE FROM HR_EMPLOYEE_SETUP WHERE DELETED_FLAG='N'";
-                //string query = $@"SELECT DISTINCT SPM.SP_CODE SP_CODE,ES.EMPLOYEE_CODE EMPLOYEE_CODE,ES.EMPLOYEE_EDESC EMPLOYEE_EDESC,
-                //                ES.EMPLOYEE_NDESC EMPLOYEE_NDESC,ES.GROUP_SKU_FLAG GROUP_SKU_FLAG,ES.MASTER_EMPLOYEE_CODE MASTER_EMPLOYEE_CODE,
-                //                ES.PRE_EMPLOYEE_CODE PRE_EMPLOYEE_CODE
-                //                FROM HR_EMPLOYEE_SETUP ES,DIST_SALESPERSON_MASTER SPM
-                //                WHERE ES.DELETED_FLAG='N' AND SPM.ACTIVE='Y'
-                //                AND SPM.SP_CODE=ES.EMPLOYEE_CODE ORDER BY LOWER(TRIM(ES.EMPLOYEE_EDESC))";
-                //string query = $@"SELECT DISTINCT SPM.SP_CODE SP_CODE,ES.EMPLOYEE_CODE EMPLOYEE_CODE,ES.EMPLOYEE_EDESC || ' ('||ES.EMPLOYEE_CODE||')' EMPLOYEE_EDESC,
-                //    ES.EMPLOYEE_NDESC EMPLOYEE_NDESC,ES.GROUP_SKU_FLAG GROUP_SKU_FLAG,ES.MASTER_EMPLOYEE_CODE MASTER_EMPLOYEE_CODE,
-                //    ES.PRE_EMPLOYEE_CODE PRE_EMPLOYEE_CODE
-                //    FROM HR_EMPLOYEE_SETUP ES,DIST_SALESPERSON_MASTER SPM
-                //    WHERE ES.DELETED_FLAG='N' AND SPM.ACTIVE='Y'
-                //    AND SPM.SP_CODE=ES.EMPLOYEE_CODE 
-                //    AND ES.COMPANY_CODE = SPM.COMPANY_CODE
-                //    AND SPM.COMPANY_CODE = '{_workcontext.CurrentUserinformation.company_code}'
-                //    ORDER BY LOWER(TRIM(ES.EMPLOYEE_EDESC || ' ('||ES.EMPLOYEE_CODE||')'))";
                 var condition = string.Empty;
-                if (empGroup != "" && empGroup != null)
-                    condition = $@" AND LU.GROUPID ='{empGroup}'";
+                //if (empGroup != "" && empGroup != null)
+                //    condition = $@" AND LU.GROUPID ='{empGroup}'";
+                if (empGroup != "" && empGroup != null) 
+                    condition = $@" AND ES.PRE_EMPLOYEE_CODE in ({empGroup})";
 
                 if (!string.IsNullOrWhiteSpace(filter))
                     filter = $@" AND LOWER(TRIM(ES.EMPLOYEE_EDESC)) LIKE '%{filter.ToLower()}%'";
@@ -417,28 +403,7 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
                     AND LU.BRANDING='N'
                     AND SPM.COMPANY_CODE = '{_workcontext.CurrentUserinformation.company_code}' {condition} {filter} {spFilter}
                     ORDER BY LOWER(TRIM(ES.EMPLOYEE_EDESC || ' ('||ES.EMPLOYEE_CODE||')'))";
-                //if (!string.IsNullOrEmpty(filter))
-                //{
-                //    //query = $@"SELECT EMPLOYEE_CODE,EMPLOYEE_EDESC,EMPLOYEE_NDESC,GROUP_SKU_FLAG,MASTER_EMPLOYEE_CODE,PRE_EMPLOYEE_CODE FROM HR_EMPLOYEE_SETUP WHERE DELETED_FLAG='N' AND LOWER(EMPLOYEE_EDESC) LIKE '%" + filter.ToLower() + "%'";
-                //    //query = $@"SELECT DISTINCT SPM.SP_CODE SP_CODE,ES.EMPLOYEE_CODE EMPLOYEE_CODE,ES.EMPLOYEE_EDESC EMPLOYEE_EDESC,
-                //    //            ES.EMPLOYEE_NDESC EMPLOYEE_NDESC,ES.GROUP_SKU_FLAG GROUP_SKU_FLAG,ES.MASTER_EMPLOYEE_CODE MASTER_EMPLOYEE_CODE,
-                //    //            ES.PRE_EMPLOYEE_CODE PRE_EMPLOYEE_CODE
-                //    //        FROM HR_EMPLOYEE_SETUP ES,DIST_SALESPERSON_MASTER SPM
-                //    //         WHERE  ES.DELETED_FLAG='N' AND SPM.ACTIVE='Y'
-                //    //         AND SPM.SP_CODE=ES.EMPLOYEE_CODE
-                //    //         AND LOWER (TRIM(ES.EMPLOYEE_EDESC)) LIKE '%" + filter.ToLower() + "%'  ORDER BY LOWER(TRIM(ES.EMPLOYEE_EDESC))";
-                //    query = $@"SELECT DISTINCT SPM.SP_CODE SP_CODE,ES.EMPLOYEE_CODE EMPLOYEE_CODE,ES.EMPLOYEE_EDESC || ' ('||ES.EMPLOYEE_CODE||')' EMPLOYEE_EDESC,
-                //        ES.EMPLOYEE_NDESC EMPLOYEE_NDESC,ES.GROUP_SKU_FLAG GROUP_SKU_FLAG,ES.MASTER_EMPLOYEE_CODE MASTER_EMPLOYEE_CODE,
-                //        ES.PRE_EMPLOYEE_CODE PRE_EMPLOYEE_CODE
-                //        FROM HR_EMPLOYEE_SETUP ES,DIST_SALESPERSON_MASTER SPM ,  DIST_LOGIN_USER LU
-                //        WHERE ES.DELETED_FLAG='N' AND SPM.ACTIVE='Y'
-                //        AND SPM.SP_CODE = LU.SP_CODE
-                //        AND SPM.COMPANY_CODE = LU.COMPANY_CODE
-                //        AND SPM.SP_CODE=ES.EMPLOYEE_CODE 
-                //        AND ES.COMPANY_CODE = SPM.COMPANY_CODE
-                //        AND SPM.COMPANY_CODE = '{_workcontext.CurrentUserinformation.company_code}' {condition}
-                //        AND LOWER (TRIM(ES.EMPLOYEE_EDESC)) LIKE '%" + filter.ToLower() + "%' ORDER BY LOWER(TRIM(ES.EMPLOYEE_EDESC || ' ('||ES.EMPLOYEE_CODE||')'))";
-                //}
+
                 var result = this._dbContext.SqlQuery<EmployeeModels>(query).ToList();
                 return result;
             }
@@ -668,7 +633,7 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
                 {
                     var checkPlanQuery = $@"Select Count(*) from DIST_ROUTE_PLAN where PLAN_EDESC='{model.planName}'";
                     int countPlan = this._dbContext.SqlQuery<int>(checkPlanQuery).First();
-                    if(countPlan >= 1)
+                    if (countPlan >= 1)
                     {
                         return "Plan Name Already Exists";
                     }
@@ -868,8 +833,8 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
                             {
                                 return "Plan Name Empty!";
                             }
-                            
-                            else if(String.IsNullOrEmpty(dtStudentRecords.Rows[i][1].ToString()))
+
+                            else if (String.IsNullOrEmpty(dtStudentRecords.Rows[i][1].ToString()))
                             {
                                 return "English Date  Empty!";
                             }
@@ -877,7 +842,7 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
                             {
                                 return "Invalid Date!";
                             }
-                            else if(String.IsNullOrEmpty(dtStudentRecords.Rows[i][6].ToString()))
+                            else if (String.IsNullOrEmpty(dtStudentRecords.Rows[i][6].ToString()))
                             {
                                 return "Route Code Empty!";
                             }
@@ -897,7 +862,7 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
                                 plan.RouteCode = String.IsNullOrEmpty(dtStudentRecords.Rows[i][6].ToString()) ? "" : dtStudentRecords.Rows[i][6].ToString().Trim();
                                 plan.EmployeeCode = String.IsNullOrEmpty(dtStudentRecords.Rows[i][8].ToString()) ? "" : dtStudentRecords.Rows[i][8].ToString();
                                 plan.EmployeeName = String.IsNullOrEmpty(dtStudentRecords.Rows[i][9].ToString()) ? "" : dtStudentRecords.Rows[i][9].ToString().Trim();
-                                
+
                                 planlst.Add(plan);
                             }
 
@@ -957,7 +922,7 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
 
                                     }
                                     route.eventArr = datalst;
-                                    response=saveCalendarRoute(route);
+                                    response = saveCalendarRoute(route);
 
                                 }
 
@@ -981,7 +946,7 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
 
                             }
                             route.eventArr = datalst;
-                            response=saveCalendarRoute(route);
+                            response = saveCalendarRoute(route);
 
 
 
@@ -1094,6 +1059,51 @@ FROM DIST_ROUTE_PLAN WHERE  DELETED_FLAG='N' AND COMPANY_CODE = '{company_code}'
             {
                 return ex.ToString();
 
+            }
+        }
+        public List<ItemGroupModel> GetItemGroup()
+        {
+            try
+            {
+                string query = $@"select item_code,item_edesc,MASTER_ITEM_CODE,PRE_ITEM_CODE from ip_item_master_setup where GROUP_SKU_FLAG='G' and  DELETED_FLAG = 'N' AND COMPANY_CODE='{_workcontext.CurrentUserinformation.company_code}'";
+                List<ItemGroupModel> itemGroup = this._dbContext.SqlQuery<ItemGroupModel>(query).ToList();
+                return itemGroup;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public List<ItemGroupModel> GetItemLists(string itmGroup)
+        {
+            try
+            {
+                var condition = string.Empty;
+                //if (empGroup != "" && empGroup != null)
+                //    condition = $@" AND LU.GROUPID ='{empGroup}'";
+                if (itmGroup != "" && itmGroup != null)
+                    condition = $@" AND PRE_ITEM_CODE in ({itmGroup})";
+
+                string query = $@"select item_code,item_edesc from ip_item_master_setup where GROUP_SKU_FLAG='I' and  DELETED_FLAG = 'N' AND COMPANY_CODE='{_workcontext.CurrentUserinformation.company_code}' {condition}";
+                List<ItemGroupModel> itemGroup = this._dbContext.SqlQuery<ItemGroupModel>(query).ToList();
+                return itemGroup;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public List<EmployeeModels> GetGroupEmployees()
+        {
+            try
+            {
+                string query = $@"select * from HR_EMPLOYEE_SETUP where group_sku_flag='G' and COMPANY_CODE = '{_workcontext.CurrentUserinformation.company_code}'";
+                var result = this._dbContext.SqlQuery<EmployeeModels>(query).ToList();
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

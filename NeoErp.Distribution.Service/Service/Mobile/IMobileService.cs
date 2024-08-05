@@ -44,6 +44,7 @@ namespace NeoErp.Distribution.Service.Service.Mobile
         List<ContractModel> GetContracts(CommonRequestModel model, NeoErpCoreEntity dbContext);
         List<AchievementReportResponseModel> GetAchievementData(AchievementReportRequestModel model, NeoErpCoreEntity dbContext);
         List<AchievementReportResponseModel> fetchAchievementReportMonthWise(AchievementReportRequestModel model, NeoErpCoreEntity dbContext);
+        Dictionary<string, object> fetchProfileDetails(ProfileDetails model, NeoErpCoreEntity dbContext);
         List<SchemeReportResponseModel> fetchSchemeReportData(SchemeReportRequestModel model, NeoErpCoreEntity dbContext);
         List<MoveTransactionResponseModel> FetchMovementTransactions(TransactionRequestModel model, NeoErpCoreEntity dbContext);
         #endregion Fetching Data

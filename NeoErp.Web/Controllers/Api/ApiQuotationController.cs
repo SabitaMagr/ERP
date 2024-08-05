@@ -5,6 +5,12 @@ using NeoErp.Data;
 using NeoErp.Core.Quotation;
 using System.Web.Http;
 using System.Web;
+using Newtonsoft.Json;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 
 namespace NeoErp.Controllers.Api
 {
@@ -70,7 +76,62 @@ namespace NeoErp.Controllers.Api
                 return InternalServerError(ex);
             }
         }
+        [HttpGet]
+        public List<FormDetailSetup> GetFormDetailSetup(string companyCode)
+        {
+            var thrdQty = 0;
+            var sndQty = 0;
+            var response = new List<FormDetailSetup>();
+            var formDetailList = this._quoTemplate.GetFormDetailSetup(companyCode);
+            var formCode = formDetailList[0].FORM_CODE;
+            //response = formDetailList;
+            var checkchargelist = $@"select * from charge_setup where form_code = '{formCode}' and company_code ='{companyCode}'";
+            List<ChargeSetup> checkchargelistentity = this._dbContext.SqlQuery<ChargeSetup>(checkchargelist).ToList();
 
+            if (formDetailList.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").Count() > 0)
+                thrdQty = formDetailList.Where(x => x.COLUMN_NAME == "THIRD_QUANTITY").FirstOrDefault().SERIAL_NO = formDetailList.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
+            if (formDetailList.Where(x => x.COLUMN_NAME == "SECOND_QUANTITY").Count() > 0)
+                sndQty = formDetailList.Where(x => x.COLUMN_NAME == "SECOND_QUANTITY").FirstOrDefault().SERIAL_NO = formDetailList.Where(x => x.COLUMN_NAME == "QUANTITY").Select(p => p.SERIAL_NO).FirstOrDefault();
+            formDetailList.RemoveAll(x => checkchargelistentity.Any(t => t.CHARGE_CODE == x.COLUMN_NAME));
+            string columname = "";
+            columname = $@"select distinct ICH.charge_edesc,CH.charge_code,CH.charge_type_flag,CH.VALUE_PERCENT_FLAG
+                                ,CH.VALUE_PERCENT_AMOUNT,CH.ON_ITEM,CH.priority_index_no,ch.manual_calc_charge from charge_setup CH
+                                INNER JOIN ip_charge_code ICH ON ICH.charge_code = CH.charge_code
+                                where CH.form_code = '{formCode}' and CH.company_code ='{companyCode}' and CH.ON_ITEM ='Y' order by CH.priority_index_no";
 
+            List<IPChargeEdesc> columnameentity = this._dbContext.SqlQuery<IPChargeEdesc>(columname).ToList();
+
+            for (int i = 0; i < columnameentity.Count; i++)
+            {
+                var columncharge = new FormDetailSetup();
+                columncharge.SERIAL_NO = columnameentity[i].CHARGE_CODE == "VT" ? 37 :
+                                         columnameentity[i].CHARGE_CODE == "DC" ? 33 :35;
+                columncharge.DISPLAY_FLAG = "Y";
+                columncharge.FORM_CODE = formCode;
+                columncharge.DELETED_FLAG = "N";
+                columncharge.COLUMN_WIDTH =100;
+                columncharge.COLUMN_HEADER = columnameentity[i].CHARGE_EDESC;
+                columncharge.COLUMN_NAME = columnameentity[i].CHARGE_CODE;
+                columncharge.MASTER_CHILD_FLAG = "C";
+                columncharge.LEFT_POSITION = 1600;
+                columncharge.CHARGE_TYPE_FLAG = columnameentity[i].CHARGE_TYPE_FLAG;
+                columncharge.VALUE_PERCENT_FLAG = columnameentity[i].VALUE_PERCENT_FLAG;
+                columncharge.VALUE_PERCENT_AMOUNT = columnameentity[i].VALUE_PERCENT_AMOUNT;
+                columncharge.MANUAL_CALC_CHARGE = columnameentity[i].MANUAL_CALC_CHARGE;
+                columncharge.ON_ITEM = columnameentity[i].ON_ITEM;
+                if (!formDetailList.Select(x => x.COLUMN_HEADER).Contains(columncharge.COLUMN_HEADER))
+                    formDetailList.Add(columncharge);
+            }
+            response = formDetailList;
+            return response;
+        }
+        [HttpGet]
+        public List<COMMON_COLUMN> GetQuotationDetailByOrderno(string id,string companyCode)
+        {
+            var response = new List<COMMON_COLUMN>();
+            var SalesOrderDetailFormDetailByFormCodeAndOrderNo = this._quoTemplate.GetQuestOrderFormDetail(id, companyCode);
+            response = SalesOrderDetailFormDetailByFormCodeAndOrderNo;
+            return response;
+       }
     }
 }

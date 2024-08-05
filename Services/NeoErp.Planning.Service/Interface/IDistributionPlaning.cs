@@ -24,6 +24,8 @@ namespace NeoErp.Planning.Service.Interface
         List<RouteModels> getAllRoutesByFilter(string filter,string empCode);
         bool checkifexists(RouteModels model);
         List<EmployeeModels> getEmployees(string filter, string empGroup);
+        List<EmployeeModels> GetGroupEmployees();
+
         List<FrequencyModels> getFrequencyByFilter(string filter);
         List<RoutePlanDateSeries> getDateSeries(string plancode);
         bool SaveEmployeeRoutePlan(List<DIST_ROUTE_DETAIL> routeDetailList);
@@ -40,5 +42,7 @@ namespace NeoErp.Planning.Service.Interface
 
         string UpdateRouteExpireEndDate(UpdateExpEndDateModal updateModal);
         string saveExcelPlan(HttpPostedFile File);
+        List<ItemGroupModel> GetItemGroup();
+        List<ItemGroupModel> GetItemLists( string itmGroup);
     }
 }

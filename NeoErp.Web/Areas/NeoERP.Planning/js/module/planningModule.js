@@ -202,6 +202,15 @@ planningModule.config(function ($routeProvider, $locationProvider, $httpProvider
         {
             templateUrl: '/Planning/DistributionPlaning/RouteList',
         });
+    $routeProvider.when('/TargetSetup',
+        {
+            templateUrl: '/Planning/DistributionPlaning/TargetSetup',
+        });
+    $routeProvider.when('/CreateTargetSetup',
+        {
+            templateUrl: '/Planning/DistributionPlaning/CreateTargetSetup',
+            controller: 'TargetSetup'
+        });
     // plan report
     $routeProvider.when('/MonthlyWiseSalesPlanReport',
         {

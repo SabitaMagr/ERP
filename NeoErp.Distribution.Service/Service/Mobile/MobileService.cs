@@ -2578,6 +2578,87 @@ namespace NeoErp.Distribution.Service.Service.Mobile
             var list = dbContext.SqlQuery<AchievementReportResponseModel>(query).ToList();
             return list;
         }
+        public Dictionary<string, object> fetchProfileDetails(ProfileDetails model, NeoErpCoreEntity dbContext)
+        {
+            var data = new Dictionary<string, object>();
+            try
+            {
+                var personalData = FetchPersonalDetails(model, dbContext);
+                data.Add("personalData", personalData);
+            }
+            catch (Exception ex)
+            {
+                data.Add("personalData", new object[] { });
+            }
+            try
+            {
+                var planVisit = FetchTargetVisits(model, dbContext);
+                var unplanVisit = FetchNonPlanVisits(model, dbContext); 
+
+                var targetVisitData = new Dictionary<string, object>
+                {
+                    { "planVisit", planVisit },
+                    { "unplanVisit", unplanVisit }
+                };
+
+                            data.Add("targetVisit", targetVisitData);
+            }
+            catch (Exception ex)
+            {
+                var targetVisitData = new Dictionary<string, object>
+                {
+                    { "planVisit", new object[] { } },
+                    { "unplanVisit", new object[] { } }
+                };
+
+                data.Add("targetVisit", targetVisitData);
+            }
+            return data;
+        }
+        public List<PERSONAL_DETAILS> FetchPersonalDetails(ProfileDetails model, NeoErpCoreEntity dbContext)
+        {
+            string query = $@"select sp_code,userid,employee_edesc,contact_no,company_code,branch_code,to_char(atn_time, 'DD-MON-YYYY HH:MI:SS AM') LoginTime from (SELECT
+                            a.sp_code, a.userid,a.full_name AS employee_edesc,a.contact_no,a.company_code,a.branch_code,MIN(b.submit_date) as  atn_time
+                            FROM dist_login_user a left JOIN dist_lm_location_tracking b ON a.sp_code = b.sp_code and a.company_code=b.company_code and a.branch_code=b.branch_code
+                            WHERE  a.sp_code = '{model.SP_CODE}' AND a.company_code = '{model.COMPANY_CODE}' AND trunc(b.submit_date) = trunc(sysdate)
+                            GROUP BY  a.sp_code, a.userid,a.full_name, a.contact_no, a.company_code, a.branch_code)";
+            List<PERSONAL_DETAILS> personalInfo = dbContext.SqlQuery<PERSONAL_DETAILS>(query).ToList();
+            return personalInfo;
+        }
+        public List<PLAN_VISIT_TARGET> FetchTargetVisits(ProfileDetails model, NeoErpCoreEntity dbContext)
+        {
+                string query = $@"SELECT group_edesc, sp_code, employee_edesc, SUM(target) PLAN_TARGET, SUM(visited) PLAN_ACHIEVED, SUM(total_visited) visited,0 as NONPLAN_TARGET,SUM(extra) NONPLAN_ACHIEVED 
+                            FROM (SELECT group_edesc, sp_code, full_name employee_edesc, trunc(assign_date) assign_date, SUM(target) target, SUM(visited) visited, nvl((SELECT COUNT(DISTINCT customer_code)
+                            FROM dist_visited_entity WHERE userid = aa.userid AND company_code = aa.company_code AND trunc(update_date) = trunc(aa.assign_date)), 0) total_visited, 
+                            SUM(nvl((SELECT COUNT(DISTINCT customer_code) FROM dist_visited_entity WHERE userid = aa.userid AND company_code = aa.company_code AND trunc(update_date) = trunc(aa.assign_date)), 0) - visited) extra 
+                            FROM (SELECT b.group_edesc, a.userid, a.full_name, a.sp_code, b.assign_date, b.company_code, CASE WHEN wm_concat(b.entity_code) IS NULL THEN 0 ELSE nvl(COUNT(DISTINCT b.entity_code), 0) END target,
+                            nvl((SELECT COUNT(DISTINCT customer_code) FROM dist_visited_entity WHERE userid = a.userid AND company_code = a.company_code AND trunc(update_date) = trunc(b.assign_date)
+                            AND customer_code IN (SELECT entity_code FROM dist_target_entity WHERE userid = a.userid AND company_code = a.company_code AND route_code = b.route_code AND
+                            trunc(assign_date) = trunc(b.assign_date))), 0) visited FROM dist_login_user a, dist_target_entity b WHERE a.userid = b.userid AND a.company_code = b.company_code AND
+                            a.active = 'Y' AND a.company_code IN ('{model.COMPANY_CODE}') AND b.assign_date BETWEEN TO_DATE('{model.START_DATE}','DD-MON-RRRR') AND TO_DATE('{model.END_DATE}','DD-MON-RRRR') GROUP BY a.userid, 
+                            a.full_name, a.sp_code, b.assign_date, a.company_code, b.route_code, b.route_name, b.group_edesc, b.company_code ORDER BY b.assign_date) aa WHERE 1 = 1
+                            AND sp_code IN ('{model.SP_CODE}') GROUP BY userid, company_code, trunc(assign_date), sp_code, group_edesc, sp_code, full_name) GROUP BY sp_code, group_edesc, sp_code,
+                            employee_edesc ORDER BY sp_code";
+            List<PLAN_VISIT_TARGET> planVisitData = dbContext.SqlQuery<PLAN_VISIT_TARGET>(query).ToList();
+            return planVisitData;
+        }
+        public List<NONPLAN_VISIT_TARGET> FetchNonPlanVisits(ProfileDetails model, NeoErpCoreEntity dbContext)
+        {
+            string query = $@"SELECT group_edesc, sp_code, employee_edesc,SUM(target) PLAN_TARGET, SUM(visited) PLAN_ACHIEVED, SUM(total_visited) visited,0 as NONPLAN_TARGET,SUM(extra) NONPLAN_ACHIEVED 
+                            FROM (SELECT group_edesc, sp_code, full_name employee_edesc, trunc(assign_date) assign_date, SUM(target) target, SUM(visited) visited, nvl((SELECT COUNT(DISTINCT customer_code)
+                            FROM dist_visited_entity WHERE userid = aa.userid AND company_code = aa.company_code AND trunc(update_date) = trunc(aa.assign_date)), 0) total_visited, 
+                            SUM(nvl((SELECT COUNT(DISTINCT customer_code) FROM dist_visited_entity WHERE userid = aa.userid AND company_code = aa.company_code AND trunc(update_date) = trunc(aa.assign_date)), 0) - visited) extra 
+                            FROM (SELECT b.group_edesc, a.userid, a.full_name, a.sp_code, b.assign_date, b.company_code, CASE WHEN wm_concat(b.entity_code) IS NULL THEN 0 ELSE nvl(COUNT(DISTINCT b.entity_code), 0) END target,
+                            nvl((SELECT COUNT(DISTINCT customer_code) FROM dist_visited_entity WHERE userid = a.userid AND company_code = a.company_code AND trunc(update_date) = trunc(b.assign_date)
+                            AND customer_code IN (SELECT entity_code FROM dist_target_entity WHERE userid = a.userid AND company_code = a.company_code AND route_code = b.route_code AND
+                            trunc(assign_date) = trunc(b.assign_date))), 0) visited FROM dist_login_user a, dist_target_entity b WHERE a.userid = b.userid AND a.company_code = b.company_code AND
+                            a.active = 'Y' AND a.company_code IN ('{model.COMPANY_CODE}') AND b.assign_date BETWEEN TO_DATE('{model.START_DATE}','DD-MON-RRRR') AND TO_DATE('{model.END_DATE}','DD-MON-RRRR') GROUP BY a.userid, 
+                            a.full_name, a.sp_code, b.assign_date, a.company_code, b.route_code, b.route_name, b.group_edesc, b.company_code ORDER BY b.assign_date) aa WHERE 1 = 1
+                            AND sp_code IN ('{model.SP_CODE}') GROUP BY userid, company_code, trunc(assign_date), sp_code, group_edesc, sp_code, full_name) GROUP BY sp_code, group_edesc, sp_code,
+                            employee_edesc ORDER BY sp_code";
+            List<NONPLAN_VISIT_TARGET> nonplanVisit = dbContext.SqlQuery<NONPLAN_VISIT_TARGET>(query).ToList();
+            return nonplanVisit;
+        }
         public List<SchemeReportResponseModel> fetchSchemeReportData(SchemeReportRequestModel model, NeoErpCoreEntity dbContext)
         {
             List<SchemeReportResponseModel> NoItemShcemeList = new List<SchemeReportResponseModel>();

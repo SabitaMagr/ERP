@@ -8677,7 +8677,6 @@ ORDER BY sp_code";
             return data;
         }
 
-
         public List<DetailTopEffective> GetASMBeat(ReportFiltersModel model, User userInfo)
         {
             var companyCode = string.Join(",", model.CompanyFilter);

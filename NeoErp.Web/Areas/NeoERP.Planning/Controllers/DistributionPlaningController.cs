@@ -24,6 +24,7 @@ namespace NeoERP.Planning.Controllers
         {
             return PartialView();
         }
+
         public ActionResult BrandingCalendarRouteSetup()
         {
             return PartialView();
@@ -36,11 +37,18 @@ namespace NeoERP.Planning.Controllers
         {
             return PartialView();
         }
+        public ActionResult TargetSetup()
+        {
+            return PartialView();
+        }
+        public ActionResult CreateTargetSetup()
+        {
+            return PartialView();
+        }
         public ActionResult RouteList()
         {
             return PartialView();
         }
-
         public ActionResult EmployeeRouteSetup(string routecode)
         {
             ViewBag.routecode = routecode;

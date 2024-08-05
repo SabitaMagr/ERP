@@ -1,5 +1,4 @@
 ﻿
-
 DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $routeParams, inventoryservice, inventoryfactory, $window, $filter, hotkeys) {
     debugger;
     const ACC_CODE = "ACC_CODE";
@@ -1161,7 +1160,7 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
 
         angular.forEach(values,
             function (value, key) {
-                if (value.MASTER_CHILD_FLAG == 'C' && value.DISPLAY_FLAG == 'Y') {
+                if (value.MASTER_CHILD_FLAG == 'C') {
                     this.push(value);
                     $scope.childModelTemplate[value['COLUMN_NAME']] = "";
                 }
@@ -4395,8 +4394,6 @@ DTModule.controller('InventoryCtrl', function ($scope, $rootScope, $http, $route
             }
 
         });
-
-
     };
     $scope.resetSave = function () {
         // $scope.ResetDocument();

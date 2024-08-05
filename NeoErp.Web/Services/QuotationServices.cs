@@ -1,7 +1,9 @@
 ﻿using NeoErp.Data;
 using NeoErp.Models.QueryBuilder;
 using System;
+using System.Text;
 using NeoErp.Core;
+using NeoErp.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -235,5 +237,78 @@ namespace NeoErp.Services
             int? result = _dbContext.SqlQuery<int?>(query).FirstOrDefault();
             return result;
         }
+        public List<FormDetailSetup> GetFormDetailSetup(string companyCode)
+        {
+            string Query = $@"SELECT FDS.SERIAL_NO,
+                            FS.FORM_EDESC,
+                            FS.FORM_TYPE,
+                            FS.NEGATIVE_STOCK_FLAG,
+                           FDS.FORM_CODE,
+                           FDS.TABLE_NAME,
+                           FDS.COLUMN_NAME,
+                           FDS.COLUMN_WIDTH,
+                           FDS.COLUMN_HEADER,
+                           FDS.TOP_POSITION,
+                           FDS.LEFT_POSITION,
+                           FDS.DISPLAY_FLAG,
+                           FDS.DEFA_VALUE,
+                           FDS.IS_DESC_FLAG,
+                           FDS.MASTER_CHILD_FLAG,
+                           FDS.FORM_CODE,
+                           FDS.COMPANY_CODE,
+                           CS.COMPANY_EDESC,
+                            CS.TELEPHONE,
+                            CS.EMAIL,
+                            CS.TPIN_VAT_NO,
+                            CS.ADDRESS,
+                           FDS.CREATED_BY,
+                           FDS.CREATED_DATE,
+                           FDS.DELETED_FLAG,
+                           FDS.FILTER_VALUE,
+                           FDS.SYN_ROWID,
+                           FDS.MODIFY_DATE,
+                           FDS.MODIFY_BY,
+                           FS.REFERENCE_FLAG,
+                           FS.FREEZE_MASTER_REF_FLAG,
+                           FS.REF_FIX_QUANTITY,
+                           FS.REF_FIX_PRICE                          
+                      FROM    FORM_DETAIL_SETUP FDS
+                           LEFT JOIN
+                              COMPANY_SETUP CS ON FDS.COMPANY_CODE = CS.COMPANY_CODE
+                              LEFT JOIN FORM_SETUP FS
+                               ON FDS.FORM_CODE = FS.FORM_CODE AND FDS.COMPANY_CODE = FS.COMPANY_CODE
+                     WHERE FS.QUOTATION_FLAG='Y'  AND CS.COMPANY_CODE = '{companyCode}'";
+            List<FormDetailSetup> entity = this._dbContext.SqlQuery<FormDetailSetup>(Query).ToList();
+            return entity;
+        }
+        public List<COMMON_COLUMN> GetQuestOrderFormDetail(string id,string companyCode)
+        {
+            string fQuery = $@"SELECT form_code FROM form_setup where  quotation_flag = 'Y' and company_code='{companyCode}'";
+            string formCode = _dbContext.SqlQuery<string>(fQuery).FirstOrDefault();
+
+            string columname = $@"SELECT COLUMN_NAME, TABLE_NAME FROM FORM_DETAIL_SETUP WHERE FORM_CODE='{formCode}' and company_code='{companyCode}' ORDER BY SERIAL_NO ASC";
+            List<FORM_DETAIL_SETUP_COLUMN> columnameentity = this._dbContext.SqlQuery<FORM_DETAIL_SETUP_COLUMN>(columname).ToList();
+            var tableName = "";
+            List<string> columns = new List<string>();
+            StringBuilder sb = new StringBuilder();
+            var column = sb.ToString().TrimEnd(',');
+            //tableName = columnameentity[0].TABLE_NAME;
+            string Query = string.Empty;
+            StringBuilder condition = new StringBuilder();
+            foreach (var item in columnameentity)
+            {
+                columns.Add($"{item.COLUMN_NAME}");
+            }
+            Query = $@"SELECT sqs.tender_no AS quote_no, sqs.issue_date AS quote_date,sqs.valid_date AS to_delivered_date,sqi.id,sqs.remarks,
+    sqs.manual_no, ims.item_edesc,sqi.item_code, sqi.specification,sqi.unit AS mu_code,sqi.quantity, sqi.brand_name,sqi.interface,
+    sqi.type,sqi.lamination,sqi.item_size,sqi.thickness,sqi.image,sqi.remarks,sqi.color,sqi.grade,sqi.size_length,sqi.size_width,sqi.id,
+    icc.category_edesc   AS category FROM sa_quotation_setup     sqs JOIN sa_quotation_items sqi ON sqs.tender_no = sqi.tender_no
+    JOIN ip_item_master_setup ims ON sqi.item_code = ims.item_code  AND sqs.company_code = ims.company_code AND ims.deleted_flag = 'N'
+    LEFT JOIN ip_category_code icc ON icc.category_code = sqi.category AND ims.company_code = icc.company_code AND icc.deleted_flag = 'N'
+    WHERE  sqs.company_code = '{companyCode}' AND sqs.id = {id} AND sqs.status = 'E' AND sqi.deleted_flag = 'N' order by sqi.id ";
+            var entity = this._dbContext.SqlQuery<COMMON_COLUMN>(Query).ToList();
+            return entity;
+        }
+
     }
 }

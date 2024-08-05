@@ -239,6 +239,14 @@ namespace NeoErp.Distribution.Service.Service.Mobile
                 Output = data;
 
             }
+            else if (Action.Equals("profile", StringComparison.OrdinalIgnoreCase))
+            {
+                ProfileDetails model = token.ToObject<ProfileDetails>();
+                var data = new Dictionary<string, object>();
+                data = _mobileService.fetchProfileDetails(model, dbContext);
+                Output = data;
+
+            }
             else if (Action.Equals("fetchSchemeReportData", StringComparison.OrdinalIgnoreCase))
             {
                 SchemeReportRequestModel model = token.ToObject<SchemeReportRequestModel>();
@@ -375,10 +383,9 @@ namespace NeoErp.Distribution.Service.Service.Mobile
             }
 
             #endregion Inserting
-
             #endregion Actions
 
-            else
+         else
                 throw new Exception("Invalid action.");
 
             return Output;

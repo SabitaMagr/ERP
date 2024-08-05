@@ -163,6 +163,12 @@ namespace NeoERP.Planning.Controllers.Api
             return employees;
         }
         [HttpGet]
+        public List<EmployeeModels> GetGroupEmployees()
+        {
+            var employees = this._iDistributionPlaning.GetGroupEmployees();
+            return employees;
+        }
+        [HttpGet]
         public List<EmployeeModels> GetBrandingEmployees(string filter, string empGroup)
         {
             var employees = this._iDistributionPlaning.getBrandingEmployees(filter, empGroup);
@@ -245,6 +251,31 @@ namespace NeoERP.Planning.Controllers.Api
             //};
             string actionresult = this._iDistributionPlaning.saveExcelPlan(file);
             return Request.CreateResponse(HttpStatusCode.OK, actionresult);
+        }
+        [HttpGet]
+        public HttpResponseMessage GetItemGroup()
+        {           try            
+            {
+                List<ItemGroupModel> itemGroup = this._iDistributionPlaning.GetItemGroup();
+                return Request.CreateResponse(HttpStatusCode.OK, itemGroup);
+            }
+            catch
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, "");
+            }
+        }
+        [HttpGet]
+        public HttpResponseMessage GetItemLists(string itmGroup)
+        {
+            try
+            {
+                List<ItemGroupModel> itemGroup = this._iDistributionPlaning.GetItemLists(itmGroup);
+                return Request.CreateResponse(HttpStatusCode.OK, itemGroup);
+            }
+            catch
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, "");
+            }
         }
     }
 }

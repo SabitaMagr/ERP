@@ -434,7 +434,7 @@
             $scope.subProjectList = response.data;
         }
     });
-
+    console.log($scope.subProjectList);
     var selectElement = angular.element(document.getElementById('subProjectSelect')); // Get the select element by its ID
 
     //End Sub Project List for Consumption Entry

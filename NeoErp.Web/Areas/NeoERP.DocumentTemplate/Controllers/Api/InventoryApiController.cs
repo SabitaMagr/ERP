@@ -1259,11 +1259,10 @@ namespace NeoERP.DocumentTemplate.Controllers.Api
                         masterColumn.MODIFY_DATE = VoucherDate;
                         masterColumn.MODIFY_BY = _workContext.CurrentUserinformation.login_code.ToUpper();
                         masterColumn.CREATED_BY = createdByForEdit;
-                        _inventoryvoucher.DeleteChildTransaction(commonUpdateValue,_objectEntity);
-                        updatedChild = _inventoryvoucher.SaveChildColumnValue(childColumn, masterColumn, commonUpdateValue, model, primarydatecolumn, primarycolname,_objectEntity);
 
                         if (updatedChild)
                         {
+                            _inventoryvoucher.DeleteChildTransaction(commonUpdateValue);
                             updatedMaster = _inventoryvoucher.UpdateMasterTransaction(commonUpdateValue,_objectEntity);
                         }
                         if (budgetTransaction != null)
