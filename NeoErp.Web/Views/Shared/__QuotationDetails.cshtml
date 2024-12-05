@@ -1,0 +1,233 @@
+﻿@model NeoErp.Core.Domain.User
+@*using System.Web.Mvc;*@
+@{
+    Layout = null;
+    var isErrorstring = ViewBag.error ?? false;
+
+}
+<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/Angular-Module-underscore.js")"></script>
+<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/handsontable.full.js")"></script>
+<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/ngHandsontable.js")"></script>
+<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/angularjs-dropdown-multiselect.min.js")"></script>
+<script src="@Scripts.Url("~/Areas/NeoERP.QuotationManagement/Scripts/hotkeys.js")"></script>
+
+<script src="@Scripts.Url("~/JS/Module/TMModule.js")"></script>
+<script src="@Scripts.Url("~/JS/Controller/quotationDetails.js")"></script>
+<script src="@Scripts.Url("~/JS/Controller/itemCtrl.js")"></script>
+
+<link href="@Styles.Url("~/Content/css/Quotation.css")" rel="stylesheet" />
+
+<div class="col-md-12 bodyController" ng-controller="quotationDetails">
+    <div class="portlet light form-fit bordered bottomspance">
+        <div class="portlet box green-box main">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift font-green-haze"></i>
+                    <span class="caption-subject font-white-haze bold uppercase">Quotation Details</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="card-container">
+                    <div class="col-md-10">
+                        <h4><b>{{company.COMPANY_EDESC}}</b></h4>
+                        <p>{{company.ADDRESS}}</p>
+                        <p>{{company.EMAIL}}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <img ng-src="{{ company.LOGO_FILE_NAME }}" alt="Company Logo" class="logo-default" />
+                    </div>
+                </div>
+                <div class="row boxbg">
+                    <div class="col-xs-11 col-sm-11 col-md-11 custom-col-width">
+                        <form id="documentformelementvalues" class="documentform" method="post" enctype="multipart/form-data">
+                            <div class="row masterDiv">
+                                @Html.Partial("~/Views/Shared/PartialView/_masterFieldPartial.cshtml")
+                            </div>
+                            <div class="tabbable-line1 tabbox1">
+                                <div class="tab-content d-tab-content">
+                                    <div class="table-responsive">
+                                        @{
+                                            @Html.Partial("~/Views/Shared/PartialView/_childFieldPartial.cshtml")
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="summary-table">
+                            @Html.Partial("~/Views/Shared/PartialView/_summaryPartialView.cshtml")
+                            <div class="col-xs-6 col-sm-4 col-md-4">
+                                <div class="table-container" ng-init="setInitialWidth()" style="height:20rem;">
+                                    <div class="table-responsive">
+                                        <table class="table-bordered table-striped">
+                                            <thead class="font-green">
+                                                <tr>
+                                                    <th style="width: 44px; padding: 8px;">S.N</th>
+                                                    <th style="padding: 8px;">Terms and Condition</th>
+                                                    <th>&nbsp;</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="term in termList">
+                                                    <td>
+                                                        <input style="width: 44px;" type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.ID" value="" readonly class="form-control text-right">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="unit_{{term.ID}}" id="unit_{{term.ID}}" ng-model="term.TERM_CONDITION" class="form-control termsCondition">
+                                                    </td>
+                                                    <td class="btn-action">
+                                                        <a href="" id="add_child_element" name="add_child_element" class="buttonadd" ng-click="addRow()"><i class="fa fa-plus" data-toggle="tooltip" title="Add row"></i></a>
+                                                        <a href="" id="remove_child_element" name="remove_child_element" class="buttondelete" ng-click="deleteRow($index)"><i class="fa fa-trash" data-toggle="tooltip" title="Delete row"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xs-3 col-sm-2 col-md-2">
+                                <div>
+                                    <label class="control-label">Upload Files</label>
+                                    <div id="dQuotationUpload" class="dropzone">
+                                        <div class="dz-default dz-message">
+                                            <i class="fa fa-upload upload-icon" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-2 col-md-2">
+                                <div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
+                                    <label class="control-label" for="element">{{element.COLUMN_HEADER}} </label>
+                                    <textarea id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" class="form-control" disabled type="textarea" next-on-tab></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:2rem;">
+                        <div class="col-md-11 text-right">
+                        </div>
+                        <div class="col-md-1 text-right" ng-hide="formSubmitted">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script>
+        function dateSet(date) {
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            date = date.getFullYear() + '/' +
+                (('' + month).length < 2 ? '0' : '') + month + '/' +
+                (('' + day).length < 2 ? '0' : '') + day;
+            return date;
+        }
+        function setNepaliDateFromEnglish() {
+            var engDate = $("#englishdatedocument").val();
+            var formattedDate = moment(engDate, 'M/D/YYYY').format('DD-MMM-YYYY');
+            $("#englishdatedocument").val(formattedDate);
+            var formattedEngDate = moment(engDate, 'M/D/YYYY').format('YYYY-MM-DD');
+            var nepaliDate = AD2BS(formattedEngDate);
+            $("#nepaliDate5").val(nepaliDate);
+        }
+
+        function ConvertNepToEng(e) {
+            var date = BS2AD($("#nepaliDate5").val());
+            var FormattedEngDate = moment(date).format('DD-MMM-YYYY');
+            $("#englishdatedocument").val(FormattedEngDate);
+        }
+        $(".nepali-calendar").nepaliDatePicker({
+            //  ndpEnglishInput: 'englishdatedocument',
+            npdMonth: true,
+            onFocus: true,
+            npdYear: true,
+            npdYearCount: 10,
+            altFormat: "dd-MMM-YYYY",
+            dateFormat: "dd-MMM-YYYY",
+            onChange: function (evt) {
+                var nepaliDate = $("#nepaliDate5").val(); // Get the Nepali date value
+                var engDate = BS2AD(nepaliDate); // Convert Nepali date to English date
+                var formattedEngDate = moment(engDate).format('DD-MMM-YYYY'); // Format the English date
+                $("#englishdatedocument").val(formattedEngDate); // Update the English date input field
+            }
+        });
+
+    </script>*@
+<script>
+    var myInventoryDropzone;
+
+    // Initialize myInventoryDropzone when AngularJS controller is ready
+    angular.element(document).ready(function () {
+        var scope = angular.element(document.getElementById('quotationDetails')).scope();
+
+        myInventoryDropzone = new Dropzone('#dQuotationUpload', {
+            url: "/Quotation/QuotationFileUpload/",
+            thumbnailWidth: 200,
+            thumbnailHeight: 75,
+            autoDiscover: false,
+            autoProcessQueue: false,
+            addRemoveLinks: true,
+            paramName: "inputFiles",
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            maxFileSize: 10,
+        });
+
+        myInventoryDropzone.on('sending', function (file, xhr, formData) {
+            // Ensure scope values are available and not undefined
+            if (scope) {
+                var tenderNo = scope.tenderNo;
+                var quotationNo = scope.quotationNo;
+
+                formData.append('TenderNo', tenderNo);
+                formData.append('QuotationNo', quotationNo);
+            } else {
+                console.error("Scope is undefined");
+            }
+        });
+
+        myInventoryDropzone.on("success", function (file, responseText) {
+            if (responseText.status == "Error") {
+                displayPopupNotification("File upload did not succeed. Please try again.", "error");
+            } else {
+                myInventoryDropzone.removeFile(file);
+            }
+        });
+
+        myInventoryDropzone.on("removedfile", function (file, xhr, formData) {
+            if (scope) {
+                var filename = file.name;
+                var voucherno = scope.OrderNo;
+                var formcode = scope.formcode;
+                var model = {
+                    FILE_NAME: filename,
+                    FORM_CODE: formcode,
+                    VOUCHER_NO: voucherno
+                };
+                var staturl = window.location.protocol + "//" + window.location.host + "/api/TemplateApi/deleteUploadedFile";
+                $.ajax({
+                    type: 'POST',
+                    url: staturl,
+                    data: model,
+                    dataType: "json",
+                    success: function (data) {
+                        // Handle success if needed
+                    }
+                });
+            } else {
+                console.error("Scope is undefined during file removal");
+            }
+        });
+    });
+</script>
+
+
+
+
+

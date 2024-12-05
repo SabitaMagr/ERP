@@ -1,0 +1,690 @@
+﻿
+
+<style>
+    .k-animation-container, .k-widget, .k-widget *, .k-animation-container *, .k-widget ::before, .k-animation-container ::after, .k-block .k-header, .k-list-container {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .k-grid-content {
+        height: 310px !important;
+    }
+
+    #kGrid {
+        height: 427px !important;
+    }
+
+    .addcolor {
+        color: #ffffff;
+    }
+    .k-list.k-reset {
+        overflow: auto; 
+    }
+}
+</style>
+<div class="portlet box green-box">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-list-alt"></i>
+            <span class="caption-subject bold uppercase"> CHART OF ACCOUNT</span>
+        </div>
+        <div class="actions">
+
+            <a class="btn dark-green btn-sm addcolor" id="createbtn" ng-click="showModalForNew(event)" ng-disabled="treenodeselected!= 'Y'">
+                <i class="fa fa-plus"></i> NEW
+            </a>
+
+        </div>
+    </div>
+    <div class="row collapse in" id="demo">
+        <div class="col-md-12">
+            <div class="portlet light bordered">
+                <div class="portlet-body form">
+                    <div class="row">
+                        <div class="col-md-offset-8 col-md-4 search_box">
+                            <div class="topsearch" style="display:block;">
+                                <a class="btn-linkicon fa fa-search" style="margin-right: -26px;" ng-click="BindGrid('All')"></a>
+                                <input class="k-textbox txtSearchString" type="text" id="acctxtSearchString" ng-model="txtSearchString" name="search" placeholder="enter search text..." style="margin-left: 26px;"/>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row kendo_table">
+                        <kendo-grid options="accoutnChildGridOptions" id="kGrid" k-rebind="accoutnChildGridOptions"></kendo-grid>
+                        @*@Html.Partial("~/Views/Shared/Controls/_Search.cshtml")*@
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*<div class="portlet-body">
+            <kendo-grid id="kGrid" options="accoutnChildGridOptions" k-rebind="accoutnChildGridOptions">
+            </kendo-grid>
+        </div>*@
+
+    <div class="btn-group">
+        @Html.Partial("~/Views/Shared/Controls/_SetupConfig.cshtml", "_accountSetupPartial")
+    </div>
+</div>
+<div class="modal fade-out" id="accountModal" data-backdrop="static" tabindex="-1" data-width="760">
+    <div class="modal-dialog  modal-dialog-box popup main">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" next-on-tab>&times;</button>
+                <h4 class="modal-title">
+                    <span class="fa fa-file"></span>
+                    Chart of Account Model
+                </h4>
+            </div>
+
+            <div class="modal-body">
+
+                <form name="accountsArrform" class="form-horizontal" data-ng-init="init()">
+                    <div class="row" style="scrollbar-base-color:yellow">
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 col-md-3 col-lg-3">Under Group:</label>
+                                <div class="col-sm-9 col-md-9 col-lg-9">
+                                    <select id="masteraccountcode" kendo-drop-down-list
+                                            k-options="accountGroupOptions"
+                                            style="width: 100%" disabled></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="control-label col-sm-4 col-md-4 col-lg-4">
+                                    Nature of Ledger:<span style="color:red" ng-show="accountsArrform.natureaccount.$invalid">
+                                        <span ng-show="accountsArrform.natureaccount.$error.required">*</span>
+                                    </span>
+                                </label>
+                                <div class="col-sm-8 col-md-8 col-lg-8">
+                                    <select id="natureaccount" name="natureaccount" kendo-drop-down-list ng-model="accountsArr.ACC_NATURE" k-rebind="natureaccountOptions"
+                                            k-options="natureaccountOptions" k-on-change="NatureAccCodeOnChange(kendoEvent)"
+                                            style="width: 100%" required></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- rendering master elements -->
+                    <ul id="myTab" class="nav nav-tabs responsive_tab">
+                        <li class="active">
+                            <a href="#tab_1" data-toggle="tab">
+                                Ledger Info
+                            </a>
+                        </li>
+                        <li ng-show="result">
+                            <a href="#tab_2" data-toggle="tab">
+                                Bank Details
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content responsive_tab_content">
+                        <div class="tab-pane active" id="tab_1">
+                            <div class="row">
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <div class="form-group">
+
+                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Account Code:</label>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <input type="text" id="accname" name="ACC_CODE" ng-model="accountsArr.ACC_CODE" class="form-control" readonly />
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <div class="form-group">
+
+                                        <input type="hidden" id="accname" name="ACC_CODE" ng-model="accountsArr.ACC_CODE" class="form-control" />
+                                        <label class="control-label  col-sm-6 col-md-6 col-lg-6">
+                                            A/C English Name:<span style="color:red" ng-show="accountsArrform.accenglishname.$invalid">
+                                                <span ng-show="accountsArrform.accenglishname.$error.required">*</span>
+                                            </span>
+                                        </label>
+                                        <div class=" col-sm-6 col-md-6 col-lg-6">
+                                            <input type="text" id="accenglishname" name="accenglishname" ng-model="accountsArr.ACC_EDESC" class="form-control" placeholder="Account Name" required />
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6 col-lg-6">A/C Prefix:</label>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <input type="text" id="prefix" name="PREFIX_TEXT" ng-model="accountsArr.PREFIX_TEXT" class="form-control" placeholder=" Enter Only 3 digits" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">A/C Nepali Name:</label>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <input type="text" id="accnepaliname" name="ACC_NDESC" ng-model="accountsArr.ACC_NDESC" class="UnicodeNepali form-control" />
+                                            @*<input type="text" id="accnepaliname" name="ACC_NDESC" ng-model="accountsArr.ACC_NDESC" class="unicode form-control" lang="ne" />*@
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4 col-md-4 cpl-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-6 col-lg-6">A/C Short Name:</label>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            @*<input type="text" id="shortname" name="SHORT_NAME" ng-model="accountsArr.SHORT_NAME" class="form-control" />*@
+                                            <input type="text" id="shortname" name="SHORT_NAME" ng-model="accountsArr.ACC_SNAME" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">
+                                            Account ID:
+                                        </label>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <input type="text" id="accountid" name="accountid" ng-model="accountsArr.ACC_ID" class="form-control" />
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div ng-show="dekh">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 col-md-6 col-lg-6">A/c Start ID:</label>
+                                            <div class="col-sm-7 col-md-7 col-lg-6">
+                                                <input type="text" id="startid" name="startid" ng-model="accountsArr.GROUP_START_CODE" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 col-md-6">A/c End ID:</label>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <input type="text" id="endid" name="endid" ng-model="accountsArr.GROUP_END_CODE" class="form-control" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div ng-show="result">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 col-md-6 col-lg-6">
+                                                Bank Loan A/c Limit:
+                                            </label>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <input type="text" id="limit" name="limit" ng-model="accountsArr.LIMIT" class="form-control" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 col-md-6 col-lg-6">
+                                                BankAccount No:
+                                            </label>
+                                            <div class="col-sm-6 col-md-6 col-lg-6">
+                                                <input type="text" id="accountno" name="accountno" ng-model="accountsArr.BANK_ACCOUNT_NO" class="form-control" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">Opening Balance:</label>
+                                        <div class="col-sm-4 col-md-3 col-lg-3">
+                                            @*<input type="text" id="openingbalance" name="openingbalance" ng-model="accountsArr.OPENING_BALANCE" class="form-control" />*@
+                                            <input type="text" id="openingbalance" name="openingbalance" ng-model="accountsArr.CURRENT_BALANCE" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-2 col-md-3 col-lg-3">
+                                            <select id="openingbalancedropdown" class="form-control">
+                                                <option value="DR">DR</option>
+                                                <option value="CR">CR</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4 col-md-4 col-lg-4" ng-show="share">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-6 col-md-6 col-lg-6">
+                                            Share %:
+                                        </label>
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
+                                            <input type="text" id="share" name="share" ng-model="accountsArr.SHARE_VALUE" class="form-control" />
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4 col-md-4">Account Type flag:</label>
+                                        <div class="col-sm-7 col-md-7 radiobox">
+                                            <span class="radio_btn">
+                                                <input type="radio" name="accountType" disabled ng-model="accountsArr.ACC_TYPE_FLAG" value="N"> Group
+                                            </span>
+
+                                            <span>
+                                                <input type="radio" name="accountType" disabled ng-model="accountsArr.ACC_TYPE_FLAG" value="T"> General Ledger
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4 col-lg-4">
+                                            Transaction Type:<span style="color:red" @*ng-show="accountsArrform.transactionType.$invalid"*@>
+                                                @*<span ng-show="accountsArrform.transactionType.$error.required">*</span>*@
+                                            </span>
+                                        </label>
+                                        <div class="col-sm-7 col-md-7 col-lg-7 radiobox">
+                                            <span class="radio_btn">
+                                                <input type="radio" id="dr" name="transactionType" ng-model="accountsArr.TRANSACTION_TYPE" value="DR"> Debit
+                                            </span>
+                                            <span><input type="radio" id="cr" name="transactionType" ng-model="accountsArr.TRANSACTION_TYPE" value="CR"> Credit</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4 col-md-4 col-lg-4">
+                                            Belongs To:@*<span style="color:red" ng-show="accountsArrform.tpbflag.$invalid">
+                                                <span ng-show="accountsArrform.tpbflag.$error.required">*</span>
+                                            </span>*@
+                                        </label>
+                                        <div class="col-sm-7 col-md-7 col-lg-7 radiobox">
+                                            <span class="radio_btn">
+                                                <input type="radio" id="profloss" name="tpbflag" ng-model="accountsArr.TPB_FLAG" value="P" ng-change='newValue()'> Profit & Loss
+                                            </span>
+                                            <span> <input type="radio" id="balancesheet" name="tpbflag" ng-model="accountsArr.TPB_FLAG" value="B" ng-change='newValue(value)'> Balance Sheet</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-lg-4 col-md-offset-2">
+                                    <div class="row">
+                                        @*<div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group">
+                                                    <label class="control-label col-sm-4 col-md-4 col-lg-4">
+                                                    Under Group:<span style="color:red" ng-show="accountsArrform.tpbflag.$invalid">
+                                                                    <span ng-show="accountsArrform.tpbflag.$error.required">*</span>
+                                                                      </span>
+                                                    </label>
+                                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                                        <select id="tpbFlag" name="tpbFlag" k-ng-model="accountsArr.TPB_FLAG" ng-model="accountsArr.TPB_FLAG" style="width: 100%"required>
+                                                            <option value="" selected>--Select Group--</option>
+                                                            <option value="P">P</option>
+                                                            <option value="B">B</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-4 col-md-4 col-lg-4">
+                                            Under Group PL/BS:
+                                        </label>
+                                        <div class="col-sm-8 col-md-6 col-lg-6">
+                                            <select id="masteraccountcode1" kendo-drop-down-list
+                                                    k-options="accountGroupOptions"
+                                                    style="width: 100%"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-checkbox-list checkboxlist  radio_select">
+
+
+                                    <span>
+                                        <input id="Ntroflgr" type="checkbox" ng-model="accountsArr.DEFAULT_COGS_VALUE" ng-true-value="'Y'" ng-false-value="'N'">Update Nature of Ledger,Transaction Type,Belongs to under this group
+                                    </span>
+
+                                </div>
+                            </div>
+
+                            @*<div class="col-sm-3 col-md-3">
+                                     <div class="form-group">
+                                         <label for="element">Account Nature:</label>
+                                         <input type="text" id="endid" name="endid" ng-model="accountsArr.GROUP_END_CODE" class="form-control" />
+                                     </div>
+
+                                </div>*@
+                            <hr />
+                            <div class="row">
+
+
+                                <div class="col-md-offset-1 col-sm-offset-1 col-sm-2 col-md-2">
+                                    <div class="form-group">
+                                        <input id="freezeflag" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'" ng-checked="accountsArr.FREEZE_FLAG=='Y'" ng-model="accountsArr.FREEZE_FLAG">
+
+                                        <label class="control-label">Freeze Account:</label>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 col-md-2">
+                                    <div class="form-group">
+                                        <input id="printingflag" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'" ng-checked="accountsArr.PRINTING_FLAG=='Y'" ng-model="accountsArr.PRINTING_FLAG">
+                                        <label class="control-label">Freeze Printing:</label>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 col-md-2">
+                                    <div class="form-group">
+                                        <input id="vatflag" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'" ng-checked="accountsArr.IND_VAT_FLAG=='Y'" ng-model="accountsArr.IND_VAT_FLAG">
+                                        <label class="control-label">VAT Transaction:</label>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 col-md-2">
+                                    <div class="form-group">
+
+
+                                        <input id="tdsflag" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'" ng-checked="accountsArr.IND_TDS_FLAG=='Y'" ng-model="accountsArr.IND_TDS_FLAG">
+                                        <label class="control-label">TDS Transaction:</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 col-md-2">
+                                    <div class="form-group">
+                                        <input id="dealerflag" type="checkbox" ng-true-value="'Y'" ng-false-value="'N'" ng-checked="accountsArr.IND_MDF_FLAG=='Y'" ng-model="accountsArr.IND_MDF_FLAG">
+                                        <label class="control-label">MDF transaction:</label>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab_2">
+                            <div class="row">
+                                @*<div class="col-sm-3 col-md-3">
+                                        <div class="form-group">
+                                        </div>
+                                    </div>*@
+                                <div class="col-sm-6 col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-8 col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-4 col-md-4">Total # Days:</label>
+                                                <div class="col-sm-4 col-md-4">
+                                                    <input type="text" id="totalDays" name="TOTAL_DAYS" ng-model="accountsArr.TOTAL_DAYS" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8 col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-4 col-md-4">Int Rate %eg:</label>
+                                                <div class="col-sm-4 col-md-4">
+                                                    <input type="text" id="savingInterest" name="SAVING_INTEREST" ng-model="accountsArr.SAVING_INTEREST" class="form-control" readonly />
+                                                </div>
+                                                <label class="col-sm-4 col-md-4">of Saving A/c</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8 col-md-8">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-4 col-md-4">Int Rate %eg:</label>
+                                                <div class="col-sm-4 col-md-4">
+                                                    <input type="text" id="loanInterest" name="LOAN_INTEREST" ng-model="accountsArr.LOAN_INTEREST" class="form-control" readonly />
+                                                </div>
+                                                <label class="col-sm-4 col-md-4">of Loan A/c</label>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6 col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-5 col-md-5">Auto prior maturity Days:</label>
+                                                <div class="col-sm-4 col-md-4">
+                                                    <input type="text" id="maturityDays" name="MATURITY_DAYS" ng-model="accountsArr.MATURITY_DAYS" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+
+
+
+                                    <fieldset class="fieldset-box">
+                                        <legend class="planOption">Interest Payment/Receive</legend>
+                                        <div class="col-sm-3 col-md-3">
+                                            <div class="form-group">
+                                                <input type="radio" id="contactChoice1" name="contact" value="email" checked>
+                                                <label for="contactChoice1">Monthly Basis</label> <br />
+
+                                                <input type="radio" id="contactChoice2" name="contact" value="phone">
+                                                <label for="contactChoice2">Quartely Basis</label><br />
+
+                                                <input type="radio" id="contactChoice3" name="contact" value="mail">
+                                                <label for="contactChoice3">Yearly Basis</label><br />
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-6 col-md-6 col-lg-3">Web link ID</label>
+                                        <div class="col-sm-3 col-md-3 col-lg-6">
+                                            <input type="text" id="weblinkid" name="WEB_LINK_ID" ng-model="accountsArr.LINK_ID" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3 col-md-3 col-lg-3">
+                                            <a class="fa fa-link" target="_blank" href="#" ng-href="https://{{accountsArr.LINK_ID}}/"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <hr />
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12">
+                                    <table id="tablegrid" class="table table-bordered table-responsive popuptbl">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>Contact Person</th>
+                                                <th>Address</th>
+                                                <th>Designation</th>
+                                                <th>Department</th>
+                                                <th>Mobile No</th>
+                                                <th>Phone No</th>
+                                                <th>Email Id</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="item in bankdetailArr">
+                                                <td>{{$index+1}}</td>
+                                                <td><input id="item.CONTACT_PERSON" type="text" ng-model="bankdetailArr.CONTACT_PERSON" class="form-control" /></td>
+                                                <td><input id="item.ADDRESS" type="text" class="form-control" ng-model="bankdetailArr.ADDRESS" /></td>
+                                                <td><input id="item.DESIGNATION" type="text" class="form-control" ng-model="bankdetailArr.DESIGNATION" /></td>
+                                                <td><input id="item.DEPARTMENT" type="text" class="form-control" ng-model="bankdetailArr.DEPARTMENT" /></td>
+                                                <td><input id="item.MOBILE_NO" type="text" class="form-control" ng-model="bankdetailArr.MOBILE_NO" /></td>
+                                                <td><input id="item.PHONE_NO" type="text" class="form-control" ng-model="bankdetailArr.PHONE_NO" /></td>
+                                                <td><input id="item.EMAIL_ID" type="text" class="form-control" ng-model="bankdetailArr.EMAIL_ID" /></td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-green" id="savedocumentformdata" ng-click="saveNewAccount(accountsArrform.$valid)" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing..." href="javascript:;">
+                    <i class="fa fa-floppy-o"></i> {{saveupdatebtn}}
+                </button>
+                <button type="button" class="btn btn-sm btn-default" ng-click="cancelOperation()" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<div class="col-md-12">
+    <div class="portlet light portletspace bordered main">
+        <div class="portlet mingap">
+            @*<div class="portlet-title">
+                <div class="caption ng-binding">
+                    <i class="fa fa-list-alt font-green-haze"></i>
+                    <span class="caption-subject font-green-haze bold uppercase">
+                        Chart Of Account
+                    </span>
+                </div>
+                <div class="actions">
+
+
+                    @*<a class="btn blue-hoki btn-sm" id="createbtn" ng-disabled="treenodeselected!= 'Y'" ng-click="showModalForNew(event)">
+                            <i class="fa fa-floppy-o"></i> NEW
+                        </a>
+                </div>
+            </div>*@
+
+
+@*<div class="portlet-body">
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>*@
+<script>
+
+    $(document).ready(function () {
+
+        setTimeout(function () {
+
+            $('.k-list').slimScroll({
+                height: '250px'
+            });
+        }, 100)
+
+        $('.nav-tabs a').on('click', function (e) {
+            e.preventDefault();
+            //if ($(this).attr('href') == '#tab_1') {
+            //    $('#tab_1').tab('show')
+            //}
+            if ($(this).attr('href') == '#tab_2') {
+                $('#tab_2').tab('show')
+            }
+        });
+    });
+
+    var natureObj = {
+        "AA": "Fixed Assets",
+        "AB": "Cash In Hand",
+        "AC": "Bank Account",
+        "AD": "Current Assets",
+        "AE": "Sundry Debtors",
+        "AF": "Advance",
+        "EA": "Manufacturing Ex",
+        "EB": "Direct Expenses",
+        "EC": "InDirect Expense",
+        "ED": "Depreciation",
+        "SA": "Opening Stock",
+        "SB": "Purchase Accoun",
+        "SC": "Stock Transfer",
+        "SD": "Closing Stock",
+        "SE": "Inventory",
+        "LA": "Capital Account",
+        "LB": "Current Liabilities",
+        "LC": "Loan (Liability)",
+        "LD": "Sundry Creditors",
+        "PL": "Profit & Loss",
+        "PV": "Provision",
+        "IA": "Sales Accounts",
+        "IB": "Direct Income",
+        "IC": "Indirect Income"
+    }
+    var bindNature = function (nature) {
+
+        return natureObj[nature];
+    }
+
+
+
+</script>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $(".topsearch").hide();
+            $("#acctxtSearchString").keyup(function () {
+                var val = $('#acctxtSearchString').val();
+                $("#kGrid").data("kendoGrid").dataSource.filter({
+                    logic: "or",
+                    filters: [
+                        {
+                            field: "ACC_EDESC",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "ACC_CODE",
+                            operator: "contains",
+                            value: val
+                        },
+                        {
+                            field: "ACC_TYPE_FLAG",
+                            operator: "contains",
+                            value: val
+                        },
+
+                    ]
+                });
+
+
+            });
+        });
+
+</script>

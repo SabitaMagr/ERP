@@ -1,0 +1,74 @@
+﻿@{
+    Layout = null;
+}
+
+<link href="@Styles.Url("~/Areas/NeoERP.QuotationManagement/Content/Quotation.css")" rel="stylesheet" />
+
+
+<div class="col-md-12 bodyController" id="AddQuotation">
+    <div class="portlet light form-fit bordered bottomspance">
+        <div class="portlet box green-box main">
+            <div class="portlet-title">
+                <div class="caption">
+                    <a class="btn-back pull-left" data-toggle="tooltip" data-placement="top" title="Back To Dashboard" href="/QuotationManagement/Home/Dashboard">
+                        <i class="fa fa-arrow-circle-left"></i>
+                    </a>
+                    <i class="fa fa-gift font-green-haze"></i>
+                    <span class="caption-subject font-white-haze bold uppercase">View Quotation</span>
+                </div>
+
+                <div class="actions">
+                    <div class="btn-group menuDropdown" data-toggle="tooltip" title="Actions">
+                        <a class="btn btn-red btn-white-border" href="javascript:;" ng-click="CancelForm()" data-toggle="dropdown" aria-expanded="false" title="Cancel">
+                            <i class="fa fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row boxbg">
+                    <div class="col-xs-11 col-sm-11 col-md-11 custom-col-width">
+                        <form id="documentformelementvalues" class="documentform" method="post" enctype="multipart/form-data">
+                            <div class="row masterDiv">
+                                @Html.Partial("~/Areas/NeoERP.QuotationManagement/Views/Shared/PartialView/_ViewMasterPartial.cshtml")
+                            </div>
+                            <div class="tabbable-line1 tabbox1" style="margin-top:7px;">
+                                <div class="tab-content d-tab-content">
+                                    <div class="table-responsive">
+                                        @{
+                                            @Html.Partial("~/Areas/NeoERP.QuotationManagement/Views/Shared/PartialView/_ViewChildPartial.cshtml")
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-4">
+                                    <div ng-repeat="element in MasterFormElement | orderBy: 'SERIAL_NO'" ng-if="element.COLUMN_NAME.indexOf('REMARKS') !== -1">
+
+                                        <label class="control-label" for="element">{{element.COLUMN_HEADER}} </label>
+
+                                        <textarea id="salestype" ng-model="masterModels[element.COLUMN_NAME]" name="salestype" disabled class="form-control salestype" type="textarea" style="width: 98%; height:29px;" next-on-tab />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="margin-top:1.5rem;padding-left:0px;">
+                                    <div style="display:flex;">
+                                        <div class="col-xs-6 col-sm-2 col-md-2 text-left">
+                                            <button type="button" class="btn btn-info" ng-click="generateLink()">Generate Link</button>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6" @*ng-show="APPROVED_STATUS=='Approved'"*@>
+                                            <label class="control-label" for="element"> Generated Link:  </label>
+                                           <a href="{{ generatedUrl }}" target="_blank">{{ generatedUrl }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
